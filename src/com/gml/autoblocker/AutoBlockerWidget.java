@@ -7,75 +7,47 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class AutoBlockerWidget extends AppWidgetProvider {
-    /** Settings.Secure 키. One UI 버전에 따라 다를 수 있다(기기에서 미확인). */
-    static final String KEY = "auto_blocker_enabled";
-    static final String ACTION_TOGGLE = "com.gml.autoblocker.TOGGLE";
+    /** One UI 9.0 (SM-F971N) 에서 관측한 마스터 키. 읽기만 가능하고 쓰기는 거부된다. */
+    static final String KEY = "rampart_main_switch_enabled";
+    static final String TAG = "AutoBlocker";
 
-    private enum View { ON, OFF, NO_PERMISSION, FAILED }
+    /** 1 켜짐, 0 꺼짐, -1 읽기 불가. */
+    static int read(Context ctx) {
+        try {
+            int v = Settings.Secure.getInt(ctx.getContentResolver(), KEY);
+            Log.i(TAG, "read " + KEY + "=" + v);
+            return v;
+        } catch (Settings.SettingNotFoundException e) {
+            Log.i(TAG, "read " + KEY + " not found");
+            return -1;
+        }
+    }
 
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
-        render(ctx, mgr, ids, currentView(ctx));
+        render(ctx, mgr, ids);
     }
 
-    @Override
-    public void onReceive(Context ctx, Intent intent) {
-        super.onReceive(ctx, intent);
-        if (ACTION_TOGGLE.equals(intent.getAction())) {
-            toggle(ctx);
-        }
-    }
-
-    private static View currentView(Context ctx) {
-        return read(ctx) == 1 ? View.ON : View.OFF;
-    }
-
-    private static int read(Context ctx) {
-        return Settings.Secure.getInt(ctx.getContentResolver(), KEY, 0);
-    }
-
-    private void toggle(Context ctx) {
-        int next = read(ctx) == 1 ? 0 : 1;
-        View result;
-        try {
-            boolean ok = Settings.Secure.putInt(ctx.getContentResolver(), KEY, next);
-            if (!ok) {
-                toast(ctx, R.string.toast_write_fail);
-                result = View.FAILED;
-            } else if (read(ctx) != next) {
-                toast(ctx, R.string.toast_mismatch);
-                result = View.FAILED;
-            } else {
-                result = next == 1 ? View.ON : View.OFF;
-            }
-        } catch (SecurityException e) {
-            toast(ctx, R.string.toast_grant);
-            result = View.NO_PERMISSION;
-        }
+    static void refresh(Context ctx) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
         int[] ids = mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWidget.class));
-        render(ctx, mgr, ids, result);
+        if (ids.length > 0) render(ctx, mgr, ids);
     }
 
-    private static void toast(Context ctx, int resId) {
-        Toast.makeText(ctx, resId, Toast.LENGTH_LONG).show();
-    }
-
-    private static void render(Context ctx, AppWidgetManager mgr, int[] ids, View v) {
+    private static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
         int text;
         int bg;
-        switch (v) {
-            case ON: text = R.string.state_on; bg = R.drawable.bg_on; break;
-            case OFF: text = R.string.state_off; bg = R.drawable.bg_off; break;
-            case NO_PERMISSION: text = R.string.state_err; bg = R.drawable.bg_err; break;
-            default: text = R.string.state_fail; bg = R.drawable.bg_err; break;
+        switch (read(ctx)) {
+            case 1: text = R.string.state_on; bg = R.drawable.bg_on; break;
+            case 0: text = R.string.state_off; bg = R.drawable.bg_off; break;
+            default: text = R.string.state_unknown; bg = R.drawable.bg_err; break;
         }
-        Intent i = new Intent(ctx, AutoBlockerWidget.class).setAction(ACTION_TOGGLE);
-        PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
+        Intent i = new Intent(ctx, TrampolineActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews rv = new RemoteViews(ctx.getPackageName(), R.layout.widget);
         rv.setTextViewText(R.id.label, ctx.getString(text));
         rv.setInt(R.id.root, "setBackgroundResource", bg);

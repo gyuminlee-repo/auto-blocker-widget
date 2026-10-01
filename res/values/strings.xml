@@ -3,9 +3,9 @@
     <string name="app_name">Auto Blocker 위젯</string>
     <string name="state_on">보안 위험 자동 차단 켜짐</string>
     <string name="state_off">보안 위험 자동 차단 꺼짐</string>
-    <string name="state_err">권한 필요</string>
-    <string name="state_fail">설정 변경 실패</string>
-    <string name="toast_grant">권한이 없습니다. PC에서 다음 명령을 실행하세요: adb shell pm grant com.gml.autoblocker android.permission.WRITE_SECURE_SETTINGS</string>
-    <string name="toast_write_fail">설정 쓰기에 실패했습니다.</string>
-    <string name="toast_mismatch">쓴 값과 다시 읽은 값이 다릅니다. 키 이름(auto_blocker_enabled)을 확인하세요.</string>
+    <string name="state_unknown">상태 확인 불가</string>
+    <string name="service_desc">위젯을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
+    <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. enable_accessibility.sh 를 실행하세요.</string>
+    <string name="toast_open_fail">보안 위험 자동 차단 설정 화면을 열 수 없습니다.</string>
+    <string name="toast_node_missing">설정 화면에서 스위치를 찾지 못했습니다.</string>
 </resources>

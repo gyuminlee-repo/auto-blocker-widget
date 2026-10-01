@@ -34,7 +34,7 @@ fi
 
 "$BT/aapt2" compile --dir "$ROOT/res" -o "$B/compiled"
 "$BT/aapt2" link -I "$AJAR" --manifest "$ROOT/AndroidManifest.xml" \
-  --min-sdk-version 26 --target-sdk-version 34 --version-code 1 --version-name 0.1.0 \
+  --min-sdk-version 26 --target-sdk-version 34 --version-code 2 --version-name 0.2.0 \
   --java "$B/gen" -o "$B/base.apk" "$B"/compiled/*.flat
 
 javac --release 8 -Xlint:-options -cp "$AJAR" -d "$B/classes" \
