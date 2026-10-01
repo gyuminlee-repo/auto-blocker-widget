@@ -3,17 +3,65 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="8dp"
-    android:background="@drawable/bg_off">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/bg_unknown">
 
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_shield_unknown" />
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#FFFFFFFF"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="@string/state_off" />
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="#D9FFFFFF"
+                android:textSize="11sp"
+                android:text="@string/widget_title" />
+
+            <TextView
+                android:id="@+id/checked_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:maxLines="1"
+                android:textColor="#B3FFFFFF"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/state_unknown" />
+    </LinearLayout>
 </LinearLayout>

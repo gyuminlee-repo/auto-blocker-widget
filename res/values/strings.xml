@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Auto Blocker 위젯</string>
-    <string name="state_on">보안 위험 자동 차단 켜짐</string>
-    <string name="state_off">보안 위험 자동 차단 꺼짐</string>
+    <string name="state_on">켜짐</string>
+    <string name="state_off">꺼짐</string>
+    <string name="widget_title">보안 위험 자동 차단</string>
+    <string name="checked_at">%1$s 확인</string>
+    <string name="desc_fmt">보안 위험 자동 차단 %1$s, 탭하여 전환</string>
     <string name="state_unknown">탭하여 전환</string>
     <string name="service_desc">위젯을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
     <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. enable_accessibility.sh 를 실행하세요.</string>

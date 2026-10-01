@@ -7,7 +7,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.View;
 import android.widget.RemoteViews;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * 상태는 rampart 설정 화면에서 접근성 서비스가 마지막으로 본 값의 캐시다.
@@ -43,18 +48,29 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     }
 
     private static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
-        int text;
-        int bg;
-        switch (cached(ctx)) {
-            case 1: text = R.string.state_on; bg = R.drawable.bg_on; break;
-            case 0: text = R.string.state_off; bg = R.drawable.bg_off; break;
-            default: text = R.string.state_unknown; bg = R.drawable.bg_unknown; break;
+        int state = cached(ctx);
+        int text, bg, icon;
+        switch (state) {
+            case 1: text = R.string.state_on; bg = R.drawable.bg_on; icon = R.drawable.ic_shield_on; break;
+            case 0: text = R.string.state_off; bg = R.drawable.bg_off; icon = R.drawable.ic_shield_off; break;
+            default: text = R.string.state_unknown; bg = R.drawable.bg_unknown; icon = R.drawable.ic_shield_unknown; break;
         }
         Intent i = new Intent(ctx, TrampolineActivity.class);
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews rv = new RemoteViews(ctx.getPackageName(), R.layout.widget);
-        rv.setTextViewText(R.id.label, ctx.getString(text));
+        String stateText = ctx.getString(text);
+        rv.setTextViewText(R.id.label, stateText);
+        rv.setImageViewResource(R.id.icon, icon);
         rv.setInt(R.id.root, "setBackgroundResource", bg);
+        long at = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).getLong(LAST_AT, 0);
+        if (state >= 0 && at > 0) {
+            String hhmm = new SimpleDateFormat("HH:mm", Locale.KOREA).format(new Date(at));
+            rv.setTextViewText(R.id.checked_at, ctx.getString(R.string.checked_at, hhmm));
+            rv.setViewVisibility(R.id.checked_at, View.VISIBLE);
+        } else {
+            rv.setViewVisibility(R.id.checked_at, View.GONE);
+        }
+        rv.setContentDescription(R.id.root, ctx.getString(R.string.desc_fmt, stateText));
         rv.setOnClickPendingIntent(R.id.root, pi);
         mgr.updateAppWidget(ids, rv);
     }
