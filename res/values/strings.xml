@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Auto Blocker 위젯</string>
+    <string name="state_on">보안 위험 자동 차단 켜짐</string>
+    <string name="state_off">보안 위험 자동 차단 꺼짐</string>
+    <string name="state_err">권한 필요</string>
+    <string name="state_fail">설정 변경 실패</string>
+    <string name="toast_grant">권한이 없습니다. PC에서 다음 명령을 실행하세요: adb shell pm grant com.gml.autoblocker android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="toast_write_fail">설정 쓰기에 실패했습니다.</string>
+    <string name="toast_mismatch">쓴 값과 다시 읽은 값이 다릅니다. 키 이름(auto_blocker_enabled)을 확인하세요.</string>
+</resources>
