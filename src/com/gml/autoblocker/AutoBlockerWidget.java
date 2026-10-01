@@ -6,25 +6,29 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
-import android.util.Log;
+import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+/**
+ * 상태는 rampart 설정 화면에서 접근성 서비스가 마지막으로 본 값의 캐시다.
+ * 일반 앱은 rampart_* 설정 키를 읽을 수 없으므로 Settings 를 읽지 않는다.
+ */
 public class AutoBlockerWidget extends AppWidgetProvider {
-    /** One UI 9.0 (SM-F971N) 에서 관측한 마스터 키. 읽기만 가능하고 쓰기는 거부된다. */
-    static final String KEY = "rampart_main_switch_enabled";
     static final String TAG = "AutoBlocker";
+    static final String STATE_PREFS = "state";
+    static final String LAST_STATE = "lastKnownState";
+    static final String LAST_AT = "lastKnownAt";
 
-    /** 1 켜짐, 0 꺼짐, -1 읽기 불가. */
-    static int read(Context ctx) {
-        try {
-            int v = Settings.Secure.getInt(ctx.getContentResolver(), KEY);
-            Log.i(TAG, "read " + KEY + "=" + v);
-            return v;
-        } catch (Settings.SettingNotFoundException e) {
-            Log.i(TAG, "read " + KEY + " not found");
-            return -1;
-        }
+    static void saveState(Context ctx, boolean on) {
+        ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).edit()
+                .putInt(LAST_STATE, on ? 1 : 0)
+                .putLong(LAST_AT, System.currentTimeMillis()).commit();
+    }
+
+    /** 1 켜짐, 0 꺼짐, -1 캐시 없음. */
+    static int cached(Context ctx) {
+        SharedPreferences p = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE);
+        return p.getInt(LAST_STATE, -1);
     }
 
     @Override
@@ -41,10 +45,10 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     private static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
         int text;
         int bg;
-        switch (read(ctx)) {
+        switch (cached(ctx)) {
             case 1: text = R.string.state_on; bg = R.drawable.bg_on; break;
             case 0: text = R.string.state_off; bg = R.drawable.bg_off; break;
-            default: text = R.string.state_unknown; bg = R.drawable.bg_err; break;
+            default: text = R.string.state_unknown; bg = R.drawable.bg_unknown; break;
         }
         Intent i = new Intent(ctx, TrampolineActivity.class);
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
