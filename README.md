@@ -73,7 +73,7 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 
 **업데이트.** 앱 서랍의 ShieldTap 아이콘 > `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap-v<버전>.apk` 를 받아 덮어 설치합니다. 파일 이름의 버전과 앱 화면 아래 버전이 같은 형식이라 바로 비교할 수 있습니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
 
-새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/gyuminlee-repo/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
+새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
 
 **삭제.** 앱 서랍의 ShieldTap 아이콘을 길게 눌러 `삭제` 를 누르거나 앱 화면의 `앱 정보 열기 (삭제)` 를 누릅니다.
 
