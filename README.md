@@ -143,20 +143,20 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
      -alias release -keyalg RSA -keysize 4096 -validity 10000
    ```
 
-2. `VERSION_CODE` 를 이전 릴리스보다 크게 올려 빌드합니다. versionCode 가 커야 기존 사용자가 업데이트할 수 있습니다.
+2. 버전은 커밋 라벨을 그대로 씁니다. 이 저장소의 커밋 제목은 `vA.BB.CC.DD: 요약` 형식이고 `build.sh` 가 HEAD 커밋 제목의 라벨에서 버전을 계산합니다. `versionName` 은 라벨에서 `v` 를 뺀 값(예: `0.07.00.00`)이고 `versionCode` 는 `A×1000000 + BB×10000 + CC×100 + DD`(예: `70000`)입니다. 라벨이 커질수록 versionCode 도 커지므로 기존 사용자는 덮어 설치로 업데이트할 수 있습니다. 릴리스할 커밋(보통 master 최신)에서 빌드합니다.
 
    ```
    RELEASE_KS="$HOME/.android/auto-blocker-release.jks" RELEASE_KS_ALIAS=release \
-   RELEASE_KS_PASS='<비밀번호>' VERSION_CODE=7 VERSION_NAME=0.7.0 ./build.sh
+   RELEASE_KS_PASS='<비밀번호>' ./build.sh
    ```
 
-   빌드 끝에 서명 인증서와 APK 의 SHA-256 이 출력됩니다.
+   HEAD 제목에 라벨이 없으면 빌드가 멈춥니다. 필요하면 `VERSION_NAME` 과 `VERSION_CODE` 를 둘 다 직접 줄 수 있습니다. 빌드 끝에 버전, 서명 인증서, APK 의 SHA-256 이 출력됩니다.
 
-3. GitHub Release 를 만들고 SHA-256 을 노트에 적습니다.
+3. 같은 라벨로 GitHub Release 를 만들고 SHA-256 을 노트에 적습니다. 태그도 커밋 라벨과 같게 씁니다.
 
    ```
-   gh release create v0.7.0 build/shieldtap.apk \
-     --title "v0.7.0" --notes "APK SHA-256: <값>"
+   gh release create v0.07.00.00 build/shieldtap.apk \
+     --title "ShieldTap v0.07.00.00" --notes "APK SHA-256: <값>"
    ```
 
 Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스위치를 자동으로 누르는 접근성 서비스는 장애 지원 목적이 아니어서 Play 접근성 API 정책 심사를 통과하기 어렵다고 봅니다(추정).
