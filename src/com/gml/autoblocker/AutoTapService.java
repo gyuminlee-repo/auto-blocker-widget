@@ -54,7 +54,7 @@ public class AutoTapService extends AccessibilityService {
                         .getLong(TrampolineActivity.ARMED_AT, 0) != 0) {
                     disarm(AutoTapService.this);
                     Log.i(TAG, "arm timeout: row not found");
-                    Toast.makeText(AutoTapService.this, R.string.toast_node_missing, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LocaleHelper.wrap(AutoTapService.this), R.string.toast_node_missing, Toast.LENGTH_LONG).show();
                 }
             }
         };

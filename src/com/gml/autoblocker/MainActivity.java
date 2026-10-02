@@ -10,9 +10,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,11 @@ public class MainActivity extends Activity {
     private TextView[] marks;
     private View[] steps, bodies;
     private ColorStateList defaultMarkColor;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.wrap(base));
+    }
 
     @Override
     protected void onCreate(Bundle b) {
@@ -79,6 +86,24 @@ public class MainActivity extends Activity {
                 open(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.releases_url)))));
         findViewById(R.id.btn_app_info).setOnClickListener(v -> openAppInfo());
         ((TextView) findViewById(R.id.footer)).setText(getString(R.string.main_footer, versionName()));
+        bindLanguage();
+    }
+
+    /** 언어 선택. 현재 값을 먼저 표시한 뒤 리스너를 단다. */
+    private void bindLanguage() {
+        RadioGroup group = (RadioGroup) findViewById(R.id.lang_group);
+        String cur = LocaleHelper.get(this);
+        int checked = cur.isEmpty() ? R.id.lang_system
+                : "en".equals(cur) ? R.id.lang_en : "ko".equals(cur) ? R.id.lang_ko : View.NO_ID;
+        if (checked != View.NO_ID) group.check(checked);
+        group.setOnCheckedChangeListener((g, id) -> {
+            String tag = id == R.id.lang_en ? "en" : id == R.id.lang_ko ? "ko" : "";
+            if (tag.equals(LocaleHelper.get(this))) return;
+            LocaleHelper.set(this, tag);
+            AutoBlockerWidget.refresh(this);
+            // API 33+ 는 시스템이 화면을 다시 만든다.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) recreate();
+        });
     }
 
     @Override
