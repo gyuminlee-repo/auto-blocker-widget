@@ -4,7 +4,8 @@ Copyright 2026 Gyu Min Lee
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
 This product includes icon path data derived from Material Icons by Google
-("verified_user", outlined style), used in res/drawable/ic_shield_*.xml.
+("verified_user", outlined style), used in res/drawable/ic_shield_*.xml and
+res/drawable/ic_launcher_fg.xml.
 Material Icons are licensed under the Apache License, Version 2.0.
 https://github.com/google/material-design-icons
 
