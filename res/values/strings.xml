@@ -11,4 +11,15 @@
     <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. 설정 > 접근성 > 설치된 앱에서 켜세요.</string>
     <string name="toast_open_fail">보안 위험 자동 차단 설정 화면을 열 수 없습니다.</string>
     <string name="toast_node_missing">설정 화면에서 스위치를 찾지 못했습니다.</string>
+    <string name="main_desc">홈 화면 위젯을 탭해 보안 위험 자동 차단을 켜고 끕니다.</string>
+    <string name="main_service_on">접근성 서비스: 켜짐</string>
+    <string name="main_service_off">접근성 서비스: 꺼짐. 아래 버튼으로 켜 주세요.</string>
+    <string name="btn_accessibility">접근성 설정 열기</string>
+    <string name="main_widget_hint">위젯 추가: 홈 화면 빈 곳을 길게 누르고 위젯에서 ShieldTap 을 고르세요.</string>
+    <string name="btn_update">업데이트 확인</string>
+    <string name="main_update_hint">현재 버전과 릴리스 페이지의 버전을 비교해 새 버전이면 받아 덮어 설치하세요. 설정은 그대로 남습니다.</string>
+    <string name="releases_url" translatable="false">https://github.com/shieldtap/shieldtap/releases/latest</string>
+    <string name="toast_no_app">이 화면을 열 수 있는 앱이 없습니다.</string>
+    <string name="btn_app_info">앱 정보 열기 (삭제)</string>
+    <string name="main_footer">버전 %1$s\n비공식 앱, 삼성전자와 관계없음</string>
 </resources>

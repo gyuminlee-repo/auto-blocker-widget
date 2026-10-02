@@ -43,8 +43,8 @@ else
   fi
   SIGN_ARGS=(--ks "$KS" --ks-pass pass:android --key-pass pass:android)
 fi
-VERSION_CODE="${VERSION_CODE:-6}"
-VERSION_NAME="${VERSION_NAME:-0.6.0}"
+VERSION_CODE="${VERSION_CODE:-7}"
+VERSION_NAME="${VERSION_NAME:-0.7.0}"
 
 "$BT/aapt2" compile --dir "$ROOT/res" -o "$B/compiled"
 "$BT/aapt2" link -I "$AJAR" --manifest "$ROOT/AndroidManifest.xml" \

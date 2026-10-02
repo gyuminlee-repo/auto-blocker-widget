@@ -33,6 +33,7 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 - **권한 0개.** 매니페스트에 `uses-permission` 이 하나도 없습니다. 인터넷 권한도 없어 어떤 데이터도 기기 밖으로 나가지 않습니다.
 - **좁은 접근성 범위.** 접근성 서비스는 One UI 에 기본 탑재된 Auto Blocker 시스템 앱(`com.samsung.android.rampart`) 하나의 화면만 봅니다. 다른 앱의 화면 내용은 받지 않습니다.
 - **보안 우회 없음.** 끌 때 뜨는 지문 또는 비밀번호 인증은 그대로 사용자가 직접 통과합니다. 위젯은 인증을 대신하지 않습니다.
+- **앱 서랍 아이콘.** 아이콘을 누르면 접근성 서비스가 켜져 있는지 보여 주고 접근성 설정, 업데이트 확인, 앱 정보(삭제)로 바로 갑니다.
 - **탭했을 때만 동작.** 사용자가 설정 화면을 직접 열었을 때는 아무것도 누르지 않습니다.
 - **가벼운 빌드.** Gradle 없이 Android build-tools 와 JDK 17 만으로 수 초 안에 APK 가 나옵니다.
 
@@ -56,10 +57,18 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 1. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html?m=1)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
 2. [Releases](../../releases/latest) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
 3. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 1번과 같은 화면입니다.
-4. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다. 바로 켜지면 5번은 건너뜁니다.
+4. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다. 앱 서랍의 ShieldTap 아이콘 > `접근성 설정 열기` 로도 갈 수 있습니다. 바로 켜지면 5번은 건너뜁니다.
 5. `제한된 설정` 안내 창이 뜨면 확인을 누릅니다. 그다음 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증한 뒤 4번을 다시 합니다. 이 메뉴는 4번에서 안내 창을 한 번 본 뒤에만 나타납니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 설치 방식에 따라서는 제한이 걸리지 않아 안내 창도 메뉴도 없을 수 있습니다.
 6. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `ShieldTap` 을 2x1 로 배치합니다.
 7. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
+
+## 업데이트와 삭제
+
+**업데이트.** 앱 서랍의 ShieldTap 아이콘 > `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap.apk` 를 받아 덮어 설치합니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
+
+새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
+
+**삭제.** 앱 서랍의 ShieldTap 아이콘을 길게 눌러 `삭제` 를 누르거나 앱 화면의 `앱 정보 열기 (삭제)` 를 누릅니다.
 
 ## 설치: 개발자 (adb)
 
@@ -165,4 +174,4 @@ Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스
 
 [Apache License 2.0](LICENSE) 을 따릅니다. 자유롭게 쓰고 고치고 배포할 수 있으며 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣어 주세요.
 
-방패 아이콘(`res/drawable/ic_shield_*.xml`)의 외곽선은 Google [Material Icons](https://github.com/google/material-design-icons) 의 `verified_user` (outlined) 경로를 가져와 체크와 점을 덧붙였습니다. Material Icons 도 Apache License 2.0 입니다.
+방패 아이콘(`res/drawable/ic_shield_*.xml`, 앱 아이콘 `res/drawable/ic_launcher_fg.xml`)의 외곽선은 Google [Material Icons](https://github.com/google/material-design-icons) 의 `verified_user` (outlined) 경로를 가져와 체크와 점을 덧붙였습니다. Material Icons 도 Apache License 2.0 입니다.
