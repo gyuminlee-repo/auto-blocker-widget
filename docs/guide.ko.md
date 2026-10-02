@@ -1,0 +1,133 @@
+# ShieldTap 사용 안내
+
+<p align="center">
+  <a href="guide.md">English</a> · <strong>한국어</strong>
+</p>
+
+[README](../README.ko.md) 에서 링크한 상세 내용입니다. 위젯 상태, 호환성, 설정 단계, 업데이트, adb 경로, 동작 원리, 보안 메모, 제약을 다룹니다.
+
+## 위젯 상태
+
+<p align="center">
+  <img src="widget_states.png" alt="2x1 위젯 세 개가 나란히 있다. 초록 켜짐, 호박색 꺼짐, 슬레이트색 상태 미확인." width="600">
+</p>
+
+| 상태 | 배경 | 표시 |
+|---|---|---|
+| 켜짐 | 초록 | `보안 위험 자동 차단` / `켜짐` `HH:mm 확인` |
+| 꺼짐 | 호박색 | `보안 위험 자동 차단` / `꺼짐` `HH:mm 확인` |
+| 미확인 | 슬레이트 | `보안 위험 자동 차단` / `상태 미확인` |
+
+`HH:mm 확인` 은 마지막으로 스위치 상태를 읽은 시각입니다. 미확인 상태에는 붙지 않습니다.
+
+이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다. 그림은 영어 UI 기준이고 한국어 폰에서는 `보안 위험 자동 차단` / `켜짐` 처럼 표시됩니다. 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
+
+## 호환성
+
+| 항목 | 값 |
+|---|---|
+| 확인한 기기 | Galaxy SM-F971N, One UI 9.0 |
+| 필요한 앱 | 따로 설치할 앱 없음. 보안 위험 자동 차단(`com.samsung.android.rampart`)은 One UI 6 이상에 기본 탑재된 시스템 앱입니다 |
+| 작동 최소 버전 | One UI 6.0 (Android 14 기반). 보안 위험 자동 차단이 One UI 6 부터 들어갔기 때문입니다 |
+| 설치 최소 버전 | Android 8.0 (API 26, `minSdkVersion`). One UI 6 미만에서는 설치는 되지만 켤 대상이 없습니다 |
+| 언어 | 영어와 한국어. 폰 언어를 따릅니다. 앱 화면 맨 아래 언어 항목에서 시스템 기본값, English, 한국어 중 하나를 고를 수 있습니다. Android 13 이상에서는 설정 > 애플리케이션 > ShieldTap > 언어 와 같은 값입니다 |
+| 다른 기종 | 좌표가 아니라 내부 ID 로 스위치를 찾으므로 화면 크기와 해상도와는 관계없습니다. 지금까지 확인한 기기는 1대입니다 |
+| 다른 One UI 버전 | 미확인. 삼성이 설정 화면의 내부 ID 를 바꾸면 동작하지 않습니다 |
+
+## 단계별 설정
+
+이 순서로 One UI 9.0 실기기에 설치해 설정 화면이 동작하는 것을 확인했습니다. 다른 기종과 One UI 버전은 확인하지 못했습니다. 막히면 [개발자용 adb 설치](#개발자용-adb-설치) 경로를 쓰세요.
+
+### 설치 전
+
+1. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
+2. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
+
+### 설치와 설정
+
+3. [최신 릴리스](https://github.com/shieldtap/shieldtap/releases/latest)에서 `shieldtap-v<버전>.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+4. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 2번과 같은 화면입니다.
+5. 앱 서랍의 **ShieldTap** 을 엽니다. 화면의 5단계를 순서대로 따릅니다. 끝난 단계는 ✓ 로 바뀌고 남은 단계만 펼쳐집니다. 단계마다 `자세히` 를 누르면 무엇을 누르고 왜 필요한지 나옵니다.
+   - **① 권한 허용(제한된 설정):** `앱 정보 열기` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증한 뒤 `허용했어요` 를 누릅니다. Android 13 이상은 스토어 밖에서 설치한 앱이 접근성 권한을 쓰지 못하게 먼저 막아 둡니다([Google 안내](https://support.google.com/android/answer/12623953)). ⋮ 메뉴에 이 항목이 안 보이면 `허용했어요` 를 누르고 ②로 가서 한 번 켜 봅니다. 안드로이드 13 분석에 따르면 이 메뉴는 `제한된 설정` 안내 창을 한 번 본 뒤에 나타날 수 있습니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 접근성이 이미 켜져 있으면 이 단계는 자동으로 ✓ 입니다.
+   - **② 접근성 켜기:** `접근성 설정 열기` 를 눌러 설치된 앱에서 ShieldTap 을 켭니다. `제한된 설정` 창이 뜨면 ①로 돌아가 허용합니다.
+   - **③ 홈 화면에 위젯 추가:** `홈 화면에 위젯 추가` 를 누르면 시스템 추가 창이 뜹니다. 버튼이 없으면 홈 화면 빈 곳을 길게 눌러 위젯에서 ShieldTap 을 2x1 로 배치합니다.
+   - **④ 현재 상태 읽어 오기:** `상태 읽어 오기` 를 누르면 보안 위험 자동 차단 설정 화면이 열립니다. 스위치는 누르지 않습니다. 화면이 열리면 뒤로 가기를 누릅니다.
+   - **⑤ 설치 뒤 마무리:** 설치하려고 끈 두 가지를 다시 켭니다. `Play 프로텍트 설정 열기` 로 앱 검사를 켜고 `보안 위험 자동 차단 켜기` 로 차단을 켭니다. 켜기 버튼은 이미 켜져 있으면 아무것도 누르지 않습니다. 다 했으면 `마무리 완료` 를 누릅니다.
+   - **권장, 30분 뒤 자동으로 다시 켜기:** `자동으로 켜기 설정 열기` 를 누르면 보안 위험 자동 차단 화면이 열립니다. 그 화면의 `자동으로 켜기` 를 켜 두면(One UI 8.5 이상) 위젯으로 끈 뒤 잊어도 30분 뒤 다시 켜집니다. 옵션은 화면 아래쪽에 있을 수 있습니다.
+6. `준비 완료` 가 뜨면 끝입니다. 그다음부터는 위젯을 탭할 때마다 켜짐과 꺼짐이 바뀝니다. 접근성이 꺼진 채 위젯을 누르면 설정 안내 화면이 열립니다.
+
+## 업데이트와 삭제
+
+**업데이트.** 앱 서랍의 ShieldTap 에서 `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap-v<버전>.apk` 를 받아 덮어 설치합니다. 파일 이름의 버전과 앱 화면 아래 버전이 같은 형식이라 바로 비교할 수 있습니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
+
+새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
+
+**삭제.** 앱 서랍의 ShieldTap 아이콘을 길게 눌러 `삭제` 를 누르거나 앱 화면의 `앱 정보 열기 (삭제)` 를 누릅니다.
+
+## 개발자용 adb 설치
+
+이 경로는 SM-F971N, One UI 9.0 에서 확인했습니다. 보안 위험 자동 차단이 켜져 있으면 USB 명령이 막히므로 먼저 끕니다.
+
+```
+adb install -r shieldtap-v<버전>.apk
+./enable_accessibility.sh <adb시리얼>
+```
+
+그다음 [단계별 설정](#단계별-설정)의 5번처럼 앱을 열어 ③, ④, ⑤ 단계를 따릅니다. ①과 ②는 스크립트가 접근성을 켜면 함께 끝납니다.
+
+`enable_accessibility.sh` 는 shell 권한의 `settings put secure` 로 접근성 서비스를 켭니다. 폰을 조작하지 않아도 되고 제한된 설정 단계도 거치지 않습니다. 실행 전에 기존 `enabled_accessibility_services` 값을 출력하고 ShieldTap 서비스가 없을 때만 `:` 로 이어 붙입니다. 기존 값은 덮어쓰지 않습니다.
+
+## 동작 원리
+
+```mermaid
+sequenceDiagram
+    participant U as 사용자
+    participant W as 위젯
+    participant T as 투명 액티비티
+    participant R as 보안 위험 자동 차단 설정 화면
+    participant S as 접근성 서비스
+    U->>W: 탭
+    W->>T: 실행
+    T->>T: 켜짐 표식 기록 (5초 유효)
+    T->>R: 설정 화면 열기
+    R-->>S: 창 이벤트
+    S->>S: 스위치 isChecked() 읽어 캐시 갱신
+    S->>R: 표식이 유효하면 스위치 행 1회 탭
+    Note over R,U: 끌 때는 시스템 인증 창, 사용자가 직접 인증
+    R-->>S: 값 변경 감지
+    S->>W: 홈으로 돌아가 위젯 갱신
+```
+
+- **좌표를 누르지 않습니다.** 접근성 노드 트리에서 내부 ID 로 스위치 행 노드를 찾아 그 노드에 `ACTION_CLICK` 을 보냅니다(`src/com/gml/autoblocker/AutoTapService.java:97-111`). 그래서 기종보다 One UI 버전에 좌우됩니다.
+- **못 찾으면 멈춥니다.** ID 가 바뀌어 노드가 없으면 아무것도 누르지 않고 5초 뒤 `설정 화면에서 스위치를 찾지 못했습니다.` 를 띄웁니다(`AutoTapService.java:49-62`). 같은 화면의 다른 스위치(One UI 6.1.1 이상의 `최대 제한` 등)를 잘못 누르지 않도록 "첫 번째 스위치" 같은 대체 탐색은 일부러 넣지 않았습니다.
+- **바꿀 필요가 없으면 누르지 않습니다.** 설정 안내의 `보안 위험 자동 차단 켜기` 는 켜짐을 요청합니다. 스위치가 이미 켜져 있으면 아무것도 누르지 않고 홈으로 갑니다(`AutoTapService.java:105-109`).
+- 위젯이 보여 주는 값은 접근성 서비스가 설정 화면에서 마지막으로 읽은 스위치 상태의 캐시입니다. 보안 위험 자동 차단의 시스템 설정 값(`rampart_main_switch_enabled`)은 읽지도 쓰지도 않습니다.
+- 접근성 서비스는 설정 화면의 창 이벤트마다 스위치(`sesl_switchbar_switch`)의 `isChecked()` 를 읽습니다. 표식이 유효한 5초 안에만 스위치 행(`sesl_switchbar_container`)을 한 번 탭합니다.
+- 같은 창에서 `isChecked()` 가 탭 전 값과 달라진 뒤에만 홈으로 돌아갑니다. 값이 바뀌기 전에는 홈이나 뒤로 가기를 보내지 않습니다.
+- 인증을 취소해 값이 안 바뀌면 10초 뒤 감시를 접고 아무것도 하지 않습니다.
+- 사용자가 설정 화면을 직접 열었을 때는 아무것도 누르지 않습니다.
+
+## 보안 메모
+
+| 확인 항목 | 근거 |
+|---|---|
+| 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
+| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:29`, `:41`, `:48` 의 `android:exported="false"`. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:19`)만 런처 실행을 위해 공개 |
+| 다른 앱 조회는 Play 스토어 하나 | `AndroidManifest.xml:6-8` 의 `<queries>` 에 `com.android.vending` 만 선언. 권한이 아니며 Play 프로텍트 설정 화면을 못 열 때 Play 스토어를 여는 대체 경로용 |
+| 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
+| 백업 비활성 | `AndroidManifest.xml:14` 의 `android:allowBackup="false"` |
+
+접근성 서비스는 강한 권한입니다. 받은 APK 는 소스와 SHA-256 을 확인하고 설치하세요. 직접 빌드하면 가장 확실합니다. [개발](../README.ko.md#개발) 절을 보세요.
+
+## 제약
+
+- 일반 앱은 `rampart_main_switch_enabled` 를 읽을 수 없습니다(`Settings key ... is not readable`, 안드로이드 12 이상의 @hide 키 제한). adb shell 에서만 읽힙니다.
+- One UI 가 `rampart_main_switch_enabled` 쓰기를 거부하므로(`RAMPART_SettingsProvider: Not allowed to put`) 설정 화면 UI 를 자동으로 누르는 방식을 씁니다.
+- 위젯 표시는 캐시라서 화면 밖에서 상태가 바뀌면 낡을 수 있습니다. One UI 8.5 이상의 `자동으로 켜기` 설정은 끄고 30분 뒤 다시 켭니다(관측).
+- 설정 화면의 viewId 가 바뀌면 동작하지 않습니다. One UI 업데이트에 취약합니다.
+- 보안 위험 자동 차단을 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
+- Google Play 와 Galaxy Store 에는 올리지 않습니다. GitHub 릴리스로만 배포합니다.
+
+## 아이콘 출처
+
+방패 아이콘(`res/drawable/ic_shield_*.xml`, 앱 아이콘 `res/drawable/ic_launcher_fg.xml`)의 외곽선은 Google [Material Icons](https://github.com/google/material-design-icons) 의 `verified_user` (outlined) 경로를 가져와 체크와 점을 덧붙였습니다. Material Icons 도 Apache License 2.0 입니다. 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣어 주세요.
