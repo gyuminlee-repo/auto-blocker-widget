@@ -13,16 +13,25 @@ public class TrampolineActivity extends Activity {
     static final String ARMED_AT = "armedAt";
     static final String RAMPART_ACTION = "com.samsung.android.rampart.action.MAIN_SETTING_ACTIVITY";
 
+    /** rampart 설정 화면 Intent. arm 하지 않으므로 여는 것만으로는 스위치를 누르지 않는다. */
+    static Intent rampartIntent() {
+        return new Intent(RAMPART_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         if (!AutoTapService.isRunning()) {
-            Toast.makeText(this, R.string.toast_service_off, Toast.LENGTH_LONG).show();
+            // 서비스가 없으면 설정 화면을 열어도 누를 수 없으므로 설정 안내 화면으로 보낸다.
+            Toast.makeText(this, R.string.toast_service_off, Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
         }
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putLong(ARMED_AT, SystemClock.elapsedRealtime()).commit();
         try {
-            startActivity(new Intent(RAMPART_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            startActivity(rampartIntent());
             AutoTapService.onArmed();
         } catch (ActivityNotFoundException | SecurityException e) {
             AutoTapService.disarm(this);

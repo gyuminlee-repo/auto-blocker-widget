@@ -23,32 +23,228 @@
             android:text="@string/main_desc"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-        <TextView
-            android:id="@+id/service_status"
+        <!-- 모두 완료일 때만 보인다 -->
+        <LinearLayout
+            android:id="@+id/ready_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/btn_accessibility"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/btn_accessibility" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ready_title"
+                android:textColor="@color/step_done"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:textStyle="bold" />
 
-        <TextView
+            <TextView
+                android:id="@+id/ready_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+            <TextView
+                android:id="@+id/ready_checked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/ready_widget_hint"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/ready_tip"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+        </LinearLayout>
+
+        <!-- 단계 1 -->
+        <LinearLayout
+            android:id="@+id/step1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/main_widget_hint"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/step1_mark"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/step1_title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/step1_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step1_body"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_accessibility"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_accessibility" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/step1_restricted"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_restricted_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_app_info_short" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 단계 2 -->
+        <LinearLayout
+            android:id="@+id/step2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/step2_mark"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/step2_title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/step2_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_pin_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_pin_widget" />
+
+                <TextView
+                    android:id="@+id/step2_manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step2_manual"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 단계 3 -->
+        <LinearLayout
+            android:id="@+id/step3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/step3_mark"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/step3_title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/step3_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step3_body"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_read_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_read_state" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 공통 영역: 항상 보인다 -->
         <Button
             android:id="@+id/btn_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="@string/btn_update" />
 
         <TextView
