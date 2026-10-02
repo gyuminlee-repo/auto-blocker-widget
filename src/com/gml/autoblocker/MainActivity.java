@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import java.util.Locale;
 public class MainActivity extends Activity {
     static final String SETUP_PREFS = "setup";
     static final String FINISH_DONE = "finishDone";
+    static final String RESTRICTED_DONE = "restrictedDone";
     private static final String PROTECT_PKG = "com.google.android.gms";
     private static final String PROTECT_CLS = "com.google.android.gms.security.settings.VerifyAppsSettingsActivity";
     private static final String STORE_PKG = "com.android.vending";
@@ -39,16 +41,22 @@ public class MainActivity extends Activity {
                 (TextView) findViewById(R.id.step1_mark),
                 (TextView) findViewById(R.id.step2_mark),
                 (TextView) findViewById(R.id.step3_mark),
-                (TextView) findViewById(R.id.step4_mark)};
-        steps = new View[] {findViewById(R.id.step1), findViewById(R.id.step2),
-                findViewById(R.id.step3), findViewById(R.id.step4)};
+                (TextView) findViewById(R.id.step4_mark),
+                (TextView) findViewById(R.id.step5_mark)};
+        steps = new View[] {findViewById(R.id.step1), findViewById(R.id.step2), findViewById(R.id.step3),
+                findViewById(R.id.step4), findViewById(R.id.step5)};
         bodies = new View[] {findViewById(R.id.step1_body), findViewById(R.id.step2_body),
-                findViewById(R.id.step3_body), findViewById(R.id.step4_body)};
+                findViewById(R.id.step3_body), findViewById(R.id.step4_body), findViewById(R.id.step5_body)};
         defaultMarkColor = marks[0].getTextColors();
 
         findViewById(R.id.btn_accessibility).setOnClickListener(v ->
                 open(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         findViewById(R.id.btn_restricted_info).setOnClickListener(v -> openAppInfo());
+        findViewById(R.id.btn_restricted_done).setOnClickListener(v -> {
+            getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE).edit()
+                    .putBoolean(RESTRICTED_DONE, true).commit();
+            render();
+        });
         findViewById(R.id.btn_pin_widget).setOnClickListener(v -> pinWidget());
         findViewById(R.id.btn_read_state).setOnClickListener(v -> openRampartWithoutTap());
         findViewById(R.id.btn_auto_enable).setOnClickListener(v -> openRampartWithoutTap());
@@ -65,6 +73,7 @@ public class MainActivity extends Activity {
         bindToggle(R.id.step2_toggle, R.id.step2_more);
         bindToggle(R.id.step3_toggle, R.id.step3_more);
         bindToggle(R.id.step4_toggle, R.id.step4_more);
+        bindToggle(R.id.step5_toggle, R.id.step5_more);
         bindToggle(R.id.update_toggle, R.id.update_more);
         findViewById(R.id.btn_update).setOnClickListener(v ->
                 open(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.releases_url)))));
@@ -88,11 +97,15 @@ public class MainActivity extends Activity {
     private void render() {
         AppWidgetManager mgr = AppWidgetManager.getInstance(this);
         int state = AutoBlockerWidget.cached(this);
+        SharedPreferences prefs = getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE);
+        boolean service = isServiceEnabled();
         boolean[] done = {
-                isServiceEnabled(),
+                // 일반 앱이 「제한된 설정 허용」 여부를 읽는 공개 API 는 없다고 가정하고 사용자 기록과 접근성 켜짐으로 판정한다.
+                service || prefs.getBoolean(RESTRICTED_DONE, false),
+                service,
                 mgr.getAppWidgetIds(widgetProvider()).length > 0,
                 state != -1,
-                getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE).getBoolean(FINISH_DONE, false)};
+                prefs.getBoolean(FINISH_DONE, false)};
 
         int firstTodo = -1;
         for (int i = 0; i < done.length; i++) {
@@ -101,17 +114,17 @@ public class MainActivity extends Activity {
             if (done[i]) marks[i].setTextColor(getColor(R.color.step_done));
             else marks[i].setTextColor(defaultMarkColor);
             bodies[i].setVisibility(i == firstTodo ? View.VISIBLE : View.GONE);
-            // 단계 1 이 미완료면 뒤 단계는 비활성처럼 흐리게 둔다.
-            steps[i].setAlpha(i > 0 && !done[0] ? 0.5f : 1f);
+            // 권한 허용 전이면 접근성 단계를, 접근성이 꺼져 있으면 그 뒤 단계를 흐리게 둔다.
+            steps[i].setAlpha((i == 1 && !done[0]) || (i > 1 && !done[1]) ? 0.5f : 1f);
         }
 
-        if (firstTodo == 1) {
+        if (firstTodo == 2) {
             findViewById(R.id.btn_pin_widget).setVisibility(
                     mgr.isRequestPinAppWidgetSupported() ? View.VISIBLE : View.GONE);
         }
-        if (firstTodo == 3) {
-            findViewById(R.id.step4_enable).setVisibility(state == 0 ? View.VISIBLE : View.GONE);
-            findViewById(R.id.step4_blocker_on).setVisibility(state == 1 ? View.VISIBLE : View.GONE);
+        if (firstTodo == 4) {
+            findViewById(R.id.step5_enable).setVisibility(state == 0 ? View.VISIBLE : View.GONE);
+            findViewById(R.id.step5_blocker_on).setVisibility(state == 1 ? View.VISIBLE : View.GONE);
         }
 
         View card = findViewById(R.id.ready_card);
