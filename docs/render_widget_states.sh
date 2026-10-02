@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Renders README preview PNGs of the home screen widget in its three states
-# (on / off / unknown) by reproducing res/layout/widget.xml as HTML and taking
+# (on / off / unknown), in the Color style and the Monochrome style (bg_mono for
+# every state, as in AutoBlockerWidget.build()), by reproducing res/layout/widget.xml as HTML and taking
 # headless Chrome screenshots. Colors, radius, icon paths and strings are parsed
 # from the resource XML at run time, so the images follow resource changes.
 #
@@ -21,7 +22,7 @@ cleanup() { rm -f "$D"/*; rmdir "$D"; }
 trap cleanup EXIT
 
 python3 - "$ROOT" "$D" <<'PY'
-import re, sys, xml.etree.ElementTree as ET
+import base64, re, sys, xml.etree.ElementTree as ET
 root, out = sys.argv[1], sys.argv[2]
 A = '{http://schemas.android.com/apk/res/android}'
 
@@ -69,7 +70,6 @@ L = dict(
     pt=dp(lay.get(A + 'paddingTop')), pb=dp(lay.get(A + 'paddingBottom')),
     icon=dp(ids['icon'].get(A + 'layout_width')),
     textms=dp(textcol.get(A + 'layout_marginStart')),
-    t_sz=dp(ids['title'].get(A + 'textSize')), t_col=color(ids['title'].get(A + 'textColor')),
     c_sz=dp(ids['checked_at'].get(A + 'textSize')), c_col=color(ids['checked_at'].get(A + 'textColor')),
     c_ms=dp(ids['checked_at'].get(A + 'layout_marginStart')),
     l_sz=dp(ids['label'].get(A + 'textSize')), l_col=color(ids['label'].get(A + 'textColor')),
@@ -77,8 +77,13 @@ L = dict(
 )
 
 W, H, GAP = 180, 76, 16
+ROW_GAP = 12  # space between the Color row and the Monochrome row
+# Header row above the 3-up strip only: app icon (docs/media/icon.png, inlined) + app name
+HEAD, HEAD_MB = 24, 10
+APP = strings['app_name']
+ICON_URI = 'data:image/png;base64,' + base64.b64encode(open(f'{root}/docs/media/icon.png', 'rb').read()).decode()
 CHECK = strings['checked_at'].replace('%1$s', '14:32')
-# State -> resources, mirroring AutoBlockerWidget.render(): on/off show checked_at, unknown hides it
+# State -> resources, mirroring AutoBlockerWidget.build(): on/off show checked_at, unknown hides it
 STATES = [
     ('on', 'On', strings['state_on'], 'bg_on', 'ic_shield_on', True),
     ('off', 'Off', strings['state_off'], 'bg_off', 'ic_shield_off', True),
@@ -95,12 +100,15 @@ body{{font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-font-s
 .ic svg{{display:block;}}
 .tx{{flex:1 1 0;min-width:0;margin-left:{L["textms"]}px;display:flex;flex-direction:column;}}
 .row{{display:flex;flex-direction:row;align-items:baseline;min-width:0;}}
-.title{{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  font-size:{L["t_sz"]}px;color:{L["t_col"]};}}
 .at{{flex:none;white-space:nowrap;margin-left:{L["c_ms"]}px;font-size:{L["c_sz"]}px;color:{L["c_col"]};}}
 .label{{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   font-size:{L["l_sz"]}px;font-weight:{L["l_w"]};color:{L["l_col"]};}}
+.sheet{{display:flex;flex-direction:column;align-items:center;}}
+.head{{display:flex;flex-direction:row;align-items:center;height:{HEAD}px;margin-bottom:{HEAD_MB}px;}}
+.head img{{display:block;width:{HEAD}px;height:{HEAD}px;border-radius:{HEAD // 4}px;}}
+.head span{{margin-left:8px;font-size:16px;line-height:{HEAD}px;font-weight:700;color:#374151;}}
 .strip{{display:flex;flex-direction:row;gap:{GAP}px;}}
+.strip+.strip{{margin-top:{ROW_GAP}px;}}
 .cell{{display:flex;flex-direction:column;align-items:center;}}
 .cap{{margin-top:6px;font-size:12px;line-height:16px;color:#6B7280;}}
 '''
@@ -110,18 +118,21 @@ def widget(label, bgname, iconname, show_at):
     at = f'<div class="at">{CHECK}</div>' if show_at else ''
     return (f'<div class="w" style="background:{c};border-radius:{r}px">'
             f'<div class="ic">{icon(iconname)}</div>'
-            f'<div class="tx"><div class="title">{strings["widget_title"]}</div>'
-            f'<div class="row"><div class="label">{label}</div>{at}</div></div></div>')
+            f'<div class="tx"><div class="row"><div class="label">{label}</div>{at}</div></div></div>')
 
 def page(body):
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}</body></html>'
 
 for key, cap, label, b, i, show in STATES:
     open(f'{out}/{key}.html', 'w').write(page(widget(label, b, i, show)))
-cells = ''.join(f'<div class="cell">{widget(l, b, i, s)}<div class="cap">{cap}</div></div>'
-                for _, cap, l, b, i, s in STATES)
-open(f'{out}/states.html', 'w').write(page(f'<div class="strip">{cells}</div>'))
-open(f'{out}/sizes', 'w').write(f'{W},{H} {3 * W + 2 * GAP},{H + 6 + 16}\n')
+def strip(style, mono):
+    cells = ''.join(f'<div class="cell">{widget(l, "bg_mono" if mono else b, i, s)}'
+                    f'<div class="cap">{style} \u00b7 {cap}</div></div>'
+                    for _, cap, l, b, i, s in STATES)
+    return f'<div class="strip">{cells}</div>'
+head = f'<div class="head"><img src="{ICON_URI}" alt=""><span>{APP}</span></div>'
+open(f'{out}/states.html', 'w').write(page(f'<div class="sheet">{head}{strip("Color", False)}{strip("Monochrome", True)}</div>'))
+open(f'{out}/sizes', 'w').write(f'{W},{H} {3 * W + 2 * GAP},{HEAD + HEAD_MB + 2 * (H + 6 + 16) + ROW_GAP}\n')
 PY
 
 read -r SINGLE STRIP < "$D/sizes"

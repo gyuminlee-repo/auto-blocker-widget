@@ -3,7 +3,6 @@
     <string name="app_name">ShieldTap</string>
     <string name="state_on">On</string>
     <string name="state_off">Off</string>
-    <string name="widget_title">Auto Blocker</string>
     <string name="checked_at">Checked %1$s</string>
     <string name="desc_fmt">Auto Blocker %1$s. Tap to switch.</string>
     <string name="state_unknown">Unknown</string>
@@ -63,6 +62,10 @@
     <string name="btn_finish_setup">Finish setup</string>
     <string name="step5_details">Turn the two things you switched off for installing back on. Your device is safer with them on. ShieldTap still lets you turn Auto Blocker off and on from the widget. With \"Turn on Auto Blocker automatically\" on, it\'s safe even if you forget to turn it back on.</string>
     <string name="update_details">1) Tap Check for updates to open the latest release page.\n2) If the top version is newer than the version at the bottom of this screen, tap shieldtap-v&lt;version&gt;.apk to download it.\n3) Turn off Scan apps with Play Protect for a moment and install it over the current app. Your settings and widget stay as they are.\nFor automatic update checks, add this repository to the Obtainium app.</string>
+    <string name="style_title">Widget style</string>
+    <string name="style_color">Color</string>
+    <string name="style_mono">Monochrome</string>
+    <string name="btn_save">Save</string>
     <string name="lang_label">Language</string>
     <string name="lang_system">System default</string>
     <string name="lang_en" translatable="false">English</string>

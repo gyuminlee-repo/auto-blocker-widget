@@ -9,16 +9,18 @@ Back to the [README](../README.md). This guide holds the details the README link
 ## Widget states
 
 <p align="center">
-  <img src="widget_states.png" alt="Three 2x1 widgets side by side: green Auto Blocker On, amber Auto Blocker Off, and slate Auto Blocker Unknown." width="600">
+  <img src="widget_states.png" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states on one gray background. Each widget has a shield icon." width="600">
 </p>
 
 | State | Background | Shows (English UI) |
 |---|---|---|
-| On | Green | `Auto Blocker` / `On` `Checked HH:mm` |
-| Off | Amber | `Auto Blocker` / `Off` `Checked HH:mm` |
-| Unknown | Slate | `Auto Blocker` / `Unknown` |
+| On | Green | `On` `Checked HH:mm` |
+| Off | Amber | `Off` `Checked HH:mm` |
+| Unknown | Slate | `Unknown` |
 
-`Checked HH:mm` is the time the switch state was last read. It is not shown in the unknown state.
+`Checked HH:mm` is the time the switch state was last read. It is not shown in the unknown state. The widget has no title line; the shield icon and the state say what it controls.
+
+The widget can be resized. At about one cell wide it shows only the shield icon. Each widget has its own style: Color (top row) or Monochrome (bottom row), where all three states share one gray background and differ only by the shield icon and the text. Touch and hold the widget and open its settings to switch styles.
 
 The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml` and the drawable definitions, with the English strings. The real widget size, corners and font vary a little by launcher and device.
 
@@ -112,7 +114,7 @@ sequenceDiagram
 | Check | Evidence |
 |---|---|
 | No requested permissions (including internet) | 0 `uses-permission` entries in `AndroidManifest.xml` |
-| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:41` and `:48`. Only the setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it |
+| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:52` and `:59`. Two activities are exported. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it. The widget style screen (`WidgetConfigActivity`, `:42`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID |
 | Only one other app is queried: the Play Store | `<queries>` at `AndroidManifest.xml:6-8` declares only `com.android.vending`. This is not a permission. It is the fallback path that opens the Play Store when the Play Protect settings screen cannot be opened |
 | Accessibility events limited to the rampart package | `android:packageNames` at `res/xml/accessibility_service_config.xml:3` |
 | Backup disabled | `android:allowBackup="false"` at `AndroidManifest.xml:14` |

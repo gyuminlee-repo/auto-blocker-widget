@@ -36,6 +36,17 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
+        <!-- 런처가 위젯을 놓거나 다시 설정할 때 연다. 이 앱 위젯 id 만 받는다(WidgetConfigActivity). -->
+        <activity
+            android:name=".WidgetConfigActivity"
+            android:exported="true"
+            android:label="@string/style_title"
+            android:theme="@style/MainTheme">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".TrampolineActivity"
             android:exported="false"
