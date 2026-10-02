@@ -8,6 +8,7 @@
 ![permissions](https://img.shields.io/badge/permissions-none-brightgreen)
 ![network](https://img.shields.io/badge/network-offline-brightgreen)
 ![build](https://img.shields.io/badge/build-no%20Gradle-lightgrey)
+![license](https://img.shields.io/badge/license-Apache%202.0-blue)
 
 갤럭시의 보안 위험 자동 차단은 켜 두면 안전하지만 APK 설치나 무선 디버깅을 할 때마다 설정 깊숙이 들어가 꺼야 합니다. 이 앱은 그 스위치를 홈 화면 2x1 위젯 한 칸으로 꺼냅니다. 탭 한 번에 켜고 끄며 현재 상태를 색과 글자로 보여 줍니다.
 
@@ -159,3 +160,9 @@ Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스
 - 설정 화면의 viewId 가 바뀌면 동작하지 않습니다. One UI 업데이트에 취약합니다.
 - 보안 위험 자동 차단을 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
 - 이 저장소에서 기계로 검증한 범위는 빌드, 서명, 서비스 바인드, 설치 뒤 앱 프로세스 크래시 없음까지입니다. 탭으로 켜고 끄는 경로와 끌 때의 인증 창 동작은 사용자 시험으로 확인합니다.
+
+## 라이선스
+
+[Apache License 2.0](LICENSE) 을 따릅니다. 자유롭게 쓰고 고치고 배포할 수 있으며 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣어 주세요.
+
+방패 아이콘(`res/drawable/ic_shield_*.xml`)의 외곽선은 Google [Material Icons](https://github.com/google/material-design-icons) 의 `verified_user` (outlined) 경로를 가져와 체크와 점을 덧붙였습니다. Material Icons 도 Apache License 2.0 입니다.
