@@ -55,8 +55,8 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 1. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html?m=1)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
 2. [Releases](../../releases/latest) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
 3. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 1번과 같은 화면입니다.
-4. 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
-5. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다.
+4. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다. 바로 켜지면 5번은 건너뜁니다.
+5. `제한된 설정` 안내 창이 뜨면 확인을 누릅니다. 그다음 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증한 뒤 4번을 다시 합니다. 이 메뉴는 4번에서 안내 창을 한 번 본 뒤에만 나타납니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 설치 방식에 따라서는 제한이 걸리지 않아 안내 창도 메뉴도 없을 수 있습니다.
 6. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `ShieldTap` 을 2x1 로 배치합니다.
 7. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
 
