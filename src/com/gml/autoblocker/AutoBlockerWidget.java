@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.ArrayMap;
@@ -31,6 +32,9 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     static final String STYLE_PREFS = "widget_style";
     static final int STYLE_COLOR = 0;
     static final int STYLE_MONO = 1;
+    static final int STYLE_CUSTOM = 2;
+    /** 사용자 지정 색을 저장하는 상태 순서. cached() 값 1, 0, -1 과 짝이다. */
+    static final int[] CUSTOM_STATES = { 1, 0, -1 };
     /** 이 폭(dp)보다 좁으면 아이콘만 보인다. 2칸 기본 minWidth 와 같다. */
     private static final float SMALL_MAX_DP = 110f;
 
@@ -73,7 +77,10 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context ctx, int[] ids) {
         SharedPreferences.Editor e = ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit();
-        for (int id : ids) e.remove(styleKey(id));
+        for (int id : ids) {
+            e.remove(styleKey(id));
+            for (int st : CUSTOM_STATES) e.remove(customKey(id, st));
+        }
         e.commit();
     }
 
@@ -88,6 +95,33 @@ public class AutoBlockerWidget extends AppWidgetProvider {
 
     static void saveStyle(Context ctx, int id, int style) {
         ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit().putInt(styleKey(id), style).commit();
+    }
+
+    static String customKey(int id, int state) {
+        return "custom_" + (state == 1 ? "on" : state == 0 ? "off" : "unknown") + "_" + id;
+    }
+
+    /** 컬러 스타일의 상태별 바탕 drawable. */
+    private static int colorBg(int state) {
+        return state == 1 ? R.drawable.bg_on : state == 0 ? R.drawable.bg_off : R.drawable.bg_unknown;
+    }
+
+    /** 컬러 스타일 바탕색. 사용자 지정 색의 처음 값으로 쓴다. */
+    static int defaultColor(Context ctx, int state) {
+        return ((GradientDrawable) ctx.getDrawable(colorBg(state))).getColor().getDefaultColor();
+    }
+
+    /** 저장값이 없으면 컬러 스타일 바탕색. */
+    static int customColor(Context ctx, int id, int state) {
+        return ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE)
+                .getInt(customKey(id, state), defaultColor(ctx, state));
+    }
+
+    /** colors 는 CUSTOM_STATES 순서. */
+    static void saveCustom(Context ctx, int id, int[] colors) {
+        SharedPreferences.Editor e = ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit();
+        for (int k = 0; k < CUSTOM_STATES.length; k++) e.putInt(customKey(id, CUSTOM_STATES[k]), colors[k]);
+        e.commit();
     }
 
     static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
@@ -111,23 +145,44 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     private static RemoteViews build(Context ctx, int layout, int id) {
         // 런처가 레이아웃 문자열을 시스템 로캘로 풀지 않도록 문구는 모두 앱 언어 Context 로 넣는다.
         Context loc = LocaleHelper.wrap(ctx.getApplicationContext());
-        boolean mono = style(ctx, id) == STYLE_MONO;
+        int style = style(ctx, id);
+        boolean mono = style == STYLE_MONO;
+        boolean custom = style == STYLE_CUSTOM;
         int state = cached(ctx);
         int text, bg, icon;
         switch (state) {
-            case 1: text = R.string.state_on; bg = R.drawable.bg_on; icon = R.drawable.ic_shield_on; break;
-            case 0: text = R.string.state_off; bg = R.drawable.bg_off; icon = R.drawable.ic_shield_off; break;
-            default: text = R.string.state_unknown; bg = R.drawable.bg_unknown; icon = R.drawable.ic_shield_unknown; break;
+            case 1: text = R.string.state_on; icon = R.drawable.ic_shield_on;
+                bg = mono ? R.drawable.bg_mono_on : R.drawable.bg_on; break;
+            case 0: text = R.string.state_off; icon = R.drawable.ic_shield_off;
+                bg = mono ? R.drawable.bg_mono_off : R.drawable.bg_off; break;
+            default: text = R.string.state_unknown; icon = R.drawable.ic_shield_unknown;
+                bg = mono ? R.drawable.bg_mono_unknown : R.drawable.bg_unknown; break;
         }
-        if (mono) bg = R.drawable.bg_mono;
+        // 사용자 지정은 바탕 대비가 높은 쪽, 모노톤은 밝은 켜짐만 진한 글자와 아이콘을 쓴다.
+        // 나머지도 흰색을 명시해 RemoteViews 를 다시 쓸 때 이전 색이 남지 않게 한다.
+        int customBg = custom ? customColor(ctx, id, state) : 0;
+        boolean dark = custom ? HexColor.darkText(customBg) : mono && state == 1;
+        int fg = ctx.getColor(dark ? R.color.widget_fg_dark : R.color.widget_fg_light);
+        int fgSub = ctx.getColor(dark ? R.color.widget_fg_dark_sub : R.color.widget_fg_light_sub);
         Intent i = new Intent(ctx, TrampolineActivity.class);
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews rv = new RemoteViews(ctx.getPackageName(), layout);
         String stateText = loc.getString(text);
         rv.setImageViewResource(R.id.icon, icon);
-        rv.setInt(R.id.root, "setBackgroundResource", bg);
+        rv.setInt(R.id.icon, "setColorFilter", fg);
+        if (custom) {
+            // 둥근 흰 바탕 층(bg_custom)에 색을 입힌다. View.setBackgroundTintList 는 API 31 부터만 원격 호출된다.
+            rv.setInt(R.id.root, "setBackgroundResource", 0);
+            rv.setInt(R.id.bg, "setColorFilter", customBg);
+            rv.setViewVisibility(R.id.bg, View.VISIBLE);
+        } else {
+            rv.setInt(R.id.root, "setBackgroundResource", bg);
+            rv.setViewVisibility(R.id.bg, View.GONE);
+        }
         if (layout == R.layout.widget) {
             rv.setTextViewText(R.id.label, stateText);
+            rv.setTextColor(R.id.label, fg);
+            rv.setTextColor(R.id.checked_at, fgSub);
             long at = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).getLong(LAST_AT, 0);
             if (state >= 0 && at > 0) {
                 String hhmm = new SimpleDateFormat("HH:mm", Locale.KOREA).format(new Date(at));

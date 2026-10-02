@@ -35,7 +35,70 @@
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
                 android:text="@string/style_mono" />
+            <RadioButton
+                android:id="@+id/style_custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/style_custom" />
         </RadioGroup>
+
+        <!-- 사용자 지정일 때만 보인다. 상태별 바탕색 #RRGGBB. -->
+        <LinearLayout
+            android:id="@+id/custom_fields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/color_on"
+                android:text="@string/color_on" />
+            <EditText
+                android:id="@+id/color_on"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="@string/hex_hint"
+                android:inputType="text|textNoSuggestions"
+                android:maxLength="7"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:labelFor="@+id/color_off"
+                android:text="@string/color_off" />
+            <EditText
+                android:id="@+id/color_off"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="@string/hex_hint"
+                android:inputType="text|textNoSuggestions"
+                android:maxLength="7"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:labelFor="@+id/color_unknown"
+                android:text="@string/color_unknown" />
+            <EditText
+                android:id="@+id/color_unknown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="@string/hex_hint"
+                android:inputType="text|textNoSuggestions"
+                android:maxLength="7"
+                android:singleLine="true" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_save"

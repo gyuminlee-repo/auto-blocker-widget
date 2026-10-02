@@ -65,6 +65,12 @@
     <string name="style_title">Widget style</string>
     <string name="style_color">Color</string>
     <string name="style_mono">Monochrome</string>
+    <string name="style_custom">Custom</string>
+    <string name="color_on">On color</string>
+    <string name="color_off">Off color</string>
+    <string name="color_unknown">Unknown color</string>
+    <string name="error_hex">Use #RRGGBB</string>
+    <string name="hex_hint" translatable="false">#RRGGBB</string>
     <string name="btn_save">Save</string>
     <string name="lang_label">Language</string>
     <string name="lang_system">System default</string>

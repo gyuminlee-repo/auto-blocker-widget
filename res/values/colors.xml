@@ -2,4 +2,9 @@
 <resources>
     <color name="ic_launcher_bg">#FF2E7D32</color>
     <color name="step_done">#FF2E7D32</color>
+    <!-- 위젯 글자와 아이콘. 모노톤 켜짐(밝은 바탕)만 dark, 나머지는 light. -->
+    <color name="widget_fg_light">#FFFFFFFF</color>
+    <color name="widget_fg_light_sub">#B3FFFFFF</color>
+    <color name="widget_fg_dark">#FF202124</color>
+    <color name="widget_fg_dark_sub">#B3202124</color>
 </resources>

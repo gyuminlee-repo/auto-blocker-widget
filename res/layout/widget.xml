@@ -1,57 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:background="@drawable/bg_unknown">
 
+    <!-- 사용자 지정 스타일에서만 보이는 바탕 층. 흰 둥근 사각형에 setColorFilter 로 색을 입힌다. -->
     <ImageView
-        android:id="@+id/icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_shield_unknown" />
+        android:src="@drawable/bg_custom"
+        android:visibility="gone" />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="12dp"
-        android:orientation="vertical">
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_shield_unknown" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            android:baselineAligned="true">
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/label"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textColor="#FFFFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="@string/state_unknown" />
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:baselineAligned="true">
 
-            <TextView
-                android:id="@+id/checked_at"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:maxLines="1"
-                android:textColor="#B3FFFFFF"
-                android:textSize="10sp"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="@string/state_unknown" />
+
+                <TextView
+                    android:id="@+id/checked_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

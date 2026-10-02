@@ -9,7 +9,7 @@ Back to the [README](../README.md). This guide holds the details the README link
 ## Widget states
 
 <p align="center">
-  <img src="widget_states.png" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states on one gray background. Each widget has a shield icon." width="600">
+  <img src="widget_states.png" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states in grays: light On with dark text, dark Off and mid-gray Unknown. Each widget has a shield icon." width="600">
 </p>
 
 | State | Background | Shows (English UI) |
@@ -20,7 +20,7 @@ Back to the [README](../README.md). This guide holds the details the README link
 
 `Checked HH:mm` is the time the switch state was last read. It is not shown in the unknown state. The widget has no title line; the shield icon and the state say what it controls.
 
-The widget can be resized. At about one cell wide it shows only the shield icon. Each widget has its own style: Color (top row) or Monochrome (bottom row), where all three states share one gray background and differ only by the shield icon and the text. Touch and hold the widget and open its settings to switch styles.
+The widget can be resized. At about one cell wide it shows only the shield icon. Each widget has its own style: Color (top row) or Monochrome (bottom row). Monochrome tells the three states apart by brightness: On is light, Off is dark and Unknown is in between. A third style, Custom, takes a #RRGGBB background color for each state and picks white or dark text, whichever contrasts more. Touch and hold the widget and open its settings to switch styles.
 
 The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml` and the drawable definitions, with the English strings. The real widget size, corners and font vary a little by launcher and device.
 

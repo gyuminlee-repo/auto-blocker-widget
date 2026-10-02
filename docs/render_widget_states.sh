@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Renders README preview PNGs of the home screen widget in its three states
-# (on / off / unknown), in the Color style and the Monochrome style (bg_mono for
-# every state, as in AutoBlockerWidget.build()), by reproducing res/layout/widget.xml as HTML and taking
+# (on / off / unknown), in the Color style and the Monochrome style (bg_mono_<state>,
+# with dark text and icon on the light On background, as in AutoBlockerWidget.build()),
+# by reproducing res/layout/widget.xml as HTML and taking
 # headless Chrome screenshots. Colors, radius, icon paths and strings are parsed
 # from the resource XML at run time, so the images follow resource changes.
 #
@@ -39,6 +40,7 @@ def dp(v):
 
 strings = {e.get('name'): e.text for e in ET.parse(f'{root}/res/values/strings.xml').getroot()}
 dimens = {e.get('name'): e.text for e in ET.parse(f'{root}/res/values/dimens.xml').getroot()}
+colors = {e.get('name'): e.text for e in ET.parse(f'{root}/res/values/colors.xml').getroot()}
 
 def bg(name):
     shape = ET.parse(f'{root}/res/drawable/{name}.xml').getroot()
@@ -48,13 +50,14 @@ def bg(name):
         rad = dimens[rad[len('@dimen/'):]]
     return color(solid), dp(rad)
 
-def icon(name):
+def icon(name, tint):
+    # tint mirrors ImageView.setColorFilter(fg) (SRC_ATOP): every opaque path takes the fg color
     v = ET.parse(f'{root}/res/drawable/{name}.xml').getroot()
     vw, vh = v.get(A + 'viewportWidth'), v.get(A + 'viewportHeight')
     paths = []
     for p in v.findall('path'):
         rule = 'evenodd' if p.get(A + 'fillType') == 'evenOdd' else 'nonzero'
-        paths.append(f'<path fill="{color(p.get(A + "fillColor"))}" fill-rule="{rule}" d="{p.get(A + "pathData")}"/>')
+        paths.append(f'<path fill="{tint}" fill-rule="{rule}" d="{p.get(A + "pathData")}"/>')
     return f'<svg viewBox="0 0 {vw} {vh}" width="100%" height="100%">{"".join(paths)}</svg>'
 
 # Layout values from res/layout/widget.xml
@@ -64,6 +67,7 @@ for e in lay.iter():
     i = e.get(A + 'id')
     if i:
         ids[i.split('/')[-1]] = e
+lay = ids['content']  # root is a FrameLayout (bg layer + content); padding lives on content
 textcol = lay.findall('LinearLayout')[0]
 L = dict(
     ps=dp(lay.get(A + 'paddingStart')), pe=dp(lay.get(A + 'paddingEnd')),
@@ -113,12 +117,17 @@ body{{font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-font-s
 .cap{{margin-top:6px;font-size:12px;line-height:16px;color:#6B7280;}}
 '''
 
-def widget(label, bgname, iconname, show_at):
+# Text and icon colors, mirroring AutoBlockerWidget.build(): dark only for Monochrome On
+FG = {False: (color(colors['widget_fg_light']), color(colors['widget_fg_light_sub'])),
+      True: (color(colors['widget_fg_dark']), color(colors['widget_fg_dark_sub']))}
+
+def widget(label, bgname, iconname, show_at, dark=False):
     c, r = bg(bgname)
-    at = f'<div class="at">{CHECK}</div>' if show_at else ''
+    fg, sub = FG[dark]
+    at = f'<div class="at" style="color:{sub}">{CHECK}</div>' if show_at else ''
     return (f'<div class="w" style="background:{c};border-radius:{r}px">'
-            f'<div class="ic">{icon(iconname)}</div>'
-            f'<div class="tx"><div class="row"><div class="label">{label}</div>{at}</div></div></div>')
+            f'<div class="ic">{icon(iconname, fg)}</div>'
+            f'<div class="tx"><div class="row"><div class="label" style="color:{fg}">{label}</div>{at}</div></div></div>')
 
 def page(body):
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}</body></html>'
@@ -126,9 +135,9 @@ def page(body):
 for key, cap, label, b, i, show in STATES:
     open(f'{out}/{key}.html', 'w').write(page(widget(label, b, i, show)))
 def strip(style, mono):
-    cells = ''.join(f'<div class="cell">{widget(l, "bg_mono" if mono else b, i, s)}'
+    cells = ''.join(f'<div class="cell">{widget(l, f"bg_mono_{k}" if mono else b, i, s, mono and k == "on")}'
                     f'<div class="cap">{style} \u00b7 {cap}</div></div>'
-                    for _, cap, l, b, i, s in STATES)
+                    for k, cap, l, b, i, s in STATES)
     return f'<div class="strip">{cells}</div>'
 head = f'<div class="head"><img src="{ICON_URI}" alt=""><span>{APP}</span></div>'
 open(f'{out}/states.html', 'w').write(page(f'<div class="sheet">{head}{strip("Color", False)}{strip("Monochrome", True)}</div>'))

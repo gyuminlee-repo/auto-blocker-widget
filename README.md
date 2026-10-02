@@ -26,7 +26,7 @@
 ---
 
 <p align="center">
-  <img src="docs/widget_states.png" width="600" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states on one gray background. Each widget has a shield icon.">
+  <img src="docs/widget_states.png" width="600" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states in grays: light On with dark text, dark Off and mid-gray Unknown. Each widget has a shield icon.">
 </p>
 
 <p align="center"><sub>The widget in its three states: on, off and unknown · a preview drawn from the app layout and English strings, not a device screenshot</sub></p>
@@ -65,7 +65,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 <p align="center"><sub>Each image is the setup screen redrawn from the app strings and layout, not a device capture.</sub></p>
 
 - **Switches with one tap.** In the Color style the widget turns green for on and amber for off, with the time the state was last read. [Widget states →](docs/guide.md#widget-states)
-- **Resizes and comes in two styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color or Monochrome. [Widget states →](docs/guide.md#widget-states)
+- **Resizes and comes in three styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome or Custom with your own #RRGGBB color for each state. [Widget states →](docs/guide.md#widget-states)
 - **Runs with zero permissions.** The manifest has no `uses-permission` entry, including internet, so nothing leaves the phone. [Security notes →](docs/guide.md#security-notes)
 - **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget or the `Turn on Auto Blocker` button in setup. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.
