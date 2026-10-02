@@ -66,8 +66,9 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 
 - **Switches with one tap.** In the Color style the widget turns green for on and amber for off, with the time the state was last read. [Widget states →](docs/guide.md#widget-states)
 - **Resizes and comes in several styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome, Custom or, on Android 12 and later, System colors that follow your wallpaper. Custom lets you pick each state color from presets, hue, saturation and brightness sliders, or a #RRGGBB code. [Widget states →](docs/guide.md#widget-states)
+- **Also works from Quick Settings.** Pull down the notification shade, open the tile editor (pencil or Edit) and drag ShieldTap into your tiles. The tile shows the same state as the widget and switches the same way. [Quick Settings tile →](docs/guide.md#quick-settings-tile)
 - **Runs with zero permissions.** The manifest has no `uses-permission` entry, including internet, so nothing leaves the phone. [Security notes →](docs/guide.md#security-notes)
-- **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget or the `Turn on Auto Blocker` button in setup. [How it works →](docs/guide.md#how-it-works)
+- **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget, the Quick Settings tile or the `Turn on Auto Blocker` button in setup. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.
 - **Finds the switch by ID, not by position.** Screen size and resolution do not enter into it, because the switch is found by its internal ID. One device is verified so far. [Compatibility →](docs/guide.md#compatibility)
 - **Comes in English and Korean.** The choice at the bottom of the app is the same value as the per-app language on Android 13 and later.

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-/** 위젯이 armed 한 5초 안에만 rampart 설정 화면의 스위치 행을 한 번 탭한다. */
+/** 위젯이나 빠른 설정 타일이 armed 한 5초 안에만 rampart 설정 화면의 스위치 행을 한 번 탭한다. */
 public class AutoTapService extends AccessibilityService {
     static final String ROW_ID = "com.samsung.android.rampart:id/sesl_switchbar_container";
     static final String RAMPART_PKG = "com.samsung.android.rampart";

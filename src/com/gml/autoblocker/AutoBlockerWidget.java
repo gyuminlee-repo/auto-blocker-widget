@@ -64,7 +64,9 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         render(ctx, mgr, ids);
     }
 
+    /** 위젯과 빠른 설정 타일을 함께 다시 그린다. 캐시나 언어가 바뀔 때 부른다. */
     static void refresh(Context ctx) {
+        ShieldTile.requestUpdate(ctx);
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
         int[] ids = mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWidget.class));
         if (ids.length > 0) render(ctx, mgr, ids);

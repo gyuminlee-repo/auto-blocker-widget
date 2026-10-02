@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.widget.Toast;
 
-/** 위젯 탭을 받아 armed 를 기록하고 rampart 설정 화면을 연 뒤 즉시 끝난다. */
+/** 위젯이나 빠른 설정 타일 탭을 받아 armed 를 기록하고 rampart 설정 화면을 연 뒤 즉시 끝난다. */
 public class TrampolineActivity extends Activity {
     static final String PREFS = "arm";
     static final String ARMED_AT = "armedAt";

@@ -6,7 +6,7 @@
     <string name="checked_at">%1$s 확인</string>
     <string name="desc_fmt">보안 위험 자동 차단 %1$s, 탭하여 전환</string>
     <string name="state_unknown">상태 미확인</string>
-    <string name="service_desc">위젯을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
+    <string name="service_desc">위젯이나 빠른 설정 타일을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
     <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. 설정 안내 화면을 엽니다.</string>
     <string name="toast_open_fail">보안 위험 자동 차단 설정 화면을 열 수 없습니다.</string>
     <string name="toast_node_missing">설정 화면에서 스위치를 찾지 못했습니다.</string>
@@ -37,7 +37,7 @@
     <string name="ready_title">준비 완료</string>
     <string name="ready_state">보안 위험 자동 차단: %1$s</string>
     <string name="ready_checked">마지막 확인: %1$s</string>
-    <string name="ready_widget_hint">위젯을 탭하면 켜짐과 꺼짐이 바뀝니다. 길게 누르면 크기를 바꾸거나 설정에서 컬러, 모노톤, 사용자 지정 중 고를 수 있습니다. Android 12 이상에서는 시스템 색도 고를 수 있습니다.</string>
+    <string name="ready_widget_hint">위젯을 탭하면 켜짐과 꺼짐이 바뀝니다. 길게 누르면 크기를 바꾸거나 설정에서 컬러, 모노톤, 사용자 지정 중 고를 수 있습니다. Android 12 이상에서는 시스템 색도 고를 수 있습니다. 빠른 설정에 ShieldTap 타일을 추가해 그곳에서 바꿀 수도 있습니다.</string>
     <string name="details_show">자세히 ▾</string>
     <string name="details_hide">접기 ▴</string>
     <string name="step2_details">1) 접근성 설정 열기를 누릅니다.\n2) 설치된 앱(또는 다운로드한 앱)에서 ShieldTap 을 고릅니다.\n3) 스위치를 켜고 허용을 누릅니다.\n4) 「제한된 설정」 창이 뜨면 1단계로 돌아가 허용하세요.</string>

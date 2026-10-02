@@ -24,6 +24,10 @@
 
 이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다. 그림은 영어 UI 기준이고 한국어 폰에서는 `켜짐` 처럼 표시됩니다. 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
 
+## 빠른 설정 타일
+
+ShieldTap 은 빠른 설정 타일도 제공합니다. 알림창을 내려 타일 편집(연필 아이콘 또는 편집)을 열고 ShieldTap 타일을 사용 중인 타일 쪽으로 끌어 놓으면 됩니다. 타일은 위젯과 같은 캐시를 읽습니다. 켜짐이면 타일이 강조되고 Android 10 이상에서는 둘째 줄에 `켜짐`, `꺼짐`, `상태 미확인` 중 하나가 나옵니다. 탭하면 위젯 탭과 같은 경로로 전환하고 알림창을 닫습니다. 화면이 잠겨 있으면 먼저 잠금 해제를 요청합니다. 접근성이 꺼져 있으면 대신 설정 안내 화면이 열립니다.
+
 ## 호환성
 
 | 항목 | 값 |
@@ -84,7 +88,7 @@ adb install -r shieldtap-v<버전>.apk
 ```mermaid
 sequenceDiagram
     participant U as 사용자
-    participant W as 위젯
+    participant W as 위젯 또는 빠른 설정 타일
     participant T as 투명 액티비티
     participant R as 보안 위험 자동 차단 설정 화면
     participant S as 접근성 서비스
@@ -114,7 +118,7 @@ sequenceDiagram
 | 확인 항목 | 근거 |
 |---|---|
 | 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
-| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:29`, `:52`, `:59` 의 `android:exported="false"`. 공개는 화면 두 개뿐. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:19`)은 런처 실행용. 위젯 스타일 화면(`WidgetConfigActivity`, `:42`)은 위젯을 놓거나 다시 설정할 때 런처가 여는 용도이고 이 앱 위젯 id 가 아니면 바로 닫힘 |
+| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:29`, `:52`, `:59` 의 `android:exported="false"`. 공개는 화면 두 개와 서비스 하나. 빠른 설정 타일(`ShieldTile`, `:73`)은 시스템이 바인드하므로 공개하고 `:76` 의 `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` 로 시스템만 바인드할 수 있음. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:19`)은 런처 실행용. 위젯 스타일 화면(`WidgetConfigActivity`, `:42`)은 위젯을 놓거나 다시 설정할 때 런처가 여는 용도이고 이 앱 위젯 id 가 아니면 바로 닫힘 |
 | 다른 앱 조회는 Play 스토어 하나 | `AndroidManifest.xml:6-8` 의 `<queries>` 에 `com.android.vending` 만 선언. 권한이 아니며 Play 프로텍트 설정 화면을 못 열 때 Play 스토어를 여는 대체 경로용 |
 | 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
 | 백업 비활성 | `AndroidManifest.xml:14` 의 `android:allowBackup="false"` |

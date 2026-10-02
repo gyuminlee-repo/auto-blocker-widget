@@ -24,6 +24,10 @@ The widget can be resized. At about one cell wide it shows only the shield icon.
 
 The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml` and the drawable definitions, with the English strings. The real widget size, corners and font vary a little by launcher and device.
 
+## Quick Settings tile
+
+ShieldTap also adds a Quick Settings tile. Pull down the notification shade, open the tile editor (the pencil icon or Edit) and drag the ShieldTap tile into your active tiles. The tile reads the same cache as the widget. It is highlighted when Auto Blocker is On, and its second line shows `On`, `Off` or `Unknown` on Android 10 and later. Tapping it runs the same path as a widget tap and closes the shade. On a locked phone it asks you to unlock first. If accessibility is off, the setup screen opens instead.
+
 ## Compatibility
 
 | Item | Value |
@@ -84,7 +88,7 @@ Then open the app as in step 5 of [Install step by step](#install-step-by-step) 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant W as Widget
+    participant W as Widget or Quick Settings tile
     participant T as Transparent activity
     participant R as Auto Blocker settings screen
     participant S as Accessibility service
@@ -114,7 +118,7 @@ sequenceDiagram
 | Check | Evidence |
 |---|---|
 | No requested permissions (including internet) | 0 `uses-permission` entries in `AndroidManifest.xml` |
-| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:52` and `:59`. Two activities are exported. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it. The widget style screen (`WidgetConfigActivity`, `:42`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID |
+| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:52` and `:59`. Two activities and one service are exported. The Quick Settings tile (`ShieldTile`, `:73`) is exported because the system binds it, and `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` (`:76`) lets only the system bind it. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it. The widget style screen (`WidgetConfigActivity`, `:42`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID |
 | Only one other app is queried: the Play Store | `<queries>` at `AndroidManifest.xml:6-8` declares only `com.android.vending`. This is not a permission. It is the fallback path that opens the Play Store when the Play Protect settings screen cannot be opened |
 | Accessibility events limited to the rampart package | `android:packageNames` at `res/xml/accessibility_service_config.xml:3` |
 | Backup disabled | `android:allowBackup="false"` at `AndroidManifest.xml:14` |
