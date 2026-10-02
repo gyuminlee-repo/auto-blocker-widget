@@ -11,6 +11,9 @@ import android.widget.Toast;
 public class TrampolineActivity extends Activity {
     static final String PREFS = "arm";
     static final String ARMED_AT = "armedAt";
+    /** 선택 extra. 1 이면 켜기만, 0 이면 끄기만 한다. 없으면 -1 로 지금처럼 전환한다. */
+    static final String EXTRA_TARGET = "target";
+    static final String ARM_TARGET = "armTarget";
     static final String RAMPART_ACTION = "com.samsung.android.rampart.action.MAIN_SETTING_ACTIVITY";
 
     /** rampart 설정 화면 Intent. arm 하지 않으므로 여는 것만으로는 스위치를 누르지 않는다. */
@@ -29,7 +32,8 @@ public class TrampolineActivity extends Activity {
             return;
         }
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
-                .putLong(ARMED_AT, SystemClock.elapsedRealtime()).commit();
+                .putLong(ARMED_AT, SystemClock.elapsedRealtime())
+                .putInt(ARM_TARGET, getIntent().getIntExtra(EXTRA_TARGET, -1)).commit();
         try {
             startActivity(rampartIntent());
             AutoTapService.onArmed();
