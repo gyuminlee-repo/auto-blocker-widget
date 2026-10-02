@@ -20,6 +20,25 @@ for f in "$BT/aapt2" "$BT/d8" "$BT/zipalign" "$BT/apksigner" "$AJAR"; do
   [ -e "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
 
+# 버전: VERSION_NAME 과 VERSION_CODE 를 둘 다 주면 그 값, 아니면 HEAD 커밋 제목의 vA.BB.CC.DD 라벨
+if [ -n "${VERSION_NAME:-}" ] && [ -n "${VERSION_CODE:-}" ]; then
+  :
+elif [ -n "${VERSION_NAME:-}" ] || [ -n "${VERSION_CODE:-}" ]; then
+  echo "set both VERSION_NAME and VERSION_CODE, or neither" >&2; exit 1
+else
+  SUBJECT="$(git -C "$ROOT" log -1 --format=%s HEAD 2>/dev/null || true)"
+  LABEL_RE='^v([0-9]+)\.([0-9]{2})\.([0-9]{2})\.([0-9]{2})(:| |$)'
+  if [[ "$SUBJECT" =~ $LABEL_RE ]]; then
+    VERSION_NAME="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}.${BASH_REMATCH[4]}"
+    VERSION_CODE=$(( 10#${BASH_REMATCH[1]} * 1000000 + 10#${BASH_REMATCH[2]} * 10000 \
+      + 10#${BASH_REMATCH[3]} * 100 + 10#${BASH_REMATCH[4]} ))
+  else
+    echo "HEAD commit subject has no vA.BB.CC.DD label: '${SUBJECT}'" >&2
+    echo "set VERSION_NAME and VERSION_CODE explicitly (e.g. VERSION_NAME=0.07.00.00 VERSION_CODE=70000)" >&2
+    exit 1
+  fi
+fi
+
 # 이전 산출물 정리: 고정 디렉터리 내 파일만 삭제
 mkdir -p "$B/compiled" "$B/gen" "$B/classes" "$B/dex"
 find "$B" -type f -delete
@@ -43,8 +62,6 @@ else
   fi
   SIGN_ARGS=(--ks "$KS" --ks-pass pass:android --key-pass pass:android)
 fi
-VERSION_CODE="${VERSION_CODE:-7}"
-VERSION_NAME="${VERSION_NAME:-0.7.0}"
 
 "$BT/aapt2" compile --dir "$ROOT/res" -o "$B/compiled"
 "$BT/aapt2" link -I "$AJAR" --manifest "$ROOT/AndroidManifest.xml" \
