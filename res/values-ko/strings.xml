@@ -60,4 +60,6 @@
     <string name="btn_finish_setup">마무리 완료</string>
     <string name="step5_details">설치하려고 끈 두 가지를 다시 켭니다. 켜 두어야 기기가 안전합니다. ShieldTap 은 켜진 상태에서도 위젯으로 끄고 켤 수 있습니다. 「자동으로 켜기」를 켜 두면 끄고 잊어도 안전합니다.</string>
     <string name="update_details">1) 업데이트 확인을 누르면 최신 릴리스 페이지가 열립니다.\n2) 맨 위 버전이 이 화면 아래 버전보다 높으면 shieldtap-v버전.apk 를 눌러 받습니다.\n3) 설치할 때 Play 프로텍트 앱 검사를 잠깐 끄고 덮어 설치합니다. 설정과 위젯은 그대로 남습니다.\n자동으로 받고 싶으면 Obtainium 앱에 이 저장소 주소를 추가하세요.</string>
+    <string name="lang_label">언어</string>
+    <string name="lang_system">시스템 기본값</string>
 </resources>
