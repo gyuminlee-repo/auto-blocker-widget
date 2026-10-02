@@ -14,7 +14,7 @@ export JAVA_HOME PATH="$JAVA_HOME/bin:$PATH"
 B="$ROOT/build"
 KS_DIR="$ROOT/.keystore"
 KS="$KS_DIR/debug.jks"
-OUT="$B/auto-blocker-widget.apk"
+OUT="$B/shieldtap.apk"
 
 for f in "$BT/aapt2" "$BT/d8" "$BT/zipalign" "$BT/apksigner" "$AJAR"; do
   [ -e "$f" ] || { echo "missing: $f" >&2; exit 1; }
@@ -43,8 +43,8 @@ else
   fi
   SIGN_ARGS=(--ks "$KS" --ks-pass pass:android --key-pass pass:android)
 fi
-VERSION_CODE="${VERSION_CODE:-5}"
-VERSION_NAME="${VERSION_NAME:-0.5.0}"
+VERSION_CODE="${VERSION_CODE:-6}"
+VERSION_NAME="${VERSION_NAME:-0.6.0}"
 
 "$BT/aapt2" compile --dir "$ROOT/res" -o "$B/compiled"
 "$BT/aapt2" link -I "$AJAR" --manifest "$ROOT/AndroidManifest.xml" \

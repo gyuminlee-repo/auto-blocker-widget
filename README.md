@@ -1,4 +1,4 @@
-# Auto Blocker 위젯
+# ShieldTap 쉴드탭
 
 > One-tap home screen toggle for Samsung Galaxy **Auto Blocker** (보안 위험 자동 차단).
 
@@ -11,13 +11,21 @@
 
 갤럭시의 보안 위험 자동 차단은 켜 두면 안전하지만 APK 설치나 무선 디버깅을 할 때마다 설정 깊숙이 들어가 꺼야 합니다. 이 앱은 그 스위치를 홈 화면 2x1 위젯 한 칸으로 꺼냅니다. 탭 한 번에 켜고 끄며 현재 상태를 색과 글자로 보여 줍니다.
 
-| 상태 | 표시 |
-|---|---|
-| 켜짐 | 초록 방패, `보안 위험 자동 차단 / 켜짐` |
-| 꺼짐 | 호박색 방패, `보안 위험 자동 차단 / 꺼짐` |
-| 미확인 | 슬레이트 방패, `상태 미확인` |
+<p align="center">
+  <img src="docs/widget_states.png" alt="켜짐, 꺼짐, 상태 미확인 세 가지 위젯 모양" width="600">
+</p>
 
-제목 줄 끝에는 `HH:mm 확인` 으로 마지막 확인 시각이 붙습니다.
+| 상태 | 배경 | 표시 |
+|---|---|---|
+| 켜짐 | 초록 | `보안 위험 자동 차단` / `켜짐` `HH:mm 확인` |
+| 꺼짐 | 호박색 | `보안 위험 자동 차단` / `꺼짐` `HH:mm 확인` |
+| 미확인 | 슬레이트 | `보안 위험 자동 차단` / `상태 미확인` |
+
+`HH:mm 확인` 은 마지막으로 스위치 상태를 읽은 시각입니다. 미확인 상태에는 붙지 않습니다.
+
+이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다(`docs/render_widget_states.sh` 로 다시 만들 수 있습니다). 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
+
+ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없습니다. Auto Blocker 는 삼성전자의 기능 이름입니다.
 
 ## 특징
 
@@ -44,10 +52,10 @@
 > 이 경로는 Google 공식 문서([제한된 설정](https://support.google.com/android/answer/12623953))를 따른 안내이며 One UI 9.0 에서 아직 직접 검증하지 않았습니다. 막히면 아래 「설치: 개발자 (adb)」 경로를 쓰세요.
 
 0. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
-1. [Releases](../../releases) 에서 `auto-blocker-widget.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
-2. 설정 > 애플리케이션 > `Auto Blocker 위젯` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
-3. 설정 > 접근성 > 설치된 앱 > `Auto Blocker 위젯` 을 켭니다.
-4. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `Auto Blocker 위젯` 을 2x1 로 배치합니다.
+1. [Releases](../../releases) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+2. 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
+3. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다.
+4. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `ShieldTap` 을 2x1 로 배치합니다.
 5. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
 
 ## 설치: 개발자 (adb)
@@ -55,7 +63,7 @@
 이 경로는 SM-F971N, One UI 9.0 에서 검증했습니다. 보안 위험 자동 차단이 켜져 있으면 USB 명령이 막히므로 먼저 끕니다.
 
 ```
-adb install -r auto-blocker-widget.apk
+adb install -r shieldtap.apk
 ./enable_accessibility.sh <adb시리얼>
 ```
 
@@ -110,7 +118,7 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 ./build.sh
 ```
 
-결과물은 `build/auto-blocker-widget.apk` 입니다. 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
+결과물은 `build/shieldtap.apk` 입니다. 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
 
 ## 릴리스 절차 (관리자용)
 
@@ -127,7 +135,7 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 
    ```
    RELEASE_KS="$HOME/.android/auto-blocker-release.jks" RELEASE_KS_ALIAS=release \
-   RELEASE_KS_PASS='<비밀번호>' VERSION_CODE=6 VERSION_NAME=0.6.0 ./build.sh
+   RELEASE_KS_PASS='<비밀번호>' VERSION_CODE=7 VERSION_NAME=0.7.0 ./build.sh
    ```
 
    빌드 끝에 서명 인증서와 APK 의 SHA-256 이 출력됩니다.
@@ -135,8 +143,8 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 3. GitHub Release 를 만들고 SHA-256 을 노트에 적습니다.
 
    ```
-   gh release create v0.6.0 build/auto-blocker-widget.apk \
-     --title "v0.6.0" --notes "APK SHA-256: <값>"
+   gh release create v0.7.0 build/shieldtap.apk \
+     --title "v0.7.0" --notes "APK SHA-256: <값>"
    ```
 
 Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스위치를 자동으로 누르는 접근성 서비스는 장애 지원 목적이 아니어서 Play 접근성 API 정책 심사를 통과하기 어렵다고 봅니다(추정).

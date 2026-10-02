@@ -25,22 +25,33 @@
         android:layout_marginStart="12dp"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="#D9FFFFFF"
+            android:textSize="11sp"
+            android:text="@string/widget_title" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="bottom"
+            android:baselineAligned="true">
 
             <TextView
-                android:id="@+id/title"
-                android:layout_width="0dp"
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="#D9FFFFFF"
-                android:textSize="11sp"
-                android:text="@string/widget_title" />
+                android:textColor="#FFFFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/state_unknown" />
 
             <TextView
                 android:id="@+id/checked_at"
@@ -52,16 +63,5 @@
                 android:textSize="10sp"
                 android:visibility="gone" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="#FFFFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/state_unknown" />
     </LinearLayout>
 </LinearLayout>

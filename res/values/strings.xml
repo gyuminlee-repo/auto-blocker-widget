@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Auto Blocker 위젯</string>
+    <string name="app_name">ShieldTap</string>
     <string name="state_on">켜짐</string>
     <string name="state_off">꺼짐</string>
     <string name="widget_title">보안 위험 자동 차단</string>
