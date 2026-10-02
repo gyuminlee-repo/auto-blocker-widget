@@ -33,7 +33,7 @@
 
 **Turn Samsung Auto Blocker on or off from the home screen with one tap.**
 
-Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireless debugging means digging into Settings to turn it off. ShieldTap puts that switch in a 2x1 widget that shows the current state with color and text.
+Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireless debugging means digging into Settings to turn it off. ShieldTap puts that switch in a resizable widget (2x1 by default) that shows the current state with color and text.
 
 <table>
   <tr>
@@ -65,7 +65,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 <p align="center"><sub>Each image is the setup screen redrawn from the app strings and layout, not a device capture.</sub></p>
 
 - **Switches with one tap.** In the Color style the widget turns green for on and amber for off, with the time the state was last read. [Widget states →](docs/guide.md#widget-states)
-- **Resizes and comes in three styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome or Custom with your own #RRGGBB color for each state. [Widget states →](docs/guide.md#widget-states)
+- **Resizes and comes in three styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome or Custom. Custom lets you pick each state color from presets, hue, saturation and brightness sliders, or a #RRGGBB code. [Widget states →](docs/guide.md#widget-states)
 - **Runs with zero permissions.** The manifest has no `uses-permission` entry, including internet, so nothing leaves the phone. [Security notes →](docs/guide.md#security-notes)
 - **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget or the `Turn on Auto Blocker` button in setup. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.

@@ -28,7 +28,7 @@ The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml
 
 | Item | Value |
 |---|---|
-| Verified on | Galaxy SM-F971N, One UI 9.0 |
+| Verified on | Galaxy Z Fold8 (SM-F971N), One UI 9.0, on both the main screen and the cover screen home |
 | Required apps | Nothing to install. Auto Blocker (`com.samsung.android.rampart`) is a system app built into One UI 6 and later |
 | Minimum to work | One UI 6.0 (based on Android 14), because Auto Blocker was introduced in One UI 6 |
 | Minimum to install | Android 8.0 (API 26, `minSdkVersion`). Below One UI 6 the app installs but has nothing to toggle |
@@ -38,7 +38,7 @@ The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml
 
 ## Install step by step
 
-This procedure was verified on a real device running One UI 9.0, including the setup screen. Other models and One UI versions were not tested. If you get stuck, use [Install with adb](#install-with-adb).
+This procedure was verified on a Galaxy Z Fold8 running One UI 9.0, including the setup screen and the widget on the cover screen home. Other models and One UI versions were not tested. If you get stuck, use [Install with adb](#install-with-adb).
 
 ### Before you install
 
@@ -52,7 +52,7 @@ This procedure was verified on a real device running One UI 9.0, including the s
 5. Open **ShieldTap** from the app drawer and follow the 5 steps on screen in order. Finished steps change to ✓ and only the remaining steps stay expanded. Tap `Details` on any step to see what to tap and why.
    - **① Allow restricted settings:** tap `Open App info` > ⋮ at the top right > **Allow restricted settings**, verify, then tap `Done`. Android 13 and later block apps installed from outside an app store from using accessibility until you allow it ([Google help](https://support.google.com/android/answer/12623953)). If the ⋮ menu does not show this option, tap `Done`, go to ② and try turning it on once. According to an Android 13 analysis, the option can appear only after you have seen the "Restricted setting" dialog once ([Esper](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). If accessibility is already on, this step is marked ✓ automatically.
    - **② Turn on accessibility:** tap `Open Accessibility settings` and turn on ShieldTap under Accessibility > Installed apps. If a "Restricted setting" dialog appears, go back to ① and allow it.
-   - **③ Add the widget to your home screen:** tap `Add widget to home screen` and the system add dialog appears. If there is no button, touch and hold an empty spot on the home screen, tap Widgets and place ShieldTap as 2x1.
+   - **③ Add the widget to your home screen:** tap `Add widget to home screen` and the system add dialog appears. If there is no button, touch and hold an empty spot on the home screen, tap Widgets and place ShieldTap. It starts at 2x1 and can be resized.
    - **④ Read the current state:** tap `Read state` to open the Auto Blocker settings screen. Do not touch the switch. When the screen opens, tap Back.
    - **⑤ Finish up after installing:** turn the two things you switched off for installing back on. Use `Open Play Protect settings` to turn app scanning on, and `Turn on Auto Blocker` to turn Auto Blocker on. The turn-on button taps nothing if Auto Blocker is already on. When you are done, tap `Finish setup`.
    - **Recommended: turn back on after 30 minutes.** Tap `Open auto turn-on option` to open the Auto Blocker screen. Turn on `Turn on Auto Blocker automatically` there (One UI 8.5 and later), and if you turn Auto Blocker off with the widget and forget, it comes back on after 30 minutes. The option may be near the bottom of the screen.
