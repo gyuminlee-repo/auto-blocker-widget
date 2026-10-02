@@ -33,6 +33,8 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     static final int STYLE_COLOR = 0;
     static final int STYLE_MONO = 1;
     static final int STYLE_CUSTOM = 2;
+    /** 배경화면 색(Material You). API 31 이상만. 그 아래에서는 STYLE_COLOR 로 그린다. */
+    static final int STYLE_SYSTEM = 3;
     /** 사용자 지정 색을 저장하는 상태 순서. cached() 값 1, 0, -1 과 짝이다. */
     static final int[] CUSTOM_STATES = { 1, 0, -1 };
     /** 이 폭(dp)보다 좁으면 아이콘만 보인다. 2칸 기본 minWidth 와 같다. */
@@ -146,6 +148,8 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         // 런처가 레이아웃 문자열을 시스템 로캘로 풀지 않도록 문구는 모두 앱 언어 Context 로 넣는다.
         Context loc = LocaleHelper.wrap(ctx.getApplicationContext());
         int style = style(ctx, id);
+        if (style == STYLE_SYSTEM && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) style = STYLE_COLOR;
+        boolean system = style == STYLE_SYSTEM;
         boolean mono = style == STYLE_MONO;
         boolean custom = style == STYLE_CUSTOM;
         int state = cached(ctx);
@@ -168,21 +172,41 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews rv = new RemoteViews(ctx.getPackageName(), layout);
         String stateText = loc.getString(text);
+        // 시스템 색은 색 리소스 ID 를 넘겨 런처가 배경화면 팔레트로 다시 푼다(API 31).
+        int sysBg = 0, sysFg = 0;
+        if (system) {
+            sysBg = state == 1 ? android.R.color.system_accent1_200
+                    : state == 0 ? android.R.color.system_neutral1_800 : android.R.color.system_neutral2_600;
+            sysFg = state == 1 ? android.R.color.system_accent1_900
+                    : state == 0 ? android.R.color.system_neutral1_50 : android.R.color.system_neutral1_10;
+        }
         rv.setImageViewResource(R.id.icon, icon);
-        rv.setInt(R.id.icon, "setColorFilter", fg);
-        if (custom) {
+        if (system && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            rv.setColor(R.id.icon, "setColorFilter", sysFg);
+            rv.setInt(R.id.root, "setBackgroundResource", 0);
+            rv.setColor(R.id.bg, "setColorFilter", sysBg);
+            rv.setViewVisibility(R.id.bg, View.VISIBLE);
+        } else if (custom) {
             // 둥근 흰 바탕 층(bg_custom)에 색을 입힌다. View.setBackgroundTintList 는 API 31 부터만 원격 호출된다.
             rv.setInt(R.id.root, "setBackgroundResource", 0);
+            rv.setInt(R.id.icon, "setColorFilter", fg);
             rv.setInt(R.id.bg, "setColorFilter", customBg);
             rv.setViewVisibility(R.id.bg, View.VISIBLE);
         } else {
+            rv.setInt(R.id.icon, "setColorFilter", fg);
             rv.setInt(R.id.root, "setBackgroundResource", bg);
             rv.setViewVisibility(R.id.bg, View.GONE);
         }
         if (layout == R.layout.widget) {
             rv.setTextViewText(R.id.label, stateText);
-            rv.setTextColor(R.id.label, fg);
-            rv.setTextColor(R.id.checked_at, fgSub);
+            if (system && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // 시스템 팔레트에는 반투명 단계가 없어 확인 시각도 글자와 같은 색을 쓴다.
+                rv.setColor(R.id.label, "setTextColor", sysFg);
+                rv.setColor(R.id.checked_at, "setTextColor", sysFg);
+            } else {
+                rv.setTextColor(R.id.label, fg);
+                rv.setTextColor(R.id.checked_at, fgSub);
+            }
             long at = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).getLong(LAST_AT, 0);
             if (state >= 0 && at > 0) {
                 String hhmm = new SimpleDateFormat("HH:mm", Locale.KOREA).format(new Date(at));

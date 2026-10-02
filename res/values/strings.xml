@@ -40,7 +40,7 @@
     <string name="ready_title">All set</string>
     <string name="ready_state">Auto Blocker: %1$s</string>
     <string name="ready_checked">Last checked: %1$s</string>
-    <string name="ready_widget_hint">Tap the widget to switch between On and Off. Touch and hold it to resize it or open its settings and pick Color, Monochrome or Custom.</string>
+    <string name="ready_widget_hint">Tap the widget to switch between On and Off. Touch and hold it to resize it or open its settings and pick Color, Monochrome, Custom or, on Android 12 and later, System colors.</string>
     <string name="details_show">Details ▾</string>
     <string name="details_hide">Hide ▴</string>
     <string name="step2_details">1) Tap Open Accessibility settings.\n2) Under Installed apps (or Downloaded apps), select ShieldTap.\n3) Turn on the switch and tap Allow.\n4) If a \"Restricted setting\" dialog appears, go back to step 1 and allow it.</string>
@@ -66,6 +66,9 @@
     <string name="style_color">Color</string>
     <string name="style_mono">Monochrome</string>
     <string name="style_custom">Custom</string>
+    <string name="style_system">System colors</string>
+    <string name="style_system_hint">Follows your wallpaper colors (Android 12 and later)</string>
+    <string name="widget_desc">Turn Auto Blocker on and off in one tap</string>
     <string name="color_on">On color</string>
     <string name="color_off">Off color</string>
     <string name="color_unknown">Unknown color</string>

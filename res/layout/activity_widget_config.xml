@@ -41,7 +41,22 @@
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
                 android:text="@string/style_custom" />
+            <!-- API 31 이상에서만 보인다(WidgetConfigActivity). -->
+            <RadioButton
+                android:id="@+id/style_system"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/style_system"
+                android:visibility="gone" />
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/style_system_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/style_system_hint"
+            android:visibility="gone" />
 
         <!-- 사용자 지정일 때만 보인다. 상태별 바탕색 #RRGGBB. -->
         <LinearLayout

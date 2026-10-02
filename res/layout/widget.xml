@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_unknown">
 
-    <!-- 사용자 지정 스타일에서만 보이는 바탕 층. 흰 둥근 사각형에 setColorFilter 로 색을 입힌다. -->
+    <!-- 사용자 지정과 시스템 색 스타일에서만 보이는 바탕 층. 흰 둥근 사각형에 setColorFilter 로 색을 입힌다. -->
     <ImageView
         android:id="@+id/bg"
         android:layout_width="match_parent"

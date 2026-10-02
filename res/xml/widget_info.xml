@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- minWidth 110dp = 2칸 기본(70n-30). 40dp 까지 줄일 수 있다. widgetFeatures 는 API 31+ 만 읽고 그 아래는 무시한다. -->
+<!-- minWidth 110dp = 2칸 기본(70n-30). 40dp 까지 줄일 수 있다. widgetFeatures, previewLayout, description 은 API 31+ 만 읽고 그 아래는 무시한다. previewImage 는 API 30 이하용(docs/widget_on.png 사본). -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="110dp"
     android:minHeight="40dp"
@@ -9,6 +9,9 @@
     android:targetCellHeight="1"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/widget"
+    android:previewLayout="@layout/widget_preview"
+    android:previewImage="@drawable/widget_preview"
+    android:description="@string/widget_desc"
     android:resizeMode="horizontal|vertical"
     android:configure="com.gml.autoblocker.WidgetConfigActivity"
     android:widgetFeatures="reconfigurable|configuration_optional"

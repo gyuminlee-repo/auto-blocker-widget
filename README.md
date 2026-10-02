@@ -65,7 +65,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 <p align="center"><sub>Each image is the setup screen redrawn from the app strings and layout, not a device capture.</sub></p>
 
 - **Switches with one tap.** In the Color style the widget turns green for on and amber for off, with the time the state was last read. [Widget states →](docs/guide.md#widget-states)
-- **Resizes and comes in three styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome or Custom. Custom lets you pick each state color from presets, hue, saturation and brightness sliders, or a #RRGGBB code. [Widget states →](docs/guide.md#widget-states)
+- **Resizes and comes in several styles.** The widget shrinks to just the shield icon at one cell, and touching and holding it opens settings where each widget can be Color, Monochrome, Custom or, on Android 12 and later, System colors that follow your wallpaper. Custom lets you pick each state color from presets, hue, saturation and brightness sliders, or a #RRGGBB code. [Widget states →](docs/guide.md#widget-states)
 - **Runs with zero permissions.** The manifest has no `uses-permission` entry, including internet, so nothing leaves the phone. [Security notes →](docs/guide.md#security-notes)
 - **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget or the `Turn on Auto Blocker` button in setup. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.

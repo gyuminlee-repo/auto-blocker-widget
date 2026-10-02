@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 /**
- * 위젯별 스타일(컬러, 모노톤, 사용자 지정 색) 설정. 런처가 위젯을 놓을 때나 길게 눌러 다시 설정할 때 연다.
+ * 위젯별 스타일(컬러, 모노톤, 사용자 지정 색, API 31 이상의 시스템 색) 설정. 런처가 위젯을 놓을 때나 길게 눌러 다시 설정할 때 연다.
  * 외부에서 열리므로 받은 id 가 이 앱 위젯일 때만 다룬다.
  */
 public class WidgetConfigActivity extends Activity {
@@ -40,6 +41,9 @@ public class WidgetConfigActivity extends Activity {
         setContentView(R.layout.activity_widget_config);
         final RadioGroup group = (RadioGroup) findViewById(R.id.style_group);
         final View fields = findViewById(R.id.custom_fields);
+        boolean hasSystem = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+        findViewById(R.id.style_system).setVisibility(hasSystem ? View.VISIBLE : View.GONE);
+        findViewById(R.id.style_system_hint).setVisibility(hasSystem ? View.VISIBLE : View.GONE);
         // CUSTOM_STATES 순서(켜짐, 꺼짐, 미확인)
         final EditText[] inputs = {
                 (EditText) findViewById(R.id.color_on),
@@ -75,11 +79,13 @@ public class WidgetConfigActivity extends Activity {
         group.setOnCheckedChangeListener((g, checked) ->
                 fields.setVisibility(checked == R.id.style_custom ? View.VISIBLE : View.GONE));
         group.check(saved == AutoBlockerWidget.STYLE_MONO ? R.id.style_mono
-                : saved == AutoBlockerWidget.STYLE_CUSTOM ? R.id.style_custom : R.id.style_color);
+                : saved == AutoBlockerWidget.STYLE_CUSTOM ? R.id.style_custom
+                : saved == AutoBlockerWidget.STYLE_SYSTEM && hasSystem ? R.id.style_system : R.id.style_color);
         findViewById(R.id.btn_save).setOnClickListener(v -> {
             int checked = group.getCheckedRadioButtonId();
             int style = checked == R.id.style_mono ? AutoBlockerWidget.STYLE_MONO
-                    : checked == R.id.style_custom ? AutoBlockerWidget.STYLE_CUSTOM : AutoBlockerWidget.STYLE_COLOR;
+                    : checked == R.id.style_custom ? AutoBlockerWidget.STYLE_CUSTOM
+                    : checked == R.id.style_system ? AutoBlockerWidget.STYLE_SYSTEM : AutoBlockerWidget.STYLE_COLOR;
             if (style == AutoBlockerWidget.STYLE_CUSTOM) {
                 int[] colors = new int[inputs.length];
                 boolean ok = true;
