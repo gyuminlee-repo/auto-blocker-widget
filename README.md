@@ -119,7 +119,8 @@ sequenceDiagram
 | 확인 항목 | 근거 |
 |---|---|
 | 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
-| 모든 컴포넌트 외부 비공개 | `AndroidManifest.xml:11`, `:22`, `:29` 의 `android:exported="false"` |
+| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:28`, `:39`, `:46` 의 `android:exported="false"`. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:18`)만 런처 실행을 위해 공개 |
+| 다른 앱 조회는 Play 스토어 하나 | `AndroidManifest.xml:6-8` 의 `<queries>` 에 `com.android.vending` 만 선언. 권한이 아니며 Play 프로텍트 설정 화면을 못 열 때 Play 스토어를 여는 대체 경로용 |
 | 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
 | 백업 비활성 | `AndroidManifest.xml` 의 `android:allowBackup="false"` |
 
