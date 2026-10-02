@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -43,9 +45,31 @@ public class WidgetConfigActivity extends Activity {
                 (EditText) findViewById(R.id.color_on),
                 (EditText) findViewById(R.id.color_off),
                 (EditText) findViewById(R.id.color_unknown) };
+        final View[] swatches = {
+                findViewById(R.id.swatch_on), findViewById(R.id.swatch_off), findViewById(R.id.swatch_unknown) };
+        final int[] stateWords = { R.string.state_on, R.string.state_off, R.string.state_unknown };
         for (int k = 0; k < inputs.length; k++) {
-            inputs[k].setText(HexColor.format(
-                    AutoBlockerWidget.customColor(this, id, AutoBlockerWidget.CUSTOM_STATES[k])));
+            final EditText input = inputs[k];
+            final View swatch = swatches[k];
+            final int word = stateWords[k];
+            final int stored = AutoBlockerWidget.customColor(this, id, AutoBlockerWidget.CUSTOM_STATES[k]);
+            // 맞는 hex 를 치면 견본이 따라간다. 틀린 동안은 마지막 맞는 색을 둔다.
+            input.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+                @Override public void afterTextChanged(Editable s) {
+                    Integer c = HexColor.parse(s.toString());
+                    if (c != null) swatch.setBackground(ColorPickerDialog.swatch(WidgetConfigActivity.this, c));
+                }
+            });
+            input.setText(HexColor.format(stored));
+            swatch.setOnClickListener(v -> {
+                Integer cur = HexColor.parse(input.getText().toString());
+                ColorPickerDialog.show(this, cur != null ? cur : stored, getString(word), picked -> {
+                    input.setText(HexColor.format(picked));
+                    input.setError(null);
+                });
+            });
         }
         int saved = AutoBlockerWidget.style(this, id);
         group.setOnCheckedChangeListener((g, checked) ->

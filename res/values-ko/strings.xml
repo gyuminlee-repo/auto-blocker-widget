@@ -67,6 +67,12 @@
     <string name="color_off">꺼짐 색</string>
     <string name="color_unknown">미확인 색</string>
     <string name="error_hex">#RRGGBB 형식으로 입력하세요</string>
+    <string name="picker_title">색 고르기</string>
+    <string name="picker_hue">색상</string>
+    <string name="picker_saturation">채도</string>
+    <string name="picker_value">명도</string>
+    <string name="btn_ok">확인</string>
+    <string name="btn_cancel">취소</string>
     <string name="btn_save">저장</string>
     <string name="lang_label">언어</string>
     <string name="lang_system">시스템 기본값</string>

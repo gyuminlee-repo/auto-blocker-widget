@@ -70,6 +70,12 @@
     <string name="color_off">Off color</string>
     <string name="color_unknown">Unknown color</string>
     <string name="error_hex">Use #RRGGBB</string>
+    <string name="picker_title">Pick a color</string>
+    <string name="picker_hue">Hue</string>
+    <string name="picker_saturation">Saturation</string>
+    <string name="picker_value">Brightness</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
     <string name="hex_hint" translatable="false">#RRGGBB</string>
     <string name="btn_save">Save</string>
     <string name="lang_label">Language</string>
