@@ -1,8 +1,8 @@
-# ShieldTap 쉴드탭
+# ShieldTap
 
-English: [README.en.md](README.en.md)
+한국어: [README.ko.md](README.ko.md)
 
-> One-tap home screen toggle for Samsung Galaxy **Auto Blocker** (보안 위험 자동 차단).
+> One-tap home screen toggle for Samsung Galaxy **Auto Blocker**.
 
 ![Android](https://img.shields.io/badge/Android-14%2B-3DDC84)
 ![One UI min](https://img.shields.io/badge/One%20UI-6.0%2B-1428A0)
@@ -12,145 +12,150 @@ English: [README.en.md](README.en.md)
 ![build](https://img.shields.io/badge/build-no%20Gradle-lightgrey)
 ![license](https://img.shields.io/badge/license-Apache%202.0-blue)
 
-갤럭시의 보안 위험 자동 차단은 켜 두면 안전하지만 APK 설치나 무선 디버깅을 할 때마다 설정 깊숙이 들어가 꺼야 합니다. 이 앱은 그 스위치를 홈 화면 2x1 위젯 한 칸으로 꺼냅니다. 탭 한 번에 켜고 끄며 현재 상태를 색과 글자로 보여 줍니다.
+Auto Blocker keeps a Galaxy phone safer, but every time you sideload an APK or use wireless debugging you have to dig deep into Settings to turn it off. ShieldTap puts that switch in a single 2x1 home screen widget. One tap turns it on or off, and the widget shows the current state with color and text.
 
 <p align="center">
-  <img src="docs/widget_states.png" alt="켜짐, 꺼짐, 상태 미확인 세 가지 위젯 모양" width="600">
+  <img src="docs/widget_states.png" alt="The widget in its three states: on, off and unknown" width="600">
 </p>
 
-| 상태 | 배경 | 표시 |
+| State | Background | Shows (English UI) |
 |---|---|---|
-| 켜짐 | 초록 | `보안 위험 자동 차단` / `켜짐` `HH:mm 확인` |
-| 꺼짐 | 호박색 | `보안 위험 자동 차단` / `꺼짐` `HH:mm 확인` |
-| 미확인 | 슬레이트 | `보안 위험 자동 차단` / `상태 미확인` |
+| On | Green | `Auto Blocker` / `On` `Checked HH:mm` |
+| Off | Amber | `Auto Blocker` / `Off` `Checked HH:mm` |
+| Unknown | Slate | `Auto Blocker` / `Unknown` |
 
-`HH:mm 확인` 은 마지막으로 스위치 상태를 읽은 시각입니다. 미확인 상태에는 붙지 않습니다.
+`Checked HH:mm` is the time the switch state was last read. It is not shown in the unknown state.
 
-이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다. 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
+The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml` and the drawable definitions, with the English strings. The app follows the phone language (English or Korean). The real widget size, corners and font vary a little by launcher and device.
 
-ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없습니다. Auto Blocker 는 삼성전자의 기능 이름입니다.
+ShieldTap is an unofficial app made by an individual and is not affiliated with Samsung Electronics. Auto Blocker is the name of a Samsung feature.
 
-## 특징
+## Features
 
-- **권한 0개.** 매니페스트에 `uses-permission` 이 하나도 없습니다. 인터넷 권한도 없어 어떤 데이터도 기기 밖으로 나가지 않습니다.
-- **좁은 접근성 범위.** 접근성 서비스는 One UI 에 기본 탑재된 Auto Blocker 시스템 앱(`com.samsung.android.rampart`) 하나의 화면만 봅니다. 다른 앱의 화면 내용은 받지 않습니다.
-- **보안 우회 없음.** 끌 때 뜨는 지문 또는 비밀번호 인증은 그대로 사용자가 직접 통과합니다. 위젯은 인증을 대신하지 않습니다.
-- **단계별 설정 안내.** 앱 서랍의 ShieldTap 을 열면 지금 상태를 읽어 남은 단계(권한 허용, 접근성 켜기, 위젯 추가, 상태 읽어 오기, 설치 뒤 마무리)만 안내합니다. 단계마다 `자세히` 를 누르면 무엇을 누르고 왜 필요한지 나오고 필요한 설정 화면은 버튼으로 바로 열립니다. 접근성이 꺼진 채 위젯을 누르면 이 화면이 열립니다. 업데이트 확인과 앱 정보(삭제) 버튼도 있습니다.
-- **탭했을 때만 동작.** 사용자가 설정 화면을 직접 열었을 때는 아무것도 누르지 않습니다.
-- **가벼운 빌드.** Gradle 없이 Android build-tools 와 JDK 17 만으로 수 초 안에 APK 가 나옵니다.
+- **Zero permissions.** The manifest has no `uses-permission` at all. There is no internet permission either, so no data ever leaves the device.
+- **Narrow accessibility scope.** The accessibility service only looks at the screens of one app, the Auto Blocker system app built into One UI (`com.samsung.android.rampart`). It receives no screen content from other apps.
+- **No security bypass.** When you turn Auto Blocker off, the fingerprint or PIN prompt still appears and you pass it yourself. The widget never does it for you.
+- **Step-by-step setup.** Open ShieldTap from the app drawer and it checks your progress and guides you through only the remaining steps (allow restricted settings, turn on accessibility, add the widget, read the current state, finish up after installing). Tap `Details` on any step to see what to tap and why, and buttons open the settings screens you need. Tapping the widget while accessibility is off opens this screen. There are also buttons to check for updates and to open App info (uninstall).
+- **Acts only when you tap.** If you open the Auto Blocker settings screen yourself, ShieldTap taps nothing.
+- **Lightweight build.** No Gradle. Android build-tools and JDK 17 produce the APK in seconds.
 
-## 호환성
+## Compatibility
 
-| 항목 | 값 |
+| Item | Value |
 |---|---|
-| 검증 기기 | Galaxy SM-F971N |
-| 검증 One UI | 9.0 |
-| 필요한 앱 | 따로 설치할 앱 없음. Auto Blocker(`com.samsung.android.rampart`)는 One UI 6 이상에 기본 탑재된 시스템 앱입니다 |
-| 작동 최소 버전 | One UI 6.0 (Android 14 기반). Auto Blocker 가 One UI 6 부터 들어갔기 때문입니다 |
-| 설치 최소 버전 | Android 8.0 (API 26, `minSdkVersion`). One UI 6 미만에서는 설치는 되지만 켤 대상이 없습니다 |
-| 언어 | 한국어와 영어. 폰 언어를 따릅니다. Android 13 이상에서는 설정 > 애플리케이션 > ShieldTap > 언어 에서 앱만 따로 바꿀 수 있습니다. 앱 화면 맨 아래 언어 항목에서도 시스템 기본값, English, 한국어 중 하나를 고를 수 있습니다 |
-| 다른 기종 | 화면 크기, 해상도, 폴더블 여부, 언어는 영향이 없습니다. 좌표가 아니라 내부 ID 로 스위치를 찾기 때문입니다 |
-| 다른 One UI 버전 | 미확인. 삼성이 설정 화면의 내부 ID 를 바꾸면 동작하지 않습니다 |
+| Tested device | Galaxy SM-F971N |
+| Tested One UI | 9.0 |
+| Required apps | Nothing to install. Auto Blocker (`com.samsung.android.rampart`) is a system app built into One UI 6 and later |
+| Minimum to work | One UI 6.0 (based on Android 14), because Auto Blocker was introduced in One UI 6 |
+| Minimum to install | Android 8.0 (API 26, `minSdkVersion`). Below One UI 6 the app installs but has nothing to toggle |
+| Language | English and Korean. The app follows the phone language. On Android 13 and later you can pick it per app in Settings > Apps > ShieldTap > Language. You can also pick System default, English or 한국어 under Language at the bottom of the app screen |
+| Other models | Screen size, resolution, foldable or not, and language make no difference, because the switch is found by its internal ID, not by screen coordinates |
+| Other One UI versions | Not verified. If Samsung changes the internal IDs on the settings screen, ShieldTap stops working |
 
-## 설치: 일반 사용자
+## Install: regular users
 
-> 이 순서로 One UI 9.0 실기기에 설치해 설정 화면이 동작하는 것을 확인했습니다. 다른 기종과 One UI 버전은 확인하지 못했습니다. 막히면 아래 「설치: 개발자 (adb)」 경로를 쓰세요.
+> This procedure was verified on a real device running One UI 9.0, including the setup screen. Other models and One UI versions were not tested. If you get stuck, use "Install: developers (adb)" below.
 
-0. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
-1. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html?m=1)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
-2. [Releases](../../releases/latest) 에서 `shieldtap-v<버전>.apk` (예: `shieldtap-v0.08.02.00.apk`) 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
-3. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 1번과 같은 화면입니다.
-4. 앱 서랍의 **ShieldTap** 을 엽니다. 화면의 5단계를 순서대로 따릅니다. 끝난 단계는 ✓ 로 바뀌고 남은 단계만 펼쳐집니다. 단계마다 `자세히` 를 누르면 무엇을 누르고 왜 필요한지 나옵니다.
-   - **① 권한 허용(제한된 설정):** `앱 정보 열기` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증한 뒤 `허용했어요` 를 누릅니다. Android 13 이상은 스토어 밖에서 설치한 앱이 접근성 권한을 쓰지 못하게 먼저 막아 두기 때문입니다([Google 안내](https://support.google.com/android/answer/12623953)). ⋮ 메뉴에 이 항목이 안 보이면 `허용했어요` 를 누르고 ②로 가서 한 번 켜 봅니다. 안드로이드 13 분석에 따르면 이 메뉴는 `제한된 설정` 안내 창을 한 번 본 뒤에 나타날 수 있습니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 접근성이 이미 켜져 있으면 이 단계는 자동으로 ✓ 입니다.
-   - **② 접근성 켜기:** `접근성 설정 열기` 를 눌러 설치된 앱에서 ShieldTap 을 켭니다. `제한된 설정` 창이 뜨면 ①로 돌아가 허용합니다.
-   - **③ 홈 화면에 위젯 추가:** `홈 화면에 위젯 추가` 를 누르면 시스템 추가 창이 뜹니다. 버튼이 없으면 홈 화면 빈 곳을 길게 눌러 위젯에서 ShieldTap 을 2x1 로 배치합니다.
-   - **④ 현재 상태 읽어 오기:** `상태 읽어 오기` 를 누르면 보안 위험 자동 차단 설정 화면이 열립니다. 스위치는 누르지 않습니다. 화면이 열리면 뒤로 가기를 누릅니다.
-   - **⑤ 설치 뒤 마무리:** 설치하려고 끈 두 가지를 다시 켭니다. `Play 프로텍트 설정 열기` 로 앱 검사를 켜고 `보안 위험 자동 차단 켜기` 로 차단을 켭니다. 켜기 버튼은 이미 켜져 있으면 아무것도 누르지 않습니다. 다 했으면 `마무리 완료` 를 누릅니다.
-   - **권장, 30분 뒤 자동으로 다시 켜기:** `자동으로 켜기 설정 열기` 를 누르면 보안 위험 자동 차단 화면이 열립니다. 그 화면의 `자동으로 켜기` 를 켜 두면(One UI 8.5 이상) 위젯으로 끈 뒤 잊어도 30분 뒤 다시 켜집니다. 옵션은 화면 아래쪽에 있을 수 있습니다.
-5. `준비 완료` 가 뜨면 끝입니다. 그다음부터는 위젯을 탭할 때마다 켜짐과 꺼짐이 바뀝니다.
+### Before you install
 
-## 업데이트와 삭제
+0. **Turn off Auto Blocker first.** Settings > Security and privacy > Auto Blocker. While it is on, installing APKs from outside official stores is blocked ([Samsung support](https://www.samsung.com/us/support/answer/ANS10003636)).
+1. **Temporarily turn off Play Protect app scanning.** Play Store > profile icon at the top right > Play Protect > ⚙ at the top right > turn off `Scan apps with Play Protect`. While it is on, installation is blocked with a message that the app was blocked to protect your device. Play Protect blocks APKs downloaded from a browser or messenger when they request accessibility access ([Google Security Blog](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html)). ShieldTap runs as an accessibility service, so it hits this rule.
 
-**업데이트.** 앱 서랍의 ShieldTap 아이콘 > `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap-v<버전>.apk` 를 받아 덮어 설치합니다. 파일 이름의 버전과 앱 화면 아래 버전이 같은 형식이라 바로 비교할 수 있습니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
+### Install and set up
 
-새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
+2. Download `shieldtap-v<version>.apk` (for example `shieldtap-v0.08.02.00.apk`) from [Releases](../../releases/latest) and tap it to install. For extra safety, check that the file matches the SHA-256 in the release notes.
+3. **Right after installing, turn Play Protect app scanning back on.** It is the same screen as step 1.
+4. Open **ShieldTap** from the app drawer and follow the 5 steps on screen in order. Finished steps change to ✓ and only the remaining steps stay expanded. Tap `Details` on any step to see what to tap and why.
+   - **① Allow restricted settings:** tap `Open App info` > ⋮ at the top right > **Allow restricted settings**, verify, then tap `Done`. Android 13 and later block apps installed from outside an app store from using accessibility until you allow it ([Google help](https://support.google.com/android/answer/12623953)). If the ⋮ menu does not show this option, tap `Done`, go to ② and try turning it on once. According to an Android 13 analysis, the option can appear only after you have seen the "Restricted setting" dialog once ([Esper](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). If accessibility is already on, this step is marked ✓ automatically.
+   - **② Turn on accessibility:** tap `Open Accessibility settings` and turn on ShieldTap under Accessibility > Installed apps. If a "Restricted setting" dialog appears, go back to ① and allow it.
+   - **③ Add the widget to your home screen:** tap `Add widget to home screen` and the system add dialog appears. If there is no button, touch and hold an empty spot on the home screen, tap Widgets and place ShieldTap as 2x1.
+   - **④ Read the current state:** tap `Read state` to open the Auto Blocker settings screen. Do not touch the switch. When the screen opens, tap Back.
+   - **⑤ Finish up after installing:** turn the two things you switched off for installing back on. Use `Open Play Protect settings` to turn app scanning on, and `Turn on Auto Blocker` to turn Auto Blocker on. The turn-on button taps nothing if Auto Blocker is already on. When you are done, tap `Finish setup`.
+   - **Recommended: turn back on after 30 minutes.** tap `Open auto turn-on option` to open the Auto Blocker screen. Turn on `Turn on Auto Blocker automatically` there (One UI 8.5 and later), and if you turn Auto Blocker off with the widget and forget, it comes back on after 30 minutes. The option may be near the bottom of the screen.
+5. When `All set` appears, you are done. From then on, each tap on the widget switches between On and Off.
 
-**삭제.** 앱 서랍의 ShieldTap 아이콘을 길게 눌러 `삭제` 를 누르거나 앱 화면의 `앱 정보 열기 (삭제)` 를 누릅니다.
+## Updating and uninstalling
 
-## 설치: 개발자 (adb)
+**Updating.** Open ShieldTap from the app drawer and tap `Check for updates` to open the latest release page in your browser. If it is newer than the version shown at the bottom of the app screen, download `shieldtap-v<version>.apk` and install it over the current app. The version in the file name uses the same format as the one in the app, so you can compare them directly. Your settings and widget stay as they are. As with the first install, turn off Play Protect app scanning for a moment while installing. The app does not check for updates itself so it can stay free of the internet permission.
 
-이 경로는 SM-F971N, One UI 9.0 에서 검증했습니다. 보안 위험 자동 차단이 켜져 있으면 USB 명령이 막히므로 먼저 끕니다.
+For new-version notifications, add `https://github.com/shieldtap/shieldtap` to [Obtainium](https://github.com/ImranR98/Obtainium). It watches GitHub releases and tells you when a new version is out. Whether Play Protect also blocks installs made through Obtainium has not been verified.
+
+**Uninstalling.** Touch and hold the ShieldTap icon in the app drawer and tap `Uninstall`, or tap `Open App info (uninstall)` in the app.
+
+## Install: developers (adb)
+
+This path was verified on SM-F971N with One UI 9.0. Auto Blocker blocks USB commands while it is on, so turn it off first.
 
 ```
-adb install -r shieldtap-v<버전>.apk
-./enable_accessibility.sh <adb시리얼>
+adb install -r shieldtap-v<version>.apk
+./enable_accessibility.sh <adb-serial>
 ```
 
-그다음 위 4번처럼 앱을 열어 ③, ④, ⑤ 단계를 따릅니다. ①과 ②는 스크립트가 접근성을 켜면서 함께 끝납니다.
+Then open the app as in step 4 above and follow ③, ④ and ⑤. ① and ② are done when the script turns on accessibility.
 
-`enable_accessibility.sh` 는 shell 권한의 `settings put secure` 로 접근성 서비스를 켜므로 폰을 조작하지 않아도 되고 제한된 설정 단계도 거치지 않습니다. 실행 전에 기존 `enabled_accessibility_services` 값을 출력하고 우리 서비스가 없을 때만 `:` 로 이어 붙입니다. 기존 값은 덮어쓰지 않습니다.
+`enable_accessibility.sh` turns on the accessibility service with `settings put secure` under shell privileges, so you do not need to touch the phone and you skip the restricted settings step. Before writing, it prints the current `enabled_accessibility_services` value and appends our service with `:` only if it is not already there. It never overwrites the existing value.
 
-## 동작 원리
+## How it works
 
 ```mermaid
 sequenceDiagram
-    participant U as 사용자
-    participant W as 위젯
-    participant T as 투명 액티비티
-    participant R as Auto Blocker 설정 화면
-    participant S as 접근성 서비스
-    U->>W: 탭
-    W->>T: 실행
-    T->>T: 켜짐 표식 기록 (5초 유효)
-    T->>R: 설정 화면 열기
-    R-->>S: 창 이벤트
-    S->>S: 스위치 isChecked() 읽어 캐시 갱신
-    S->>R: 표식이 유효하면 스위치 행 1회 탭
-    Note over R,U: 끌 때는 시스템 인증 창, 사용자가 직접 인증
-    R-->>S: 값 변경 감지
-    S->>W: 홈으로 돌아가 위젯 갱신
+    participant U as User
+    participant W as Widget
+    participant T as Transparent activity
+    participant R as Auto Blocker settings screen
+    participant S as Accessibility service
+    U->>W: Tap
+    W->>T: Launch
+    T->>T: Record arm flag (valid for 5 s)
+    T->>R: Open settings screen
+    R-->>S: Window event
+    S->>S: Read switch isChecked(), update cache
+    S->>R: If armed, tap the switch row once
+    Note over R,U: When turning off, the system shows a verification prompt and the user verifies
+    R-->>S: Value change detected
+    S->>W: Go home and update the widget
 ```
 
-- **좌표를 누르지 않습니다.** 접근성 노드 트리에서 내부 ID 로 스위치 노드를 찾아 그 노드에 `ACTION_CLICK` 을 보냅니다(`src/com/gml/autoblocker/AutoTapService.java:96-102`). 그래서 기종보다 One UI 버전에 좌우됩니다.
-- **못 찾으면 멈춥니다.** ID 가 바뀌어 노드가 없으면 아무것도 누르지 않고 5초 뒤 `설정 화면에서 스위치를 찾지 못했습니다` 를 띄웁니다(`AutoTapService.java:48-60`). 같은 화면의 다른 스위치(One UI 6.1.1 이상의 `최대 제한` 등)를 잘못 누르지 않도록 "첫 번째 스위치" 같은 대체 탐색은 일부러 넣지 않았습니다.
-- 위젯이 보여 주는 값은 접근성 서비스가 설정 화면에서 마지막으로 읽은 스위치 상태의 캐시입니다. 시스템 설정 값은 읽지도 쓰지도 않습니다.
-- 접근성 서비스는 설정 화면의 창 이벤트마다 스위치(`sesl_switchbar_switch`)의 `isChecked()` 를 읽습니다. 표식이 유효한 5초 안에만 스위치 행(`sesl_switchbar_container`)을 한 번 탭합니다.
-- 같은 창에서 `isChecked()` 가 탭 전 값과 달라진 뒤에만 홈으로 돌아갑니다. 값이 바뀌기 전에는 홈이나 뒤로 가기를 보내지 않습니다.
-- 인증을 취소해 값이 안 바뀌면 10초 뒤 감시를 접고 아무것도 하지 않습니다.
+- **No coordinate taps.** ShieldTap finds the switch row by its internal ID in the accessibility node tree and sends `ACTION_CLICK` to that node (`src/com/gml/autoblocker/AutoTapService.java:97-111`). That is why it depends on the One UI version more than on the device model.
+- **Stops if the switch is missing.** If the ID changed and the node is not there, it taps nothing and shows `Couldn't find the switch on the settings screen.` after 5 seconds (`AutoTapService.java:49-62`). Fallbacks such as "the first switch on the screen" are deliberately left out, so it never taps a different switch on the same screen (such as `Maximum restrictions` on One UI 6.1.1 and later).
+- The state the widget shows is a cache of the switch state the accessibility service last read from the settings screen. ShieldTap neither reads nor writes the Auto Blocker system setting (`rampart_main_switch_enabled`).
+- On every window event of the settings screen, the accessibility service reads `isChecked()` of the switch (`sesl_switchbar_switch`). Only within the 5 seconds the arm flag is valid does it tap the switch row (`sesl_switchbar_container`) once.
+- It goes back home only after `isChecked()` on the same window differs from the value before the tap. Until the value changes it sends no Home or Back.
+- If you cancel verification and the value does not change, it stops watching after 10 seconds and does nothing.
 
-## 보안 메모
+## Security notes
 
-| 확인 항목 | 근거 |
+| Check | Evidence |
 |---|---|
-| 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
-| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:28`, `:39`, `:46` 의 `android:exported="false"`. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:18`)만 런처 실행을 위해 공개 |
-| 다른 앱 조회는 Play 스토어 하나 | `AndroidManifest.xml:6-8` 의 `<queries>` 에 `com.android.vending` 만 선언. 권한이 아니며 Play 프로텍트 설정 화면을 못 열 때 Play 스토어를 여는 대체 경로용 |
-| 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
-| 백업 비활성 | `AndroidManifest.xml` 의 `android:allowBackup="false"` |
+| No requested permissions (including internet) | 0 `uses-permission` entries in `AndroidManifest.xml` |
+| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:41` and `:48`. Only the setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it |
+| Only one other app is queried: the Play Store | `<queries>` at `AndroidManifest.xml:6-8` declares only `com.android.vending`. This is not a permission. It is the fallback path that opens the Play Store when the Play Protect settings screen cannot be opened |
+| Accessibility events limited to the rampart package | `android:packageNames` at `res/xml/accessibility_service_config.xml:3` |
+| Backup disabled | `android:allowBackup="false"` in `AndroidManifest.xml` |
 
-접근성 서비스는 강한 권한이므로 받은 APK 는 소스와 SHA-256 을 확인하고 설치하세요. 직접 빌드하면 가장 확실합니다.
+An accessibility service is a powerful permission, so check the source and the SHA-256 before installing a downloaded APK. Building it yourself is the most reliable option.
 
-## 빌드
+## Build
 
-Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 빌드합니다. SDK 경로는 `ANDROID_SDK_ROOT` 로 바꿀 수 있습니다.
+ShieldTap builds with build-tools (`aapt2`, `d8`, `zipalign`, `apksigner`) and JDK 17, without Gradle. You can change the SDK path with `ANDROID_SDK_ROOT`.
 
 ```
 ./build.sh
 ```
 
-결과물은 `build/shieldtap-v<버전>.apk` 입니다. 버전은 커밋 제목 맨 앞의 `vA.BB.CC.DD` 라벨에서 정해집니다. 직접 빌드한 APK 는 릴리스판과 다른 키로 서명되므로 릴리스판 위에 덮어 설치할 수 없습니다. 바꿔 쓰려면 기존 앱을 지우고 설치하세요.
+The output is `build/shieldtap-v<version>.apk`. The version comes from the `vA.BB.CC.DD` label at the start of the commit subject. An APK you build yourself is signed with a different key from the release build, so it cannot be installed over the release build. Uninstall the existing app first if you want to switch.
 
-## 제약
+## Limitations
 
-- 일반 앱은 `rampart_main_switch_enabled` 를 읽을 수 없습니다(`Settings key ... is not readable`, 안드로이드 12 이상의 @hide 키 제한). adb shell 에서만 읽힙니다.
-- One UI 가 `rampart_main_switch_enabled` 쓰기를 거부하므로(`RAMPART_SettingsProvider: Not allowed to put`) 설정 화면 UI 를 자동으로 누르는 방식을 씁니다.
-- 위젯 표시는 캐시라서 화면 밖에서 상태가 바뀌면 낡을 수 있습니다. One UI 8.5 이상의 `자동으로 켜기` 설정은 끄고 30분 뒤 다시 켭니다(관측).
-- 설정 화면의 viewId 가 바뀌면 동작하지 않습니다. One UI 업데이트에 취약합니다.
-- 보안 위험 자동 차단을 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
-- Google Play 와 Galaxy Store 에는 올리지 않습니다. GitHub 릴리스로만 배포합니다.
+- Regular apps cannot read `rampart_main_switch_enabled` (`Settings key ... is not readable`, the @hide key restriction in Android 12 and later). It is readable only from adb shell.
+- One UI rejects writes to `rampart_main_switch_enabled` (`RAMPART_SettingsProvider: Not allowed to put`), so ShieldTap taps the settings screen UI instead.
+- The widget shows a cache, so it can go stale if the state changes elsewhere. The One UI 8.5+ `Turn on Auto Blocker automatically` option turns Auto Blocker back on 30 minutes after it is turned off (observed).
+- It stops working if the viewIds on the settings screen change, so it is fragile across One UI updates.
+- Turning on Auto Blocker disconnects wireless debugging. Turning it off restores it.
+- ShieldTap is not published on Google Play or the Galaxy Store. It is distributed only through GitHub releases.
 
-## 라이선스
+## License
 
-[Apache License 2.0](LICENSE) 을 따릅니다. 자유롭게 쓰고 고치고 배포할 수 있으며 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣어 주세요.
+Licensed under the [Apache License 2.0](LICENSE). You are free to use, modify and distribute it. When distributing, include `LICENSE` and `NOTICE`.
 
-방패 아이콘(`res/drawable/ic_shield_*.xml`, 앱 아이콘 `res/drawable/ic_launcher_fg.xml`)의 외곽선은 Google [Material Icons](https://github.com/google/material-design-icons) 의 `verified_user` (outlined) 경로를 가져와 체크와 점을 덧붙였습니다. Material Icons 도 Apache License 2.0 입니다.
+The outline of the shield icons (`res/drawable/ic_shield_*.xml` and the app icon `res/drawable/ic_launcher_fg.xml`) is the `verified_user` (outlined) path from Google [Material Icons](https://github.com/google/material-design-icons), with a check mark and dot added. Material Icons is also licensed under Apache License 2.0.
