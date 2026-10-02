@@ -2,6 +2,7 @@ package com.gml.autoblocker;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -19,6 +20,11 @@ public class TrampolineActivity extends Activity {
     /** rampart 설정 화면 Intent. arm 하지 않으므로 여는 것만으로는 스위치를 누르지 않는다. */
     static Intent rampartIntent() {
         return new Intent(RAMPART_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.wrap(base));
     }
 
     @Override

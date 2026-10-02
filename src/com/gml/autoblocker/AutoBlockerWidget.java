@@ -36,6 +36,13 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         return p.getInt(LAST_STATE, -1);
     }
 
+    /** 폰 언어나 앱별 언어가 바뀌면 저장된 위젯 문구를 새 언어로 다시 넣는다. */
+    @Override
+    public void onReceive(Context ctx, Intent intent) {
+        if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) refresh(ctx);
+        else super.onReceive(ctx, intent);
+    }
+
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
         render(ctx, mgr, ids);
@@ -48,6 +55,8 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     }
 
     private static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
+        // 런처가 레이아웃 문자열을 시스템 로캘로 풀지 않도록 문구는 모두 앱 언어 Context 로 넣는다.
+        Context loc = LocaleHelper.wrap(ctx.getApplicationContext());
         int state = cached(ctx);
         int text, bg, icon;
         switch (state) {
@@ -58,19 +67,20 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         Intent i = new Intent(ctx, TrampolineActivity.class);
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_IMMUTABLE);
         RemoteViews rv = new RemoteViews(ctx.getPackageName(), R.layout.widget);
-        String stateText = ctx.getString(text);
+        String stateText = loc.getString(text);
+        rv.setTextViewText(R.id.title, loc.getString(R.string.widget_title));
         rv.setTextViewText(R.id.label, stateText);
         rv.setImageViewResource(R.id.icon, icon);
         rv.setInt(R.id.root, "setBackgroundResource", bg);
         long at = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).getLong(LAST_AT, 0);
         if (state >= 0 && at > 0) {
             String hhmm = new SimpleDateFormat("HH:mm", Locale.KOREA).format(new Date(at));
-            rv.setTextViewText(R.id.checked_at, ctx.getString(R.string.checked_at, hhmm));
+            rv.setTextViewText(R.id.checked_at, loc.getString(R.string.checked_at, hhmm));
             rv.setViewVisibility(R.id.checked_at, View.VISIBLE);
         } else {
             rv.setViewVisibility(R.id.checked_at, View.GONE);
         }
-        rv.setContentDescription(R.id.root, ctx.getString(R.string.desc_fmt, stateText));
+        rv.setContentDescription(R.id.root, loc.getString(R.string.desc_fmt, stateText));
         rv.setOnClickPendingIntent(R.id.root, pi);
         mgr.updateAppWidget(ids, rv);
     }

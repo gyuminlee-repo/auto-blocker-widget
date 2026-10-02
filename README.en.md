@@ -48,7 +48,7 @@ ShieldTap is an unofficial app made by an individual and is not affiliated with 
 | Required apps | Nothing to install. Auto Blocker (`com.samsung.android.rampart`) is a system app built into One UI 6 and later |
 | Minimum to work | One UI 6.0 (based on Android 14), because Auto Blocker was introduced in One UI 6 |
 | Minimum to install | Android 8.0 (API 26, `minSdkVersion`). Below One UI 6 the app installs but has nothing to toggle |
-| Language | English and Korean. The app follows the phone language. On Android 13 and later you can pick it per app in Settings > Apps > ShieldTap > Language |
+| Language | English and Korean. The app follows the phone language. On Android 13 and later you can pick it per app in Settings > Apps > ShieldTap > Language. You can also pick System default, English or 한국어 under Language at the bottom of the app screen |
 | Other models | Screen size, resolution, foldable or not, and language make no difference, because the switch is found by its internal ID, not by screen coordinates |
 | Other One UI versions | Not verified. If Samsung changes the internal IDs on the settings screen, ShieldTap stops working |
 
