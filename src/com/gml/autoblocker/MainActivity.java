@@ -21,6 +21,12 @@ import java.util.Locale;
 
 /** 앱 서랍 진입점. 설정 단계를 체크리스트로 보여 주고 미완료 첫 단계만 펼친다. */
 public class MainActivity extends Activity {
+    static final String SETUP_PREFS = "setup";
+    static final String FINISH_DONE = "finishDone";
+    private static final String PROTECT_PKG = "com.google.android.gms";
+    private static final String PROTECT_CLS = "com.google.android.gms.security.settings.VerifyAppsSettingsActivity";
+    private static final String STORE_PKG = "com.android.vending";
+
     private TextView[] marks;
     private View[] steps, bodies;
     private ColorStateList defaultMarkColor;
@@ -32,17 +38,34 @@ public class MainActivity extends Activity {
         marks = new TextView[] {
                 (TextView) findViewById(R.id.step1_mark),
                 (TextView) findViewById(R.id.step2_mark),
-                (TextView) findViewById(R.id.step3_mark)};
-        steps = new View[] {findViewById(R.id.step1), findViewById(R.id.step2), findViewById(R.id.step3)};
-        bodies = new View[] {
-                findViewById(R.id.step1_body), findViewById(R.id.step2_body), findViewById(R.id.step3_body)};
+                (TextView) findViewById(R.id.step3_mark),
+                (TextView) findViewById(R.id.step4_mark)};
+        steps = new View[] {findViewById(R.id.step1), findViewById(R.id.step2),
+                findViewById(R.id.step3), findViewById(R.id.step4)};
+        bodies = new View[] {findViewById(R.id.step1_body), findViewById(R.id.step2_body),
+                findViewById(R.id.step3_body), findViewById(R.id.step4_body)};
         defaultMarkColor = marks[0].getTextColors();
 
         findViewById(R.id.btn_accessibility).setOnClickListener(v ->
                 open(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         findViewById(R.id.btn_restricted_info).setOnClickListener(v -> openAppInfo());
         findViewById(R.id.btn_pin_widget).setOnClickListener(v -> pinWidget());
-        findViewById(R.id.btn_read_state).setOnClickListener(v -> readState());
+        findViewById(R.id.btn_read_state).setOnClickListener(v -> openRampartWithoutTap());
+        findViewById(R.id.btn_auto_enable).setOnClickListener(v -> openRampartWithoutTap());
+        findViewById(R.id.btn_play_protect).setOnClickListener(v -> openPlayProtect());
+        // 위젯 탭과 같은 흐름에 켜기 전용 target 을 준다. 이미 켜져 있으면 누르지 않는다.
+        findViewById(R.id.btn_enable_blocker).setOnClickListener(v ->
+                open(new Intent(this, TrampolineActivity.class).putExtra(TrampolineActivity.EXTRA_TARGET, 1)));
+        findViewById(R.id.btn_finish_setup).setOnClickListener(v -> {
+            getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE).edit()
+                    .putBoolean(FINISH_DONE, true).commit();
+            render();
+        });
+        bindToggle(R.id.step1_toggle, R.id.step1_more);
+        bindToggle(R.id.step2_toggle, R.id.step2_more);
+        bindToggle(R.id.step3_toggle, R.id.step3_more);
+        bindToggle(R.id.step4_toggle, R.id.step4_more);
+        bindToggle(R.id.update_toggle, R.id.update_more);
         findViewById(R.id.btn_update).setOnClickListener(v ->
                 open(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.releases_url)))));
         findViewById(R.id.btn_app_info).setOnClickListener(v -> openAppInfo());
@@ -68,7 +91,8 @@ public class MainActivity extends Activity {
         boolean[] done = {
                 isServiceEnabled(),
                 mgr.getAppWidgetIds(widgetProvider()).length > 0,
-                state != -1};
+                state != -1,
+                getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE).getBoolean(FINISH_DONE, false)};
 
         int firstTodo = -1;
         for (int i = 0; i < done.length; i++) {
@@ -84,6 +108,10 @@ public class MainActivity extends Activity {
         if (firstTodo == 1) {
             findViewById(R.id.btn_pin_widget).setVisibility(
                     mgr.isRequestPinAppWidgetSupported() ? View.VISIBLE : View.GONE);
+        }
+        if (firstTodo == 3) {
+            findViewById(R.id.step4_enable).setVisibility(state == 0 ? View.VISIBLE : View.GONE);
+            findViewById(R.id.step4_blocker_on).setVisibility(state == 1 ? View.VISIBLE : View.GONE);
         }
 
         View card = findViewById(R.id.ready_card);
@@ -106,6 +134,38 @@ public class MainActivity extends Activity {
         }
     }
 
+    /** 자세히 토글. 기본은 접힘(layout 에서 gone). */
+    private void bindToggle(int toggleId, int moreId) {
+        TextView toggle = (TextView) findViewById(toggleId);
+        View more = findViewById(moreId);
+        toggle.setOnClickListener(v -> {
+            boolean show = more.getVisibility() != View.VISIBLE;
+            more.setVisibility(show ? View.VISIBLE : View.GONE);
+            toggle.setText(show ? R.string.details_hide : R.string.details_show);
+        });
+    }
+
+    /** Play 프로텍트 설정 화면을 직접 열고, 막히면 Play 스토어를 연다. */
+    private void openPlayProtect() {
+        try {
+            startActivity(new Intent().setComponent(new ComponentName(PROTECT_PKG, PROTECT_CLS))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            return;
+        } catch (ActivityNotFoundException | SecurityException e) {
+            // 아래 Play 스토어로 넘어간다.
+        }
+        Intent store = getPackageManager().getLaunchIntentForPackage(STORE_PKG);
+        try {
+            if (store != null) {
+                startActivity(store);
+                return;
+            }
+        } catch (ActivityNotFoundException | SecurityException e) {
+            // 아래 toast 로 넘어간다.
+        }
+        Toast.makeText(this, R.string.toast_play_protect_fail, Toast.LENGTH_LONG).show();
+    }
+
     private ComponentName widgetProvider() {
         return new ComponentName(this, AutoBlockerWidget.class);
     }
@@ -117,8 +177,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    /** arm 없이 rampart 화면만 연다. AutoTapService 가 창 이벤트에서 상태를 저장한다. */
-    private void readState() {
+    /**
+     * arm 없이 rampart 화면만 연다. AutoTapService 가 창 이벤트에서 상태를 저장한다.
+     * 상태 읽어 오기와 자동으로 켜기 설정 열기가 함께 쓴다.
+     */
+    private void openRampartWithoutTap() {
         // 위젯 탭 직후 남은 arm 표식이 있으면 스위치가 눌리므로 읽기 전에 지운다.
         AutoTapService.disarm(this);
         try {

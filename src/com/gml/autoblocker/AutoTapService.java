@@ -36,7 +36,8 @@ public class AutoTapService extends AccessibilityService {
 
     static void disarm(Context ctx) {
         ctx.getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE).edit()
-                .putLong(TrampolineActivity.ARMED_AT, 0).commit();
+                .putLong(TrampolineActivity.ARMED_AT, 0)
+                .putInt(TrampolineActivity.ARM_TARGET, -1).commit();
     }
 
     private boolean armed() {
@@ -96,9 +97,17 @@ public class AutoTapService extends AccessibilityService {
         List<AccessibilityNodeInfo> rows = root.findAccessibilityNodeInfosByViewId(ROW_ID);
         if (rows == null || rows.isEmpty()) return;
         Log.i(TAG, "node found before=" + checked);
+        int target = getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE)
+                .getInt(TrampolineActivity.ARM_TARGET, -1);
         // 클릭 전에 disarm 해서 이벤트가 겹쳐도 정확히 한 번만 누른다.
         disarm(this);
         if (armTimeout != null) handler.removeCallbacks(armTimeout);
+        if (target >= 0 && checked == target) {
+            // 이미 원하는 값이면 누르지 않는다. 캐시는 위에서 저장했다.
+            Log.i(TAG, "already " + target + ", no click, HOME");
+            performGlobalAction(GLOBAL_ACTION_HOME);
+            return;
+        }
         boolean ok = rows.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
         Log.i(TAG, "click performed=" + ok);
         if (ok) watch(checked);
