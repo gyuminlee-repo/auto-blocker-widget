@@ -8,7 +8,7 @@
     <string name="desc_fmt">보안 위험 자동 차단 %1$s, 탭하여 전환</string>
     <string name="state_unknown">상태 미확인</string>
     <string name="service_desc">위젯을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
-    <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. enable_accessibility.sh 를 실행하세요.</string>
+    <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. 설정 > 접근성 > 설치된 앱에서 켜세요.</string>
     <string name="toast_open_fail">보안 위험 자동 차단 설정 화면을 열 수 없습니다.</string>
     <string name="toast_node_missing">설정 화면에서 스위치를 찾지 못했습니다.</string>
 </resources>

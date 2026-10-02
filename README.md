@@ -1,43 +1,148 @@
 # Auto Blocker 위젯
 
-삼성 갤럭시(One UI)의 보안 위험 자동 차단(Auto Blocker)을 홈 화면 위젯 탭 한 번으로 켜고 끄는 앱입니다. 위젯만 있고 런처 아이콘은 없습니다. 기기 SM-F971N, One UI 9.0 에서 관측한 동작을 기준으로 만들었습니다.
+> One-tap home screen toggle for Samsung Galaxy **Auto Blocker** (보안 위험 자동 차단).
 
-## 동작
+![Android](https://img.shields.io/badge/Android-14%2B-3DDC84)
+![One UI min](https://img.shields.io/badge/One%20UI-6.0%2B-1428A0)
+![One UI](https://img.shields.io/badge/One%20UI-9.0%20tested-1428A0)
+![permissions](https://img.shields.io/badge/permissions-none-brightgreen)
+![network](https://img.shields.io/badge/network-offline-brightgreen)
+![build](https://img.shields.io/badge/build-no%20Gradle-lightgrey)
 
-- 위젯은 접근성 서비스가 rampart 설정 화면에서 마지막으로 본 스위치 상태(캐시)를 방패 아이콘과 두 줄 텍스트(제목 `보안 위험 자동 차단`, 상태 `켜짐` 또는 `꺼짐`)로 표시합니다. 켜짐은 초록, 꺼짐은 호박색입니다. 제목 줄 끝에 `HH:mm 확인` 으로 마지막 확인 시각을 작게 보입니다. 캐시가 없으면 슬레이트 색으로 `상태 미확인` 만 표시합니다. 위젯을 한 번 탭하면 스위치 상태를 읽어 표시가 바뀝니다. 설정 값은 읽지도 쓰지도 않습니다.
-- 위젯을 탭하면 투명 액티비티가 켜짐 표식(5초 유효)을 남기고 One UI 의 Auto Blocker 설정 화면(`com.samsung.android.rampart`)을 엽니다.
-- 접근성 서비스는 rampart 창 이벤트마다 스위치(`sesl_switchbar_switch`)의 `isChecked()` 를 읽어 캐시를 갱신합니다. 표식이 유효한 5초 안에만 스위치 행(`sesl_switchbar_container`)을 한 번 탭합니다. 같은 창에서 `isChecked()` 가 탭 전 값과 달라지면 홈으로 돌아가고 위젯을 갱신합니다. 값이 바뀌기 전에는 홈이나 뒤로 가기를 보내지 않습니다.
-- 끌 때는 시스템이 지문 또는 비밀번호 인증 창을 띄웁니다. 인증은 사용자가 직접 합니다. 인증을 취소해 값이 안 바뀌면 10초 뒤 감시를 접고 아무것도 하지 않습니다.
-- 사용자가 직접 그 설정 화면을 열었을 때는 표식이 없으므로 서비스는 아무것도 누르지 않습니다.
+갤럭시의 보안 위험 자동 차단은 켜 두면 안전하지만 APK 설치나 무선 디버깅을 할 때마다 설정 깊숙이 들어가 꺼야 합니다. 이 앱은 그 스위치를 홈 화면 2x1 위젯 한 칸으로 꺼냅니다. 탭 한 번에 켜고 끄며 현재 상태를 색과 글자로 보여 줍니다.
+
+| 상태 | 표시 |
+|---|---|
+| 켜짐 | 초록 방패, `보안 위험 자동 차단 / 켜짐` |
+| 꺼짐 | 호박색 방패, `보안 위험 자동 차단 / 꺼짐` |
+| 미확인 | 슬레이트 방패, `상태 미확인` |
+
+제목 줄 끝에는 `HH:mm 확인` 으로 마지막 확인 시각이 붙습니다.
+
+## 특징
+
+- **권한 0개.** 매니페스트에 `uses-permission` 이 하나도 없습니다. 인터넷 권한도 없어 어떤 데이터도 기기 밖으로 나가지 않습니다.
+- **좁은 접근성 범위.** 접근성 서비스는 One UI 에 기본 탑재된 Auto Blocker 시스템 앱(`com.samsung.android.rampart`) 하나의 화면만 봅니다. 다른 앱의 화면 내용은 받지 않습니다.
+- **보안 우회 없음.** 끌 때 뜨는 지문 또는 비밀번호 인증은 그대로 사용자가 직접 통과합니다. 위젯은 인증을 대신하지 않습니다.
+- **탭했을 때만 동작.** 사용자가 설정 화면을 직접 열었을 때는 아무것도 누르지 않습니다.
+- **가벼운 빌드.** Gradle 없이 Android build-tools 와 JDK 17 만으로 수 초 안에 APK 가 나옵니다.
+
+## 호환성
+
+| 항목 | 값 |
+|---|---|
+| 검증 기기 | Galaxy SM-F971N |
+| 검증 One UI | 9.0 |
+| 필요한 앱 | 따로 설치할 앱 없음. Auto Blocker(`com.samsung.android.rampart`)는 One UI 6 이상에 기본 탑재된 시스템 앱입니다 |
+| 작동 최소 버전 | One UI 6.0 (Android 14 기반). Auto Blocker 가 One UI 6 부터 들어갔기 때문입니다 |
+| 설치 최소 버전 | Android 8.0 (API 26, `minSdkVersion`). One UI 6 미만에서는 설치는 되지만 켤 대상이 없습니다 |
+| 다른 기기와 One UI 버전 | 미확인. 설정 화면 viewId 에 의존하므로 버전이 다르면 동작하지 않을 수 있습니다 |
+
+## 설치: 일반 사용자
+
+> 이 경로는 Google 공식 문서([제한된 설정](https://support.google.com/android/answer/12623953))를 따른 안내이며 One UI 9.0 에서 아직 직접 검증하지 않았습니다. 막히면 아래 「설치: 개발자 (adb)」 경로를 쓰세요.
+
+0. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
+1. [Releases](../../releases) 에서 `auto-blocker-widget.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+2. 설정 > 애플리케이션 > `Auto Blocker 위젯` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
+3. 설정 > 접근성 > 설치된 앱 > `Auto Blocker 위젯` 을 켭니다.
+4. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `Auto Blocker 위젯` 을 2x1 로 배치합니다.
+5. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
+
+## 설치: 개발자 (adb)
+
+이 경로는 SM-F971N, One UI 9.0 에서 검증했습니다. 보안 위험 자동 차단이 켜져 있으면 USB 명령이 막히므로 먼저 끕니다.
+
+```
+adb install -r auto-blocker-widget.apk
+./enable_accessibility.sh <adb시리얼>
+```
+
+그다음 위 4번처럼 위젯을 배치합니다.
+
+`enable_accessibility.sh` 는 shell 권한의 `settings put secure` 로 접근성 서비스를 켜므로 폰을 조작하지 않아도 되고 제한된 설정 단계도 거치지 않습니다. 실행 전에 기존 `enabled_accessibility_services` 값을 출력하고 우리 서비스가 없을 때만 `:` 로 이어 붙입니다. 기존 값은 덮어쓰지 않습니다.
+
+## 동작 원리
+
+```mermaid
+sequenceDiagram
+    participant U as 사용자
+    participant W as 위젯
+    participant T as 투명 액티비티
+    participant R as Auto Blocker 설정 화면
+    participant S as 접근성 서비스
+    U->>W: 탭
+    W->>T: 실행
+    T->>T: 켜짐 표식 기록 (5초 유효)
+    T->>R: 설정 화면 열기
+    R-->>S: 창 이벤트
+    S->>S: 스위치 isChecked() 읽어 캐시 갱신
+    S->>R: 표식이 유효하면 스위치 행 1회 탭
+    Note over R,U: 끌 때는 시스템 인증 창, 사용자가 직접 인증
+    R-->>S: 값 변경 감지
+    S->>W: 홈으로 돌아가 위젯 갱신
+```
+
+- 위젯이 보여 주는 값은 접근성 서비스가 설정 화면에서 마지막으로 읽은 스위치 상태의 캐시입니다. 시스템 설정 값은 읽지도 쓰지도 않습니다.
+- 접근성 서비스는 설정 화면의 창 이벤트마다 스위치(`sesl_switchbar_switch`)의 `isChecked()` 를 읽습니다. 표식이 유효한 5초 안에만 스위치 행(`sesl_switchbar_container`)을 한 번 탭합니다.
+- 같은 창에서 `isChecked()` 가 탭 전 값과 달라진 뒤에만 홈으로 돌아갑니다. 값이 바뀌기 전에는 홈이나 뒤로 가기를 보내지 않습니다.
+- 인증을 취소해 값이 안 바뀌면 10초 뒤 감시를 접고 아무것도 하지 않습니다.
+
+## 보안 메모
+
+| 확인 항목 | 근거 |
+|---|---|
+| 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
+| 모든 컴포넌트 외부 비공개 | `AndroidManifest.xml:11`, `:22`, `:29` 의 `android:exported="false"` |
+| 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
+| 백업 비활성 | `AndroidManifest.xml` 의 `android:allowBackup="false"` |
+
+접근성 서비스는 강한 권한이므로 받은 APK 는 소스와 SHA-256 을 확인하고 설치하세요. 직접 빌드하면 가장 확실합니다.
 
 ## 빌드
 
-Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 빌드합니다.
+Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 빌드합니다. SDK 경로는 `ANDROID_SDK_ROOT` 로 바꿀 수 있습니다.
 
 ```
 ./build.sh
 ```
 
-결과물은 `build/auto-blocker-widget.apk` 입니다. 디버그 키스토어는 `.keystore/debug.jks` 에 처음 한 번 만들어지며 저장소에는 올라가지 않습니다. SDK 경로는 `ANDROID_SDK_ROOT` 로 바꿀 수 있습니다.
+결과물은 `build/auto-blocker-widget.apk` 입니다. 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
 
-## 설치 (3줄)
+## 릴리스 절차 (관리자용)
 
-```
-adb install -r build/auto-blocker-widget.apk
-./enable_accessibility.sh <adb시리얼>
-```
+안드로이드는 같은 패키지를 같은 키로 서명한 APK 만 업데이트로 받아 줍니다. 배포용 APK 는 반드시 하나로 고정한 릴리스 키로 서명합니다. 키를 잃으면 받은 사람 모두 앱을 지우고 다시 설치해야 합니다.
 
-세 번째로 홈 화면의 빈 곳을 길게 눌러 위젯 메뉴를 열고 `Auto Blocker 위젯` 을 2x1 크기로 배치합니다.
+1. 릴리스 키를 한 번 만들고 저장소 밖에 보관합니다(예: `$HOME/.android/auto-blocker-release.jks` 와 비밀번호 관리자).
 
-`enable_accessibility.sh` 는 실행 전에 기존 `enabled_accessibility_services` 값을 출력하고 우리 서비스가 없을 때만 `:` 로 이어 붙입니다. 기존 값은 덮어쓰지 않습니다. shell 권한의 `settings put secure` 를 쓰므로 폰 조작이 필요 없습니다.
+   ```
+   keytool -genkeypair -keystore "$HOME/.android/auto-blocker-release.jks" \
+     -alias release -keyalg RSA -keysize 4096 -validity 10000
+   ```
+
+2. `VERSION_CODE` 를 이전 릴리스보다 크게 올려 빌드합니다. versionCode 가 커야 기존 사용자가 업데이트할 수 있습니다.
+
+   ```
+   RELEASE_KS="$HOME/.android/auto-blocker-release.jks" RELEASE_KS_ALIAS=release \
+   RELEASE_KS_PASS='<비밀번호>' VERSION_CODE=6 VERSION_NAME=0.6.0 ./build.sh
+   ```
+
+   빌드 끝에 서명 인증서와 APK 의 SHA-256 이 출력됩니다.
+
+3. GitHub Release 를 만들고 SHA-256 을 노트에 적습니다.
+
+   ```
+   gh release create v0.6.0 build/auto-blocker-widget.apk \
+     --title "v0.6.0" --notes "APK SHA-256: <값>"
+   ```
+
+Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스위치를 자동으로 누르는 접근성 서비스는 장애 지원 목적이 아니어서 Play 접근성 API 정책 심사를 통과하기 어렵다고 봅니다(추정).
 
 ## 제약
 
 - 일반 앱은 `rampart_main_switch_enabled` 를 읽을 수 없습니다(`Settings key ... is not readable`, 안드로이드 12 이상의 @hide 키 제한). adb shell 에서만 읽힙니다.
-- 위젯 표시는 rampart 화면에서 마지막으로 본 값의 캐시입니다. 화면 밖에서 상태가 바뀌면(30분 뒤 자동으로 다시 켜지는 경우 포함) 표시가 낡을 수 있습니다.
-- One UI 가 `rampart_main_switch_enabled` 쓰기를 거부하므로(`RAMPART_SettingsProvider: Not allowed to put`) 설정 화면 UI 를 자동으로 누르는 방식입니다.
+- One UI 가 `rampart_main_switch_enabled` 쓰기를 거부하므로(`RAMPART_SettingsProvider: Not allowed to put`) 설정 화면 UI 를 자동으로 누르는 방식을 씁니다.
+- 위젯 표시는 캐시라서 화면 밖에서 상태가 바뀌면 낡을 수 있습니다. One UI 의 `자동으로 켜기` 설정은 끄고 30분 뒤 다시 켭니다(관측).
 - 설정 화면의 viewId 가 바뀌면 동작하지 않습니다. One UI 업데이트에 취약합니다.
-- One UI 에는 끄고 30분 뒤 다시 켜는 `자동으로 켜기` 설정이 있습니다(관측).
-- Auto Blocker 를 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
-- 안드로이드 13 이상의 제한된 설정이 sideload 앱의 접근성 활성화를 UI 에서 막을 수 있습니다. adb 의 `settings put` 경로는 그 제한을 거치지 않습니다. 이 기기에서는 서비스가 `dumpsys accessibility` 에 바인드된 것을 확인했습니다.
-- 이 저장소의 검증은 빌드, 서명, 서비스 바인드, 설치 뒤 앱 프로세스 크래시 없음까지입니다. 탭으로 켜고 끄는 경로와 끄기 때의 인증 창 동작은 사용자 시험으로 확인합니다.
+- 보안 위험 자동 차단을 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
+- 이 저장소에서 기계로 검증한 범위는 빌드, 서명, 서비스 바인드, 설치 뒤 앱 프로세스 크래시 없음까지입니다. 탭으로 켜고 끄는 경로와 끌 때의 인증 창 동작은 사용자 시험으로 확인합니다.
