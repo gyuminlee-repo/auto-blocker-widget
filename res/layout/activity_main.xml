@@ -65,7 +65,7 @@
 
         </LinearLayout>
 
-        <!-- 단계 1 -->
+        <!-- 단계 1: 허용 여부를 읽을 수 없어 허용했어요 기록 또는 접근성 켜짐으로 판정한다 -->
         <LinearLayout
             android:id="@+id/step1"
             android:layout_width="match_parent"
@@ -108,25 +108,25 @@
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
                 <Button
-                    android:id="@+id/btn_accessibility"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/btn_accessibility" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/step1_restricted"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-
-                <Button
                     android:id="@+id/btn_restricted_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/btn_app_info_short" />
+
+                <Button
+                    android:id="@+id/btn_restricted_done"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_restricted_done" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step1_hint"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
                 <TextView
                     android:id="@+id/step1_toggle"
                     android:layout_width="wrap_content"
@@ -198,19 +198,25 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <Button
-                    android:id="@+id/btn_pin_widget"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/btn_pin_widget" />
+                    android:text="@string/step2_body"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_accessibility"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_accessibility" />
 
                 <TextView
-                    android:id="@+id/step2_manual"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/step2_manual"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/step2_restricted_hint"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
                 <TextView
                     android:id="@+id/step2_toggle"
@@ -283,19 +289,20 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/step3_body"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-
                 <Button
-                    android:id="@+id/btn_read_state"
+                    android:id="@+id/btn_pin_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/btn_read_state" />
+                    android:text="@string/btn_pin_widget" />
+
+                <TextView
+                    android:id="@+id/step3_manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step3_manual"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
                 <TextView
                     android:id="@+id/step3_toggle"
                     android:layout_width="wrap_content"
@@ -332,7 +339,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 단계 4: 완료 판정 없음. 마무리 완료를 누르면 기록한다 -->
+        <!-- 단계 4 -->
         <LinearLayout
             android:id="@+id/step4"
             android:layout_width="match_parent"
@@ -371,80 +378,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/step4_protect"
+                    android:text="@string/step4_body"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
                 <Button
-                    android:id="@+id/btn_play_protect"
+                    android:id="@+id/btn_read_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/btn_play_protect" />
-
-                <!-- 캐시가 꺼짐(0)일 때만 보인다 -->
-                <LinearLayout
-                    android:id="@+id/step4_enable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/btn_enable_blocker"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="@string/btn_enable_blocker" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/step4_enable_hint"
-                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-                </LinearLayout>
-
-                <!-- 캐시가 켜짐(1)일 때만 보인다 -->
-                <TextView
-                    android:id="@+id/step4_blocker_on"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/step4_blocker_on"
-                    android:textColor="@color/step_done"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                    android:visibility="gone" />
-
-                <!-- 권장 항목: 설정 값을 읽을 수 없어 완료 판정이 없다 -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/step4_auto_title"
-                    android:textStyle="bold"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/step4_auto_body"
-                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
-
-                <Button
-                    android:id="@+id/btn_auto_enable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/btn_auto_enable" />
-
-                <Button
-                    android:id="@+id/btn_finish_setup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/btn_finish_setup" />
-
+                    android:text="@string/btn_read_state" />
                 <TextView
                     android:id="@+id/step4_toggle"
                     android:layout_width="wrap_content"
@@ -470,6 +412,155 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/step4_details"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/step4_why"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 단계 5: 완료 판정 없음. 마무리 완료를 누르면 기록한다 -->
+        <LinearLayout
+            android:id="@+id/step5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/step5_mark"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/step5_title"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/step5_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/step5_protect"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_play_protect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_play_protect" />
+
+                <!-- 캐시가 꺼짐(0)일 때만 보인다 -->
+                <LinearLayout
+                    android:id="@+id/step5_enable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btn_enable_blocker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/btn_enable_blocker" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/step5_enable_hint"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                </LinearLayout>
+
+                <!-- 캐시가 켜짐(1)일 때만 보인다 -->
+                <TextView
+                    android:id="@+id/step5_blocker_on"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/step5_blocker_on"
+                    android:textColor="@color/step_done"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:visibility="gone" />
+
+                <!-- 권장 항목: 설정 값을 읽을 수 없어 완료 판정이 없다 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/step5_auto_title"
+                    android:textStyle="bold"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/step5_auto_body"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <Button
+                    android:id="@+id/btn_auto_enable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/btn_auto_enable" />
+
+                <Button
+                    android:id="@+id/btn_finish_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/btn_finish_setup" />
+
+                <TextView
+                    android:id="@+id/step5_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:minHeight="48dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/details_show"
+                    android:textColor="?android:attr/colorAccent"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+                <LinearLayout
+                    android:id="@+id/step5_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/step5_details"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
                 </LinearLayout>
             </LinearLayout>
