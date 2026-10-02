@@ -24,7 +24,7 @@
 
 `HH:mm 확인` 은 마지막으로 스위치 상태를 읽은 시각입니다. 미확인 상태에는 붙지 않습니다.
 
-이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다(`docs/render_widget_states.sh` 로 다시 만들 수 있습니다). 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
+이미지는 실제 화면 캡처가 아니라 `res/layout/widget.xml` 과 drawable 정의를 그대로 옮겨 그린 미리보기입니다. 실제 위젯의 크기, 모서리, 글꼴은 런처와 기기에 따라 조금 다릅니다.
 
 ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없습니다. Auto Blocker 는 삼성전자의 기능 이름입니다.
 
@@ -135,36 +135,7 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 ./build.sh
 ```
 
-결과물은 `build/shieldtap-v<버전>.apk` 입니다(예: `build/shieldtap-v0.08.00.00.apk`). 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
-
-## 릴리스 절차 (관리자용)
-
-안드로이드는 같은 패키지를 같은 키로 서명한 APK 만 업데이트로 받아 줍니다. 배포용 APK 는 반드시 하나로 고정한 릴리스 키로 서명합니다. 키를 잃으면 받은 사람 모두 앱을 지우고 다시 설치해야 합니다.
-
-1. 릴리스 키를 한 번 만들고 저장소 밖에 보관합니다(예: `$HOME/.android/auto-blocker-release.jks` 와 비밀번호 관리자).
-
-   ```
-   keytool -genkeypair -keystore "$HOME/.android/auto-blocker-release.jks" \
-     -alias release -keyalg RSA -keysize 4096 -validity 10000
-   ```
-
-2. 버전은 커밋 라벨을 그대로 씁니다. 이 저장소의 커밋 제목은 `vA.BB.CC.DD: 요약` 형식이고 `build.sh` 가 HEAD 커밋 제목의 라벨에서 버전을 계산합니다. `versionName` 은 라벨에서 `v` 를 뺀 값(예: `0.07.00.00`)이고 `versionCode` 는 `A×1000000 + BB×10000 + CC×100 + DD`(예: `70000`)입니다. 라벨이 커질수록 versionCode 도 커지므로 기존 사용자는 덮어 설치로 업데이트할 수 있습니다. 릴리스할 커밋(보통 master 최신)에서 빌드합니다.
-
-   ```
-   RELEASE_KS="$HOME/.android/auto-blocker-release.jks" RELEASE_KS_ALIAS=release \
-   RELEASE_KS_PASS='<비밀번호>' ./build.sh
-   ```
-
-   HEAD 제목에 라벨이 없으면 빌드가 멈춥니다. 필요하면 `VERSION_NAME` 과 `VERSION_CODE` 를 둘 다 직접 줄 수 있습니다. 빌드 끝에 버전, 서명 인증서, APK 의 SHA-256 이 출력됩니다.
-
-3. 같은 라벨로 GitHub Release 를 만들고 SHA-256 을 노트에 적습니다. 태그도 커밋 라벨과 같게 씁니다.
-
-   ```
-   gh release create v0.07.00.00 build/shieldtap-v0.07.00.00.apk \
-     --title "ShieldTap v0.07.00.00" --notes "APK SHA-256: <값>"
-   ```
-
-Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스위치를 자동으로 누르는 접근성 서비스는 장애 지원 목적이 아니어서 Play 접근성 API 정책 심사를 통과하기 어렵다고 봅니다(추정).
+결과물은 `build/shieldtap-v<버전>.apk` 입니다. 버전은 커밋 제목 맨 앞의 `vA.BB.CC.DD` 라벨에서 정해집니다. 직접 빌드한 APK 는 릴리스판과 다른 키로 서명되므로 릴리스판 위에 덮어 설치할 수 없습니다. 바꿔 쓰려면 기존 앱을 지우고 설치하세요.
 
 ## 제약
 
@@ -173,7 +144,7 @@ Google Play 와 Galaxy Store 배포는 하지 않습니다. 시스템 설정 스
 - 위젯 표시는 캐시라서 화면 밖에서 상태가 바뀌면 낡을 수 있습니다. One UI 의 `자동으로 켜기` 설정은 끄고 30분 뒤 다시 켭니다(관측).
 - 설정 화면의 viewId 가 바뀌면 동작하지 않습니다. One UI 업데이트에 취약합니다.
 - 보안 위험 자동 차단을 켜면 무선 디버깅이 끊깁니다. 끄면 복구됩니다.
-- 이 저장소에서 기계로 검증한 범위는 빌드, 서명, 서비스 바인드, 설치 뒤 앱 프로세스 크래시 없음까지입니다. 탭으로 켜고 끄는 경로와 끌 때의 인증 창 동작은 사용자 시험으로 확인합니다.
+- Google Play 와 Galaxy Store 에는 올리지 않습니다. GitHub 릴리스로만 배포합니다.
 
 ## 라이선스
 
