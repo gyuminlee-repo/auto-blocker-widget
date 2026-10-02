@@ -49,14 +49,16 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 
 ## 설치: 일반 사용자
 
-> 이 경로는 Google 공식 문서([제한된 설정](https://support.google.com/android/answer/12623953))를 따른 안내이며 One UI 9.0 에서 아직 직접 검증하지 않았습니다. 막히면 아래 「설치: 개발자 (adb)」 경로를 쓰세요.
+> 이 경로는 Google 공식 문서([제한된 설정](https://support.google.com/android/answer/12623953))를 따른 안내이며 One UI 9.0 에서 아직 직접 검증하지 않았습니다. 1번과 3번은 국내 사용자 보고를 따른 안내입니다. 막히면 아래 「설치: 개발자 (adb)」 경로를 쓰세요.
 
 0. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
-1. [Releases](../../releases) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
-2. 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
-3. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다.
-4. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `ShieldTap` 을 2x1 로 배치합니다.
-5. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
+1. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html?m=1)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
+2. [Releases](../../releases/latest) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+3. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 1번과 같은 화면입니다.
+4. 설정 > 애플리케이션 > `ShieldTap` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증합니다. Android 13 이상은 직접 설치한 앱의 접근성 권한을 이 단계 전까지 막습니다.
+5. 설정 > 접근성 > 설치된 앱 > `ShieldTap` 을 켭니다.
+6. 홈 화면 빈 곳을 길게 눌러 위젯 메뉴에서 `ShieldTap` 을 2x1 로 배치합니다.
+7. 위젯을 한 번 탭하면 상태를 읽어 표시합니다. 이제 보안 위험 자동 차단을 다시 켜도 됩니다.
 
 ## 설치: 개발자 (adb)
 
@@ -67,7 +69,7 @@ adb install -r shieldtap.apk
 ./enable_accessibility.sh <adb시리얼>
 ```
 
-그다음 위 4번처럼 위젯을 배치합니다.
+그다음 위 6번처럼 위젯을 배치합니다.
 
 `enable_accessibility.sh` 는 shell 권한의 `settings put secure` 로 접근성 서비스를 켜므로 폰을 조작하지 않아도 되고 제한된 설정 단계도 거치지 않습니다. 실행 전에 기존 `enabled_accessibility_services` 값을 출력하고 우리 서비스가 없을 때만 `:` 로 이어 붙입니다. 기존 값은 덮어쓰지 않습니다.
 
