@@ -14,7 +14,6 @@ export JAVA_HOME PATH="$JAVA_HOME/bin:$PATH"
 B="$ROOT/build"
 KS_DIR="$ROOT/.keystore"
 KS="$KS_DIR/debug.jks"
-OUT="$B/shieldtap.apk"
 
 for f in "$BT/aapt2" "$BT/d8" "$BT/zipalign" "$BT/apksigner" "$AJAR"; do
   [ -e "$f" ] || { echo "missing: $f" >&2; exit 1; }
@@ -38,6 +37,7 @@ else
     exit 1
   fi
 fi
+OUT="$B/shieldtap-v${VERSION_NAME}.apk"
 
 # 이전 산출물 정리: 고정 디렉터리 내 파일만 삭제
 mkdir -p "$B/compiled" "$B/gen" "$B/classes" "$B/dex"

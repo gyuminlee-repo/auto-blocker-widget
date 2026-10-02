@@ -55,7 +55,7 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 
 0. **보안 위험 자동 차단을 먼저 끕니다.** 설정 > 보안 및 개인정보 보호 > 보안 위험 자동 차단. 켜져 있으면 공식 스토어 밖의 APK 설치가 막힙니다([Samsung 안내](https://www.samsung.com/us/support/answer/ANS10003636)).
 1. **Play 프로텍트 앱 검사를 잠시 끕니다.** Play 스토어 > 오른쪽 위 프로필 > Play 프로텍트 > 오른쪽 위 ⚙ > `Play 프로텍트로 앱 검사` 끄기. 켜져 있으면 `기기 보호를 위해 앱 차단됨` 이 뜨며 설치가 막힙니다. 브라우저나 메신저로 받은 APK 가 접근성 권한을 요청하면 Play 프로텍트가 설치를 막기 때문입니다([Google 보안 블로그](https://security.googleblog.com/2024/02/piloting-new-ways-to-protect-Android-users-from%20financial-fraud.html?m=1)). ShieldTap 은 접근성 서비스로 동작하므로 이 조건에 걸립니다.
-2. [Releases](../../releases/latest) 에서 `shieldtap.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+2. [Releases](../../releases/latest) 에서 `shieldtap-v<버전>.apk` (예: `shieldtap-v0.08.00.00.apk`) 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
 3. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 1번과 같은 화면입니다.
 4. 앱 서랍의 **ShieldTap** 을 엽니다. 화면의 3단계를 순서대로 따릅니다. 끝난 단계는 ✓ 로 바뀌고 남은 단계만 펼쳐집니다.
    - **① 접근성 켜기:** `접근성 설정 열기` 를 눌러 ShieldTap 을 켭니다. `제한된 설정` 안내 창이 뜨면 확인을 누르고 `앱 정보 열기` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누른 뒤 다시 켭니다. 이 메뉴는 안내 창을 한 번 본 뒤에만 나타납니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 설치 방식에 따라서는 제한이 걸리지 않아 바로 켜질 수 있습니다.
@@ -65,7 +65,7 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 
 ## 업데이트와 삭제
 
-**업데이트.** 앱 서랍의 ShieldTap 아이콘 > `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap.apk` 를 받아 덮어 설치합니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
+**업데이트.** 앱 서랍의 ShieldTap 아이콘 > `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap-v<버전>.apk` 를 받아 덮어 설치합니다. 파일 이름의 버전과 앱 화면 아래 버전이 같은 형식이라 바로 비교할 수 있습니다. 설정과 위젯은 그대로 남습니다. 설치할 때는 처음처럼 Play 프로텍트 앱 검사를 잠깐 꺼야 합니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
 
 새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
 
@@ -76,7 +76,7 @@ ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없
 이 경로는 SM-F971N, One UI 9.0 에서 검증했습니다. 보안 위험 자동 차단이 켜져 있으면 USB 명령이 막히므로 먼저 끕니다.
 
 ```
-adb install -r shieldtap.apk
+adb install -r shieldtap-v<버전>.apk
 ./enable_accessibility.sh <adb시리얼>
 ```
 
@@ -131,7 +131,7 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 ./build.sh
 ```
 
-결과물은 `build/shieldtap.apk` 입니다. 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
+결과물은 `build/shieldtap-v<버전>.apk` 입니다(예: `build/shieldtap-v0.08.00.00.apk`). 환경변수 없이 빌드하면 `.keystore/debug.jks` 디버그 키로 서명합니다. 이 키는 머신마다 처음 한 번 새로 만들어지고 저장소에 올라가지 않으므로 개인 시험용입니다.
 
 ## 릴리스 절차 (관리자용)
 
@@ -156,7 +156,7 @@ Gradle 없이 build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`)와 JDK 17로 �
 3. 같은 라벨로 GitHub Release 를 만들고 SHA-256 을 노트에 적습니다. 태그도 커밋 라벨과 같게 씁니다.
 
    ```
-   gh release create v0.07.00.00 build/shieldtap.apk \
+   gh release create v0.07.00.00 build/shieldtap-v0.07.00.00.apk \
      --title "ShieldTap v0.07.00.00" --notes "APK SHA-256: <값>"
    ```
 
