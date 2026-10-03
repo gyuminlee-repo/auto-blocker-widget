@@ -43,9 +43,9 @@ Both actions start the activity `com.gml.autoblocker/.ActionActivity` (class `co
 - Otherwise ShieldTap opens the Auto Blocker screen and taps the switch once. If the switch is already in the requested state, it taps nothing and goes home.
 - **Turning off still needs your fingerprint or PIN.** One UI shows the verification prompt, and an automation app cannot pass it for you.
 
-**MacroDroid example.** Trigger: Screen Content, matching the text of the Auto Blocker block message on your phone. Action: Launch Shortcut and pick ShieldTap `Turn off Auto Blocker`, or Send Intent with Target `Activity`, Action `com.gml.autoblocker.action.TURN_OFF` and Package `com.gml.autoblocker`.
+**MacroDroid example.** Trigger: Screen Content, matching the text of the Auto Blocker block message on your phone. Action: Send Intent with Target `Activity`, Action `com.gml.autoblocker.action.TURN_OFF` and Package `com.gml.autoblocker`. Screen Content needs the MacroDroid accessibility service and checks the screen every 2 seconds in the free version. The Launch Shortcut action lists only older-style shortcuts, so the ShieldTap app shortcuts may not appear there (not verified).
 
-**Tasker example.** Action Send Intent with Action `com.gml.autoblocker.action.TURN_OFF`, Package `com.gml.autoblocker`, Class `com.gml.autoblocker.ActionActivity` and Target `Activity`. Launch Shortcut with ShieldTap `Turn off Auto Blocker` works the same way.
+**Tasker example.** Action Send Intent with Action `com.gml.autoblocker.action.TURN_OFF`, Package `com.gml.autoblocker`, Class `com.gml.autoblocker.ActionActivity` and Target `Activity`. Tasker has no built-in trigger for text on the screen, so the trigger needs the AutoInput plugin. Tasker also cannot run app shortcuts of other apps, so use Send Intent. On Android 10 and later the Tasker FAQ asks you to allow Draw over other apps for actions that open screens.
 
 With adb you can try it directly: `adb shell am start -a com.gml.autoblocker.action.TURN_ON`.
 

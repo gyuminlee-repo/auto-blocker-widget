@@ -43,9 +43,9 @@ MacroDroid, Tasker 같은 자동화 앱이 ShieldTap 에 보안 위험 자동 �
 - 켜져 있으면 보안 위험 자동 차단 화면을 열어 스위치를 한 번 누릅니다. 스위치가 이미 요청한 상태면 아무것도 누르지 않고 홈으로 갑니다.
 - **끄기는 지문 또는 비밀번호 인증이 필요합니다.** One UI 가 인증 창을 띄우고 자동화 앱은 대신 통과할 수 없습니다.
 
-**MacroDroid 예.** 트리거는 화면 내용(Screen Content)이고 폰에 뜨는 보안 위험 자동 차단 차단 문구와 맞춥니다. 동작은 바로가기 실행(Launch Shortcut)에서 ShieldTap `보안 위험 자동 차단 끄기` 를 고르거나 인텐트 보내기(Send Intent)에서 대상 `Activity`, 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker` 를 넣습니다.
+**MacroDroid 예.** 트리거는 화면 내용(Screen Content)이고 폰에 뜨는 보안 위험 자동 차단 차단 문구와 맞춥니다. 동작은 인텐트 보내기(Send Intent)에서 대상 `Activity`, 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker` 를 넣습니다. 화면 내용 트리거는 MacroDroid 접근성 서비스를 켜야 하고 무료판은 2초마다 화면을 확인합니다. 바로가기 실행(Launch Shortcut) 목록에는 옛 방식 바로가기만 나와서 ShieldTap 앱 바로가기는 보이지 않을 수 있습니다(미확인).
 
-**Tasker 예.** Send Intent 동작에 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker`, 클래스 `com.gml.autoblocker.ActionActivity`, 대상 `Activity` 를 넣습니다. Launch Shortcut 으로 ShieldTap `보안 위험 자동 차단 끄기` 를 실행해도 같습니다.
+**Tasker 예.** Send Intent 동작에 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker`, 클래스 `com.gml.autoblocker.ActionActivity`, 대상 `Activity` 를 넣습니다. Tasker 에는 화면 문구로 거는 기본 트리거가 없어서 AutoInput 플러그인이 필요합니다. Tasker 는 다른 앱의 앱 바로가기를 실행하지 못하므로 Send Intent 를 씁니다. Android 10 이상에서는 화면을 여는 동작에 「다른 앱 위에 표시」를 허용하라고 Tasker FAQ 가 안내합니다.
 
 adb 로 바로 시험할 수 있습니다. `adb shell am start -a com.gml.autoblocker.action.TURN_ON`
 
