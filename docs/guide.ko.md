@@ -46,7 +46,7 @@ MacroDroid, Tasker 같은 자동화 앱이 ShieldTap 에 보안 위험 자동 �
 
 **MacroDroid 예(Galaxy Z Fold8 에서 확인).** 트리거는 화면 내용(Screen Content)이고 폰에 뜨는 보안 위험 자동 차단 차단 문구와 맞춥니다. APK 설치가 막히면 `출처를 알 수 없는 앱 차단됨` 이 뜹니다. 인증하면 설치하던 화면으로 돌아옵니다. 동작은 인텐트 보내기(Send Intent)에서 대상 `Activity`, 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker` 를 넣습니다. 화면 내용 트리거는 MacroDroid 접근성 서비스를 켜야 하고 무료판은 2초마다 화면을 확인합니다. 매크로 편집 화면에도 트리거 문구가 보여서 MacroDroid 자기 화면에서 매크로가 실행될 수 있습니다. 트리거 설정의 Read Screen Update Rate 링크로 들어가 Don't read when MacroDroid is open 을 켭니다. 바로가기 실행(Launch Shortcut) 목록에는 옛 방식 바로가기만 나와서 ShieldTap 앱 바로가기는 보이지 않을 수 있습니다(미확인).
 
-**Tasker 예.** Send Intent 동작에 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker`, 클래스 `com.gml.autoblocker.ActionActivity`, 대상 `Activity` 를 넣습니다. Tasker 에는 화면 문구로 거는 기본 트리거가 없어서 AutoInput 플러그인이 필요합니다. Tasker 는 다른 앱의 앱 바로가기를 실행하지 못하므로 Send Intent 를 씁니다. Android 10 이상에서는 화면을 여는 동작에 「다른 앱 위에 표시」를 허용하라고 Tasker FAQ 가 안내합니다.
+**Tasker 예(기기 미확인).** 프로필은 Event > Plugin > AutoInput > UI Update 이고 텍스트 필터에 차단 문구를 넣습니다. Tasker 편집 화면에서 실행되지 않게 App 조건에 Tasker 를 고르고 Invert 를 켭니다. 태스크는 Send Intent 동작에 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker`, 클래스 `com.gml.autoblocker.ActionActivity`, 대상 `Activity` 를 넣습니다. Tasker 에는 화면 문구로 거는 기본 트리거가 없어서 AutoInput 플러그인이 필요합니다. Tasker 는 다른 앱의 앱 바로가기를 실행하지 못하므로 Send Intent 를 씁니다. Android 10 이상에서는 화면을 여는 동작에 「다른 앱 위에 표시」를 허용하라고 Tasker FAQ 가 안내합니다.
 
 adb 로 바로 시험할 수 있습니다. `adb shell am start -a com.gml.autoblocker.action.TURN_ON`
 
