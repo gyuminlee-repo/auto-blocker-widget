@@ -89,7 +89,7 @@ This procedure was verified on a Galaxy Z Fold8 running One UI 9.0, including th
 
 ## Updating and uninstalling
 
-**Updating.** Open ShieldTap from the app drawer and tap `Check for updates` to open the latest release page in your browser. If it is newer than the version shown at the bottom of the app screen, download `shieldtap-v<version>.apk` and install it over the current app. The version in the file name uses the same format as the one in the app, so you can compare them directly. Your settings and widget stay as they are. As with the first install, turn off Play Protect app scanning for a moment while installing. The app does not check for updates itself so it can stay free of the internet permission.
+**Updating.** Open ShieldTap from the app drawer and tap `Check for updates` to open the latest release page in your browser. If it is newer than the version shown at the bottom of the app screen, download `shieldtap-v<version>.apk` and install it over the current app. The version in the file name uses the same format as the one in the app, so you can compare them directly. Your settings and widget stay as they are. An update may get a warning with `Install anyway` under More details instead of a hard block, as seen on the verified device. If the install is blocked with no such option, turn off Play Protect app scanning for a moment as with the first install. The app does not check for updates itself so it can stay free of the internet permission.
 
 For new-version notifications, add `https://github.com/shieldtap/shieldtap` to [Obtainium](https://github.com/ImranR98/Obtainium). It watches GitHub releases and tells you when a new version is out. Whether Play Protect also blocks installs made through Obtainium has not been verified.
 
