@@ -100,5 +100,14 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
+
+        <!-- 넓은 위젯의 Play 프로텍트 버튼이 여는 입구. 설정 화면만 열고 아무것도 바꾸지 않는다. 트램펄린과 같은 작업 설정. -->
+        <activity
+            android:name=".PlayProtectActivity"
+            android:exported="false"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay" />
     </application>
 </manifest>

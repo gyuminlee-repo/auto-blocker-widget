@@ -27,9 +27,6 @@ public class MainActivity extends Activity {
     static final String SETUP_PREFS = "setup";
     static final String FINISH_DONE = "finishDone";
     static final String RESTRICTED_DONE = "restrictedDone";
-    private static final String PROTECT_PKG = "com.google.android.gms";
-    private static final String PROTECT_CLS = "com.google.android.gms.security.settings.VerifyAppsSettingsActivity";
-    private static final String STORE_PKG = "com.android.vending";
 
     private TextView[] marks;
     private View[] steps, bodies;
@@ -67,7 +64,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.btn_pin_widget).setOnClickListener(v -> pinWidget());
         findViewById(R.id.btn_read_state).setOnClickListener(v -> openRampartWithoutTap());
         findViewById(R.id.btn_auto_enable).setOnClickListener(v -> openRampartWithoutTap());
-        findViewById(R.id.btn_play_protect).setOnClickListener(v -> openPlayProtect());
+        findViewById(R.id.btn_play_protect).setOnClickListener(v -> PlayProtectActivity.open(this));
         // 위젯 탭과 같은 흐름에 켜기 전용 target 을 준다. 이미 켜져 있으면 누르지 않는다.
         // 설정 도중이므로 홈 대신 뒤로 가기로 이 화면에 돌아와 ⑤ 단계를 이어 가게 한다.
         findViewById(R.id.btn_enable_blocker).setOnClickListener(v ->
@@ -183,27 +180,6 @@ public class MainActivity extends Activity {
             more.setVisibility(show ? View.VISIBLE : View.GONE);
             toggle.setText(show ? R.string.details_hide : R.string.details_show);
         });
-    }
-
-    /** Play 프로텍트 설정 화면을 직접 열고, 막히면 Play 스토어를 연다. */
-    private void openPlayProtect() {
-        try {
-            startActivity(new Intent().setComponent(new ComponentName(PROTECT_PKG, PROTECT_CLS))
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            return;
-        } catch (ActivityNotFoundException | SecurityException e) {
-            // 아래 Play 스토어로 넘어간다.
-        }
-        Intent store = getPackageManager().getLaunchIntentForPackage(STORE_PKG);
-        try {
-            if (store != null) {
-                startActivity(store);
-                return;
-            }
-        } catch (ActivityNotFoundException | SecurityException e) {
-            // 아래 toast 로 넘어간다.
-        }
-        Toast.makeText(this, R.string.toast_play_protect_fail, Toast.LENGTH_LONG).show();
     }
 
     private ComponentName widgetProvider() {

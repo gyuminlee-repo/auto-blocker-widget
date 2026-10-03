@@ -39,6 +39,13 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     static final int[] CUSTOM_STATES = { 1, 0, -1 };
     /** 이 폭(dp)보다 좁으면 아이콘만 보인다. 2칸 기본 minWidth 와 같다. */
     private static final float SMALL_MAX_DP = 110f;
+    /**
+     * 이 폭(dp) 이상이면 오른쪽에 Play 프로텍트 바로가기를 더한다. Android 위젯 크기 표의 세로 화면 n칸 폭 73n-16 에서 3칸 값이다
+     * (developer.android.com/develop/ui/views/appwidgets/layouts). 4열 홈 화면의 2칸이 넘지 않도록 옛 공식 70n-30(180)보다 높게 잡았다.
+     */
+    private static final float WIDE_MIN_DP = 203f;
+    /** 위젯 토글(0), 빠른 설정 타일(1)과 겹치지 않는 PendingIntent 요청 코드. */
+    private static final int REQ_PLAY_PROTECT = 2;
 
     static void saveState(Context ctx, boolean on) {
         ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).edit()
@@ -130,6 +137,10 @@ public class AutoBlockerWidget extends AppWidgetProvider {
 
     static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
         for (int id : ids) {
+            // MIN_WIDTH 는 세로 화면 폭이라 칸 수를 따른다. 가로 화면의 2칸(142n-15 = 269dp)이 넓은 쪽으로 가지 않게 이것으로 고른다.
+            // 크기를 바꾸면 onAppWidgetOptionsChanged 가 다시 부른다.
+            int w = mgr.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+            boolean wide = w >= WIDE_MIN_DP;
             RemoteViews full = build(ctx, R.layout.widget, id);
             RemoteViews rv;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -137,10 +148,11 @@ public class AutoBlockerWidget extends AppWidgetProvider {
                 Map<SizeF, RemoteViews> m = new ArrayMap<>();
                 m.put(new SizeF(40f, 40f), build(ctx, R.layout.widget_small, id));
                 m.put(new SizeF(SMALL_MAX_DP, 40f), full);
+                if (wide) m.put(new SizeF(WIDE_MIN_DP, 40f), build(ctx, R.layout.widget_wide, id));
                 rv = new RemoteViews(m);
             } else {
-                int w = mgr.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-                rv = (w > 0 && w < SMALL_MAX_DP) ? build(ctx, R.layout.widget_small, id) : full;
+                rv = (w > 0 && w < SMALL_MAX_DP) ? build(ctx, R.layout.widget_small, id)
+                        : wide ? build(ctx, R.layout.widget_wide, id) : full;
             }
             mgr.updateAppWidget(id, rv);
         }
@@ -199,7 +211,7 @@ public class AutoBlockerWidget extends AppWidgetProvider {
             rv.setInt(R.id.root, "setBackgroundResource", bg);
             rv.setViewVisibility(R.id.bg, View.GONE);
         }
-        if (layout == R.layout.widget) {
+        if (layout != R.layout.widget_small) {
             rv.setTextViewText(R.id.label, stateText);
             if (system && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 // 시스템 팔레트에는 반투명 단계가 없어 확인 시각도 글자와 같은 색을 쓴다.
@@ -220,6 +232,22 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         }
         rv.setContentDescription(R.id.root, loc.getString(R.string.desc_fmt, stateText));
         rv.setOnClickPendingIntent(R.id.root, pi);
+        if (layout == R.layout.widget_wide) {
+            // 상태 색은 Auto Blocker 쪽만. 바로가기는 같은 글자색 한 가지로 칠한다.
+            rv.setTextViewText(R.id.pp_label, loc.getString(R.string.widget_play_protect));
+            if (system && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                rv.setColor(R.id.pp_icon, "setColorFilter", sysFg);
+                rv.setColor(R.id.pp_label, "setTextColor", sysFg);
+                rv.setColor(R.id.pp_divider, "setBackgroundColor", sysFg);
+            } else {
+                rv.setInt(R.id.pp_icon, "setColorFilter", fg);
+                rv.setTextColor(R.id.pp_label, fg);
+                rv.setInt(R.id.pp_divider, "setBackgroundColor", fgSub);
+            }
+            rv.setContentDescription(R.id.play_protect, loc.getString(R.string.btn_play_protect));
+            rv.setOnClickPendingIntent(R.id.play_protect, PendingIntent.getActivity(ctx, REQ_PLAY_PROTECT,
+                    new Intent(ctx, PlayProtectActivity.class), PendingIntent.FLAG_IMMUTABLE));
+        }
         return rv;
     }
 }
