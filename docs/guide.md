@@ -4,7 +4,7 @@
   <strong>English</strong> · <a href="guide.ko.md">한국어</a>
 </p>
 
-Back to the [README](../README.md). This guide holds the details the README links to: widget states, compatibility, every setup step, updates, the adb path, how the app works, security notes and limitations.
+Back to the [README](../README.md). This guide holds the details the README links to: widget states, compatibility, every setup step, updates, the adb path, automation apps, how the app works, security notes and limitations.
 
 ## Widget states
 
@@ -27,6 +27,30 @@ The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml
 ## Quick Settings tile
 
 ShieldTap also adds a Quick Settings tile. Pull down the notification shade, open the tile editor (the pencil icon or Edit) and drag the ShieldTap tile into your active tiles. The tile reads the same cache as the widget. It is highlighted when Auto Blocker is On, and its second line shows `On`, `Off` or `Unknown` on Android 10 and later. Tapping it runs the same path as a widget tap and closes the shade. On a locked phone it asks you to unlock first. If accessibility is off, the setup screen opens instead.
+
+## Automation (MacroDroid, Tasker)
+
+Automation apps such as MacroDroid and Tasker can ask ShieldTap to turn Auto Blocker on or off. The automation app decides when, for example when a screen shows the Auto Blocker block message. ShieldTap carries out the request the same way as a widget tap.
+
+| Request | Intent action | App shortcut (ID) |
+|---|---|---|
+| Turn on | `com.gml.autoblocker.action.TURN_ON` | `Turn on Auto Blocker` (`turn_on`) |
+| Turn off | `com.gml.autoblocker.action.TURN_OFF` | `Turn off Auto Blocker` (`turn_off`) |
+
+Both actions start the activity `com.gml.autoblocker/.ActionActivity` (class `com.gml.autoblocker.ActionActivity`, category `android.intent.category.DEFAULT`). There is no toggle action. Extras are ignored, and a call to the component without one of the two actions does nothing. The two app shortcuts open the same activity. They appear when you touch and hold the ShieldTap icon, and they serve automation apps that can only run shortcuts.
+
+- If accessibility is off, the setup screen opens, as with a widget tap.
+- Otherwise ShieldTap opens the Auto Blocker screen and taps the switch once. If the switch is already in the requested state, it taps nothing and goes home.
+- **Turning off still needs your fingerprint or PIN.** One UI shows the verification prompt, and an automation app cannot pass it for you.
+
+**MacroDroid example.** Trigger: Screen Content, matching the text of the Auto Blocker block message on your phone. Action: Launch Shortcut and pick ShieldTap `Turn off Auto Blocker`, or Send Intent with Target `Activity`, Action `com.gml.autoblocker.action.TURN_OFF` and Package `com.gml.autoblocker`.
+
+**Tasker example.** Action Send Intent with Action `com.gml.autoblocker.action.TURN_OFF`, Package `com.gml.autoblocker`, Class `com.gml.autoblocker.ActionActivity` and Target `Activity`. Launch Shortcut with ShieldTap `Turn off Auto Blocker` works the same way.
+
+With adb you can try it directly: `adb shell am start -a com.gml.autoblocker.action.TURN_ON`.
+
+- **Not verified.** The menu names above were not checked on a device, and no automation app has been tested with ShieldTap yet. Whether Samsung Modes and Routines can start these actions or shortcuts is also not verified. Android 10 and later limit activity starts from the background, so an automation app may need its own permission, such as Display over other apps, before the request reaches ShieldTap.
+- **Why no caller permission.** MacroDroid and Tasker cannot hold a custom permission declared by ShieldTap, so a permission check would shut them out. Turning on only raises protection. Turning off still goes through One UI verification. Any app on the phone can send these actions, and the most it can do is open the Auto Blocker screen or bring up the verification prompt. ShieldTap still requests no permissions, and the accessibility service still receives events only from the Auto Blocker package.
 
 ## Compatibility
 
@@ -118,7 +142,8 @@ sequenceDiagram
 | Check | Evidence |
 |---|---|
 | No requested permissions (including internet) | 0 `uses-permission` entries in `AndroidManifest.xml` |
-| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:29`, `:52` and `:59`. Two activities and one service are exported. The Quick Settings tile (`ShieldTile`, `:73`) is exported because the system binds it, and `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` (`:76`) lets only the system bind it. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it. The widget style screen (`WidgetConfigActivity`, `:42`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID |
+| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:33`, `:56` and `:78`. Three activities and one service are exported. The Quick Settings tile (`ShieldTile`, `:92`) is exported because the system binds it, and `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` (`:95`) lets only the system bind it. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it, and it declares the two app shortcuts (`:26-28`). The widget style screen (`WidgetConfigActivity`, `:46`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID. The automation entry (`ActionActivity`, `:65`) is covered in the next row |
+| Automation entry is exported without a caller permission | `ActionActivity` at `AndroidManifest.xml:65` accepts only `TURN_ON` and `TURN_OFF` (`:70-71`) and drops every extra. MacroDroid and Tasker cannot hold a custom permission. Turning on only raises protection, and turning off still needs One UI fingerprint or PIN verification. No permission is added and the accessibility scope does not change. See [Automation](#automation-macrodroid-tasker) |
 | Only one other app is queried: the Play Store | `<queries>` at `AndroidManifest.xml:6-8` declares only `com.android.vending`. This is not a permission. It is the fallback path that opens the Play Store when the Play Protect settings screen cannot be opened |
 | Accessibility events limited to the rampart package | `android:packageNames` at `res/xml/accessibility_service_config.xml:3` |
 | Backup disabled | `android:allowBackup="false"` at `AndroidManifest.xml:14` |

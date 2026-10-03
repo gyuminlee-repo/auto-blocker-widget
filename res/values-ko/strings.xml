@@ -6,7 +6,7 @@
     <string name="checked_at">%1$s 확인</string>
     <string name="desc_fmt">보안 위험 자동 차단 %1$s, 탭하여 전환</string>
     <string name="state_unknown">상태 미확인</string>
-    <string name="service_desc">위젯이나 빠른 설정 타일을 탭했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
+    <string name="service_desc">위젯이나 빠른 설정 타일을 탭했을 때와 자동화 앱이 켜기 또는 끄기를 요청했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
     <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. 설정 안내 화면을 엽니다.</string>
     <string name="toast_open_fail">보안 위험 자동 차단 설정 화면을 열 수 없습니다.</string>
     <string name="toast_node_missing">설정 화면에서 스위치를 찾지 못했습니다.</string>
@@ -79,4 +79,8 @@
     <string name="btn_save">저장</string>
     <string name="lang_label">언어</string>
     <string name="lang_system">시스템 기본값</string>
+    <string name="shortcut_on_short">차단 켜기</string>
+    <string name="shortcut_on_long">보안 위험 자동 차단 켜기</string>
+    <string name="shortcut_off_short">차단 끄기</string>
+    <string name="shortcut_off_long">보안 위험 자동 차단 끄기</string>
 </resources>

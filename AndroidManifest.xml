@@ -22,6 +22,10 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- 앱 바로가기 두 개. 바로가기만 실행할 수 있는 자동화 앱용이다(res/xml/shortcuts.xml). -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <receiver
@@ -53,6 +57,21 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay" />
+
+        <!-- 자동화 앱이 켜기 또는 끄기를 요청하는 입구. 켜기는 보호를 높이기만 하고 끄기는 One UI 인증을 거치므로
+             호출자 권한을 요구하지 않는다(MacroDroid, Tasker 는 사용자 정의 권한을 가질 수 없다). -->
+        <activity
+            android:name=".ActionActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="com.gml.autoblocker.action.TURN_ON" />
+                <action android:name="com.gml.autoblocker.action.TURN_OFF" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".AutoTapService"

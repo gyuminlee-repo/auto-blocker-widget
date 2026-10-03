@@ -6,7 +6,7 @@
     <string name="checked_at">Checked %1$s</string>
     <string name="desc_fmt">Auto Blocker %1$s. Tap to switch.</string>
     <string name="state_unknown">Unknown</string>
-    <string name="service_desc">Taps the switch on the Auto Blocker settings screen once, only when you tap the widget or the Quick Settings tile.</string>
+    <string name="service_desc">Taps the switch on the Auto Blocker settings screen once, only when you tap the widget or the Quick Settings tile, or when an automation app asks to turn it on or off.</string>
     <string name="toast_service_off">The accessibility service is off. Opening the setup screen.</string>
     <string name="toast_open_fail">Can\'t open the Auto Blocker settings screen.</string>
     <string name="toast_node_missing">Couldn\'t find the switch on the settings screen.</string>
@@ -85,4 +85,8 @@
     <string name="lang_system">System default</string>
     <string name="lang_en" translatable="false">English</string>
     <string name="lang_ko" translatable="false">한국어</string>
+    <string name="shortcut_on_short">Blocker on</string>
+    <string name="shortcut_on_long">Turn on Auto Blocker</string>
+    <string name="shortcut_off_short">Blocker off</string>
+    <string name="shortcut_off_long">Turn off Auto Blocker</string>
 </resources>

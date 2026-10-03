@@ -4,7 +4,7 @@
   <a href="guide.md">English</a> · <strong>한국어</strong>
 </p>
 
-[README](../README.ko.md) 에서 링크한 상세 내용입니다. 위젯 상태, 호환성, 설정 단계, 업데이트, adb 경로, 동작 원리, 보안 메모, 제약을 다룹니다.
+[README](../README.ko.md) 에서 링크한 상세 내용입니다. 위젯 상태, 호환성, 설정 단계, 업데이트, adb 경로, 자동화 앱 연동, 동작 원리, 보안 메모, 제약을 다룹니다.
 
 ## 위젯 상태
 
@@ -27,6 +27,30 @@
 ## 빠른 설정 타일
 
 ShieldTap 은 빠른 설정 타일도 제공합니다. 알림창을 내려 타일 편집(연필 아이콘 또는 편집)을 열고 ShieldTap 타일을 사용 중인 타일 쪽으로 끌어 놓으면 됩니다. 타일은 위젯과 같은 캐시를 읽습니다. 켜짐이면 타일이 강조되고 Android 10 이상에서는 둘째 줄에 `켜짐`, `꺼짐`, `상태 미확인` 중 하나가 나옵니다. 탭하면 위젯 탭과 같은 경로로 전환하고 알림창을 닫습니다. 화면이 잠겨 있으면 먼저 잠금 해제를 요청합니다. 접근성이 꺼져 있으면 대신 설정 안내 화면이 열립니다.
+
+## 자동화 앱 연동
+
+MacroDroid, Tasker 같은 자동화 앱이 ShieldTap 에 보안 위험 자동 차단 켜기나 끄기를 요청할 수 있습니다. 언제 요청할지는 자동화 앱이 정합니다. 예를 들어 화면에 보안 위험 자동 차단의 차단 문구가 뜰 때 요청하게 할 수 있습니다. ShieldTap 은 요청을 위젯 탭과 같은 방식으로 처리합니다.
+
+| 요청 | Intent 액션 | 앱 바로가기 (ID) |
+|---|---|---|
+| 켜기 | `com.gml.autoblocker.action.TURN_ON` | `보안 위험 자동 차단 켜기` (`turn_on`) |
+| 끄기 | `com.gml.autoblocker.action.TURN_OFF` | `보안 위험 자동 차단 끄기` (`turn_off`) |
+
+두 액션은 `com.gml.autoblocker/.ActionActivity` 액티비티를 엽니다(클래스 `com.gml.autoblocker.ActionActivity`, 카테고리 `android.intent.category.DEFAULT`). 전환 액션은 없습니다. extra 는 무시하고 두 액션이 아닌 호출은 아무것도 하지 않습니다. 앱 바로가기 두 개도 같은 액티비티를 엽니다. ShieldTap 아이콘을 길게 누르면 보이고 바로가기만 실행할 수 있는 자동화 앱을 위한 것입니다.
+
+- 접근성이 꺼져 있으면 위젯 탭처럼 설정 안내 화면이 열립니다.
+- 켜져 있으면 보안 위험 자동 차단 화면을 열어 스위치를 한 번 누릅니다. 스위치가 이미 요청한 상태면 아무것도 누르지 않고 홈으로 갑니다.
+- **끄기는 지문 또는 비밀번호 인증이 필요합니다.** One UI 가 인증 창을 띄우고 자동화 앱은 대신 통과할 수 없습니다.
+
+**MacroDroid 예.** 트리거는 화면 내용(Screen Content)이고 폰에 뜨는 보안 위험 자동 차단 차단 문구와 맞춥니다. 동작은 바로가기 실행(Launch Shortcut)에서 ShieldTap `보안 위험 자동 차단 끄기` 를 고르거나 인텐트 보내기(Send Intent)에서 대상 `Activity`, 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker` 를 넣습니다.
+
+**Tasker 예.** Send Intent 동작에 액션 `com.gml.autoblocker.action.TURN_OFF`, 패키지 `com.gml.autoblocker`, 클래스 `com.gml.autoblocker.ActionActivity`, 대상 `Activity` 를 넣습니다. Launch Shortcut 으로 ShieldTap `보안 위험 자동 차단 끄기` 를 실행해도 같습니다.
+
+adb 로 바로 시험할 수 있습니다. `adb shell am start -a com.gml.autoblocker.action.TURN_ON`
+
+- **미확인.** 위 메뉴 이름은 기기에서 확인하지 않았고 ShieldTap 과 함께 시험한 자동화 앱도 아직 없습니다. 삼성 모드와 루틴이 이 액션이나 바로가기를 실행할 수 있는지도 미확인입니다. Android 10 이상은 백그라운드의 액티비티 실행을 제한하므로 자동화 앱 쪽에 다른 앱 위에 표시 같은 권한이 따로 필요할 수 있습니다.
+- **호출자 권한을 요구하지 않는 이유.** MacroDroid 와 Tasker 는 ShieldTap 이 선언한 사용자 정의 권한을 가질 수 없어 권한 검사를 넣으면 쓸 수 없게 됩니다. 켜기는 보호를 높이기만 합니다. 끄기는 One UI 인증을 거칩니다. 폰의 어떤 앱이든 이 액션을 보낼 수 있지만 할 수 있는 일은 보안 위험 자동 차단 화면을 열거나 인증 창을 띄우는 것까지입니다. ShieldTap 의 요청 권한은 여전히 0개이고 접근성 서비스는 여전히 보안 위험 자동 차단 패키지의 이벤트만 받습니다.
 
 ## 호환성
 
@@ -118,7 +142,8 @@ sequenceDiagram
 | 확인 항목 | 근거 |
 |---|---|
 | 요청 권한 없음 (인터넷 포함) | `AndroidManifest.xml` 에 `uses-permission` 0건 |
-| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:29`, `:52`, `:59` 의 `android:exported="false"`. 공개는 화면 두 개와 서비스 하나. 빠른 설정 타일(`ShieldTile`, `:73`)은 시스템이 바인드하므로 공개하고 `:76` 의 `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` 로 시스템만 바인드할 수 있음. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:19`)은 런처 실행용. 위젯 스타일 화면(`WidgetConfigActivity`, `:42`)은 위젯을 놓거나 다시 설정할 때 런처가 여는 용도이고 이 앱 위젯 id 가 아니면 바로 닫힘 |
+| 위젯, 트램펄린, 접근성 서비스 외부 비공개 | `AndroidManifest.xml:33`, `:56`, `:78` 의 `android:exported="false"`. 공개는 화면 세 개와 서비스 하나. 빠른 설정 타일(`ShieldTile`, `:92`)은 시스템이 바인드하므로 공개하고 `:95` 의 `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` 로 시스템만 바인드할 수 있음. 앱 서랍에서 열리는 안내 화면(`MainActivity`, `:19`)은 런처 실행용이고 앱 바로가기 두 개를 선언함(`:26-28`). 위젯 스타일 화면(`WidgetConfigActivity`, `:46`)은 위젯을 놓거나 다시 설정할 때 런처가 여는 용도이고 이 앱 위젯 id 가 아니면 바로 닫힘. 자동화 입구(`ActionActivity`, `:65`)는 다음 행 |
+| 자동화 입구는 호출자 권한 없이 공개 | `AndroidManifest.xml:65` 의 `ActionActivity` 는 `TURN_ON` 과 `TURN_OFF`(`:70-71`)만 받고 extra 는 모두 버림. MacroDroid 와 Tasker 는 사용자 정의 권한을 가질 수 없음. 켜기는 보호를 높이기만 하고 끄기는 One UI 의 지문 또는 비밀번호 인증을 거침. 추가된 권한이 없고 접근성 범위도 그대로. [자동화 앱 연동](#자동화-앱-연동) 참고 |
 | 다른 앱 조회는 Play 스토어 하나 | `AndroidManifest.xml:6-8` 의 `<queries>` 에 `com.android.vending` 만 선언. 권한이 아니며 Play 프로텍트 설정 화면을 못 열 때 Play 스토어를 여는 대체 경로용 |
 | 접근성 이벤트를 rampart 패키지로 한정 | `res/xml/accessibility_service_config.xml:3` 의 `android:packageNames` |
 | 백업 비활성 | `AndroidManifest.xml:14` 의 `android:allowBackup="false"` |
