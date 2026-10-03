@@ -69,8 +69,10 @@ public class MainActivity extends Activity {
         findViewById(R.id.btn_auto_enable).setOnClickListener(v -> openRampartWithoutTap());
         findViewById(R.id.btn_play_protect).setOnClickListener(v -> openPlayProtect());
         // 위젯 탭과 같은 흐름에 켜기 전용 target 을 준다. 이미 켜져 있으면 누르지 않는다.
+        // 설정 도중이므로 홈 대신 뒤로 가기로 이 화면에 돌아와 ⑤ 단계를 이어 가게 한다.
         findViewById(R.id.btn_enable_blocker).setOnClickListener(v ->
-                open(new Intent(this, TrampolineActivity.class).putExtra(TrampolineActivity.EXTRA_TARGET, 1)));
+                open(new Intent(this, TrampolineActivity.class).putExtra(TrampolineActivity.EXTRA_TARGET, 1)
+                        .putExtra(TrampolineActivity.EXTRA_RETURN, TrampolineActivity.RETURN_BACK)));
         findViewById(R.id.btn_finish_setup).setOnClickListener(v -> {
             getSharedPreferences(SETUP_PREFS, Context.MODE_PRIVATE).edit()
                     .putBoolean(FINISH_DONE, true).commit();

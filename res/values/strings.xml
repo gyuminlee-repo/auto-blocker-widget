@@ -54,7 +54,7 @@
     <string name="btn_play_protect">Open Play Protect settings</string>
     <string name="toast_play_protect_fail">Can\'t open Play Protect settings. Turn it on in Play Store > profile > Play Protect.</string>
     <string name="btn_enable_blocker">Turn on Auto Blocker</string>
-    <string name="step5_enable_hint">Opens the Auto Blocker screen, turns the switch on, and returns to the home screen.</string>
+    <string name="step5_enable_hint">Opens the Auto Blocker screen, turns the switch on, and returns to this screen.</string>
     <string name="step5_blocker_on">Auto Blocker: On ✓</string>
     <string name="step5_auto_title">Recommended: turn back on after 30 minutes</string>
     <string name="step5_auto_body">On the Auto Blocker screen, turn on \"Turn on Auto Blocker automatically\" (One UI 8.5 and later). If you turn Auto Blocker off with the widget and forget, it comes back on after 30 minutes. The option may be near the bottom of the screen.</string>

@@ -39,12 +39,14 @@ public class ShieldTile extends TileService {
         else launch();
     }
 
-    /** 위젯 탭과 같은 경로. 서비스가 꺼져 있으면 TrampolineActivity 가 설정 안내 화면을 연다. */
+    /** 위젯 탭과 같은 경로지만 값을 바꾼 뒤 홈 대신 타일을 누르기 전 화면으로 돌아간다. 서비스가 꺼져 있으면 TrampolineActivity 가 설정 안내 화면을 연다. */
     @SuppressWarnings("deprecation") // startActivityAndCollapse(Intent) 는 API 34 미만 분기에서만 부른다.
     private void launch() {
-        Intent i = new Intent(this, TrampolineActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent i = new Intent(this, TrampolineActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(TrampolineActivity.EXTRA_RETURN, TrampolineActivity.RETURN_BACK);
         if (Build.VERSION.SDK_INT >= 34) {
-            startActivityAndCollapse(PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE));
+            // PendingIntent 는 extra 를 구별하지 않으므로 위젯(요청 코드 0)과 다른 요청 코드를 써야 BACK 이 섞이지 않는다.
+            startActivityAndCollapse(PendingIntent.getActivity(this, 1, i, PendingIntent.FLAG_IMMUTABLE));
         } else {
             startActivityAndCollapse(i);
         }

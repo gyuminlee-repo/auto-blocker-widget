@@ -15,6 +15,12 @@ public class TrampolineActivity extends Activity {
     /** 선택 extra. 1 이면 켜기만, 0 이면 끄기만 한다. 없으면 -1 로 지금처럼 전환한다. */
     static final String EXTRA_TARGET = "target";
     static final String ARM_TARGET = "armTarget";
+    /** 선택 extra. 값을 바꾼 뒤 돌아가는 방식. 없으면 RETURN_HOME 으로 지금처럼 홈에 간다. */
+    static final String EXTRA_RETURN = "return";
+    static final String ARM_RETURN = "armReturn";
+    static final int RETURN_HOME = 0;
+    /** 뒤로 가기 한 번으로 Auto Blocker 화면을 닫아 그 화면을 열기 전 화면으로 돌아간다. 타일, 자동화, 설정 안내용. */
+    static final int RETURN_BACK = 1;
     static final String RAMPART_ACTION = "com.samsung.android.rampart.action.MAIN_SETTING_ACTIVITY";
 
     /** rampart 설정 화면 Intent. arm 하지 않으므로 여는 것만으로는 스위치를 누르지 않는다. */
@@ -33,13 +39,15 @@ public class TrampolineActivity extends Activity {
         if (!AutoTapService.isRunning()) {
             // 서비스가 없으면 설정 화면을 열어도 누를 수 없으므로 설정 안내 화면으로 보낸다.
             Toast.makeText(this, R.string.toast_service_off, Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+            // 이 액티비티는 자기 작업(taskAffinity="")에서 뜨므로 설정 안내는 앱 작업으로 연다.
+            startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             finish();
             return;
         }
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putLong(ARMED_AT, SystemClock.elapsedRealtime())
-                .putInt(ARM_TARGET, getIntent().getIntExtra(EXTRA_TARGET, -1)).commit();
+                .putInt(ARM_TARGET, getIntent().getIntExtra(EXTRA_TARGET, -1))
+                .putInt(ARM_RETURN, getIntent().getIntExtra(EXTRA_RETURN, RETURN_HOME)).commit();
         try {
             startActivity(rampartIntent());
             AutoTapService.onArmed();

@@ -51,9 +51,11 @@
             </intent-filter>
         </activity>
 
+        <!-- taskAffinity="" 로 앱 작업(MainActivity)과 섞이지 않게 한다. 섞이면 BACK 이 원래 화면 대신 설정 안내로 간다. -->
         <activity
             android:name=".TrampolineActivity"
             android:exported="false"
+            android:taskAffinity=""
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay" />
@@ -63,6 +65,7 @@
         <activity
             android:name=".ActionActivity"
             android:exported="true"
+            android:taskAffinity=""
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay">

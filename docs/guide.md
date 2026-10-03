@@ -26,7 +26,7 @@ The image is not a screenshot. It is a preview drawn from `res/layout/widget.xml
 
 ## Quick Settings tile
 
-ShieldTap also adds a Quick Settings tile. Pull down the notification shade, open the tile editor (the pencil icon or Edit) and drag the ShieldTap tile into your active tiles. The tile reads the same cache as the widget. It is highlighted when Auto Blocker is On, and its second line shows `On`, `Off` or `Unknown` on Android 10 and later. Tapping it runs the same path as a widget tap and closes the shade. On a locked phone it asks you to unlock first. If accessibility is off, the setup screen opens instead.
+ShieldTap also adds a Quick Settings tile. Pull down the notification shade, open the tile editor (the pencil icon or Edit) and drag the ShieldTap tile into your active tiles. The tile reads the same cache as the widget. It is highlighted when Auto Blocker is On, and its second line shows `On`, `Off` or `Unknown` on Android 10 and later. Tapping it runs the same path as a widget tap and closes the shade. Unlike the widget, it does not go to the home screen afterwards. It sends Back once to close the Auto Blocker screen, so you return to the screen you were on. On a locked phone it asks you to unlock first. If accessibility is off, the setup screen opens instead.
 
 ## Automation (MacroDroid, Tasker)
 
@@ -40,7 +40,8 @@ Automation apps such as MacroDroid and Tasker can ask ShieldTap to turn Auto Blo
 Both actions start the activity `com.gml.autoblocker/.ActionActivity` (class `com.gml.autoblocker.ActionActivity`, category `android.intent.category.DEFAULT`). There is no toggle action. Extras are ignored, and a call to the component without one of the two actions does nothing. The two app shortcuts open the same activity. They appear when you touch and hold the ShieldTap icon, and they serve automation apps that can only run shortcuts.
 
 - If accessibility is off, the setup screen opens, as with a widget tap.
-- Otherwise ShieldTap opens the Auto Blocker screen and taps the switch once. If the switch is already in the requested state, it taps nothing and goes home.
+- Otherwise ShieldTap opens the Auto Blocker screen and taps the switch once. If the switch is already in the requested state, it taps nothing.
+- **Returns to the screen you were on.** After the switch changes, or right away when it already matched, ShieldTap sends Back once instead of Home. That closes the Auto Blocker screen and shows the app you were using, such as the install screen that Auto Blocker had just blocked.
 - **Turning off still needs your fingerprint or PIN.** One UI shows the verification prompt, and an automation app cannot pass it for you.
 
 **MacroDroid example.** Trigger: Screen Content, matching the text of the Auto Blocker block message on your phone. Action: Send Intent with Target `Activity`, Action `com.gml.autoblocker.action.TURN_OFF` and Package `com.gml.autoblocker`. Screen Content needs the MacroDroid accessibility service and checks the screen every 2 seconds in the free version. The Launch Shortcut action lists only older-style shortcuts, so the ShieldTap app shortcuts may not appear there (not verified).
@@ -125,15 +126,16 @@ sequenceDiagram
     S->>R: If armed, tap the switch row once
     Note over R,U: When turning off, the system shows a verification prompt and the user verifies
     R-->>S: Value change detected
-    S->>W: Go home and update the widget
+    S->>W: Leave (Home for the widget, Back for the tile) and update the widget
 ```
 
-- **No coordinate taps.** ShieldTap finds the switch row by its internal ID in the accessibility node tree and sends `ACTION_CLICK` to that node (`src/com/gml/autoblocker/AutoTapService.java:97-111`). That is why it depends on the One UI version more than on the device model.
-- **Stops if the switch is missing.** If the ID changed and the node is not there, it taps nothing and shows `Couldn't find the switch on the settings screen.` after 5 seconds (`AutoTapService.java:49-62`). Fallbacks such as "the first switch on the screen" are deliberately left out, so it never taps a different switch on the same screen (such as `Maximum restrictions` on One UI 6.1.1 and later).
-- **Skips the tap when nothing needs to change.** `Turn on Auto Blocker` in setup asks for On. If the switch is already on, the service taps nothing and goes home (`AutoTapService.java:105-109`).
+- **No coordinate taps.** ShieldTap finds the switch row by its internal ID in the accessibility node tree and sends `ACTION_CLICK` to that node (`src/com/gml/autoblocker/AutoTapService.java:102-117`). That is why it depends on the One UI version more than on the device model.
+- **Stops if the switch is missing.** If the ID changed and the node is not there, it taps nothing and shows `Couldn't find the switch on the settings screen.` after 5 seconds (`AutoTapService.java:51-64`). Fallbacks such as "the first switch on the screen" are deliberately left out, so it never taps a different switch on the same screen (such as `Maximum restrictions` on One UI 6.1.1 and later).
+- **Skips the tap when nothing needs to change.** `Turn on Auto Blocker` in setup asks for On. If the switch is already on, the service taps nothing and goes back to the setup screen (`AutoTapService.java:111-115`).
 - The state the widget shows is a cache of the switch state the accessibility service last read from the settings screen. ShieldTap neither reads nor writes the Auto Blocker system setting (`rampart_main_switch_enabled`).
 - On every window event of the settings screen, the accessibility service reads `isChecked()` of the switch (`sesl_switchbar_switch`). Only within the 5 seconds the arm flag is valid does it tap the switch row (`sesl_switchbar_container`) once.
-- It goes back home only after `isChecked()` on the same window differs from the value before the tap. Until the value changes it sends no Home or Back.
+- It leaves the Auto Blocker screen only after `isChecked()` on the same window differs from the value before the tap. Until the value changes it sends no Home or Back.
+- **Where it goes next depends on what asked.** A widget tap goes to the home screen, as before. The Quick Settings tile, automation requests and `Turn on Auto Blocker` in setup send Back once, which closes the Auto Blocker screen and shows the screen underneath (`AutoTapService.java:122-128`). Back is sent only while the Auto Blocker screen is the active window, so it never dismisses the verification prompt. Tile and automation requests open in a task of their own (`android:taskAffinity=""` at `AndroidManifest.xml:58` and `:68`), so Back does not land on the ShieldTap setup screen left in recents.
 - If you cancel verification and the value does not change, it stops watching after 10 seconds and does nothing.
 - If you open the Auto Blocker settings screen yourself, ShieldTap taps nothing.
 
@@ -142,8 +144,8 @@ sequenceDiagram
 | Check | Evidence |
 |---|---|
 | No requested permissions (including internet) | 0 `uses-permission` entries in `AndroidManifest.xml` |
-| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:33`, `:56` and `:78`. Three activities and one service are exported. The Quick Settings tile (`ShieldTile`, `:92`) is exported because the system binds it, and `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` (`:95`) lets only the system bind it. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it, and it declares the two app shortcuts (`:26-28`). The widget style screen (`WidgetConfigActivity`, `:46`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID. The automation entry (`ActionActivity`, `:65`) is covered in the next row |
-| Automation entry is exported without a caller permission | `ActionActivity` at `AndroidManifest.xml:65` accepts only `TURN_ON` and `TURN_OFF` (`:70-71`) and drops every extra. MacroDroid and Tasker cannot hold a custom permission. Turning on only raises protection, and turning off still needs One UI fingerprint or PIN verification. No permission is added and the accessibility scope does not change. See [Automation](#automation-macrodroid-tasker) |
+| Widget, trampoline and accessibility service are not exported | `android:exported="false"` at `AndroidManifest.xml:33`, `:57` and `:81`. Three activities and one service are exported. The Quick Settings tile (`ShieldTile`, `:95`) is exported because the system binds it, and `android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"` (`:98`) lets only the system bind it. The setup screen opened from the app drawer (`MainActivity`, `:19`) is exported so the launcher can start it, and it declares the two app shortcuts (`:26-28`). The widget style screen (`WidgetConfigActivity`, `:46`) is exported so the launcher can open it when you place or reconfigure the widget. It accepts only widget IDs that belong to ShieldTap and closes for any other ID. The automation entry (`ActionActivity`, `:67`) is covered in the next row |
+| Automation entry is exported without a caller permission | `ActionActivity` at `AndroidManifest.xml:67` accepts only `TURN_ON` and `TURN_OFF` (`:73-74`) and drops every extra. MacroDroid and Tasker cannot hold a custom permission. Turning on only raises protection, and turning off still needs One UI fingerprint or PIN verification. No permission is added and the accessibility scope does not change. See [Automation](#automation-macrodroid-tasker) |
 | Only one other app is queried: the Play Store | `<queries>` at `AndroidManifest.xml:6-8` declares only `com.android.vending`. This is not a permission. It is the fallback path that opens the Play Store when the Play Protect settings screen cannot be opened |
 | Accessibility events limited to the rampart package | `android:packageNames` at `res/xml/accessibility_service_config.xml:3` |
 | Backup disabled | `android:allowBackup="false"` at `AndroidManifest.xml:14` |
@@ -158,6 +160,7 @@ An accessibility service is a powerful permission, so check the source and the S
 - It stops working if the viewIds on the settings screen change, so it is fragile across One UI updates.
 - Turning on Auto Blocker disconnects wireless debugging. Turning it off restores it.
 - ShieldTap is not published on Google Play or the Galaxy Store. It is distributed only through GitHub releases.
+- After a tile or automation request, Back returns to the previous screen only if the Auto Blocker screen opens as a fresh screen of its own. If you had left Auto Blocker open on a deeper page, Back may show that Auto Blocker page instead (inferred, not verified on a device).
 
 ## Icon credits
 

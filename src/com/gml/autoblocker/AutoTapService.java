@@ -2,6 +2,7 @@ package com.gml.autoblocker;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -37,7 +38,8 @@ public class AutoTapService extends AccessibilityService {
     static void disarm(Context ctx) {
         ctx.getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE).edit()
                 .putLong(TrampolineActivity.ARMED_AT, 0)
-                .putInt(TrampolineActivity.ARM_TARGET, -1).commit();
+                .putInt(TrampolineActivity.ARM_TARGET, -1)
+                .putInt(TrampolineActivity.ARM_RETURN, TrampolineActivity.RETURN_HOME).commit();
     }
 
     private boolean armed() {
@@ -69,6 +71,8 @@ public class AutoTapService extends AccessibilityService {
 
     /** 클릭 전 값. 클릭을 보냈고 값 변화를 기다리는 동안만 0 또는 1, 아니면 -1. */
     private int pendingBefore = -1;
+    /** 값이 바뀐 뒤 돌아가는 방식. 클릭 전에 disarm 으로 기록이 지워지므로 watch 할 때 옮겨 둔다. */
+    private int pendingReturn = TrampolineActivity.RETURN_HOME;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent e) {
@@ -87,9 +91,10 @@ public class AutoTapService extends AccessibilityService {
 
         if (pendingBefore >= 0) {
             if (checked != pendingBefore) {
-                Log.i(TAG, "value changed " + pendingBefore + " -> " + checked + ", HOME");
+                int ret = pendingReturn;
+                Log.i(TAG, "value changed " + pendingBefore + " -> " + checked + ", return=" + ret);
                 stopWatch();
-                performGlobalAction(GLOBAL_ACTION_HOME);
+                returnFrom(ret);
             }
             return;
         }
@@ -97,25 +102,35 @@ public class AutoTapService extends AccessibilityService {
         List<AccessibilityNodeInfo> rows = root.findAccessibilityNodeInfosByViewId(ROW_ID);
         if (rows == null || rows.isEmpty()) return;
         Log.i(TAG, "node found before=" + checked);
-        int target = getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE)
-                .getInt(TrampolineActivity.ARM_TARGET, -1);
+        SharedPreferences prefs = getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE);
+        int target = prefs.getInt(TrampolineActivity.ARM_TARGET, -1);
+        int ret = prefs.getInt(TrampolineActivity.ARM_RETURN, TrampolineActivity.RETURN_HOME);
         // 클릭 전에 disarm 해서 이벤트가 겹쳐도 정확히 한 번만 누른다.
         disarm(this);
         if (armTimeout != null) handler.removeCallbacks(armTimeout);
         if (target >= 0 && checked == target) {
             // 이미 원하는 값이면 누르지 않는다. 캐시는 위에서 저장했다.
-            Log.i(TAG, "already " + target + ", no click, HOME");
-            performGlobalAction(GLOBAL_ACTION_HOME);
+            Log.i(TAG, "already " + target + ", no click, return=" + ret);
+            returnFrom(ret);
             return;
         }
         boolean ok = rows.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
         Log.i(TAG, "click performed=" + ok);
-        if (ok) watch(checked);
+        if (ok) watch(checked, ret);
     }
 
-    private void watch(int before) {
+    /**
+     * 위젯은 홈으로 간다. 타일, 자동화, 설정 안내는 뒤로 가기 한 번으로 Auto Blocker 화면을 닫아 열기 전 화면으로 돌아간다.
+     * 이 메서드는 활성 창이 rampart 일 때만 불리므로(위 패키지 검사) 인증 창이 아니라 Auto Blocker 화면이 닫힌다.
+     */
+    private void returnFrom(int ret) {
+        performGlobalAction(ret == TrampolineActivity.RETURN_BACK ? GLOBAL_ACTION_BACK : GLOBAL_ACTION_HOME);
+    }
+
+    private void watch(int before, int ret) {
         stopWatch();
         pendingBefore = before;
+        pendingReturn = ret;
         observeTimeout = new Runnable() {
             @Override public void run() { Log.i(TAG, "observe timeout, no action"); stopWatch(); }
         };
@@ -124,6 +139,7 @@ public class AutoTapService extends AccessibilityService {
 
     private void stopWatch() {
         pendingBefore = -1;
+        pendingReturn = TrampolineActivity.RETURN_HOME;
         if (observeTimeout != null) { handler.removeCallbacks(observeTimeout); observeTimeout = null; }
     }
 
