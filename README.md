@@ -67,7 +67,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 - **Switches with one tap.** In the Color style the widget turns green for on and amber for off, with the time the state was last read. [Widget states →](docs/guide.md#widget-states)
 - **Resizes and comes in several styles.** The widget shrinks to just the shield icon at one cell and adds a Play Protect settings shortcut at 3 cells wide or more. Touching and holding it opens settings where each widget can be Color, Monochrome, Custom or, on Android 12 and later, System colors that follow your wallpaper. Custom lets you pick each state color from presets, hue, saturation and brightness sliders, or a #RRGGBB code. [Widget states →](docs/guide.md#widget-states)
 - **Also works from Quick Settings.** Pull down the notification shade, open the tile editor (pencil or Edit) and drag ShieldTap into your tiles. The tile shows the same state as the widget and switches the same way. [Quick Settings tile →](docs/guide.md#quick-settings-tile)
-- **Takes requests from automation apps.** MacroDroid, Tasker and other automation apps can send `com.gml.autoblocker.action.TURN_ON` or `TURN_OFF`, or run the `Turn on Auto Blocker` and `Turn off Auto Blocker` app shortcuts. Turning off still asks for your fingerprint or PIN. [Automation →](docs/guide.md#automation-macrodroid-tasker)
+- **Takes requests from automation apps.** If you already use MacroDroid or Tasker, it can turn Auto Blocker on or off through ShieldTap. Turning off still asks for your fingerprint or PIN. [Advanced: automation apps →](#advanced-automation-apps)
 - **Runs with zero permissions.** The manifest has no `uses-permission` entry, including internet, so nothing leaves the phone. [Security notes →](docs/guide.md#security-notes)
 - **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget, the Quick Settings tile or the `Turn on Auto Blocker` button in setup, or after an automation app asks to turn it on or off. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.
@@ -97,6 +97,18 @@ ShieldTap needs One UI 6 or later, where Auto Blocker exists. It installs on And
 **Update** with `Check for updates` in the app, which opens the latest release page; install the new APK over the current one and your settings and widget stay. **Uninstall** with `Open App info (uninstall)`. [Updating and uninstalling →](docs/guide.md#updating-and-uninstalling)
 
 Developers can install with adb and turn on the service from a script. [Install with adb →](docs/guide.md#install-with-adb)
+
+## advanced: automation apps
+
+Most people install an APK only now and then. When the Auto Blocker window blocks an install, tap the widget or the Quick Settings tile. That needs no extra app and costs no battery. If you already use MacroDroid or Tasker, it can ask ShieldTap to turn Auto Blocker off when the window appears. Turning off still asks for your fingerprint or PIN, and you return to the install screen afterwards.
+
+| | MacroDroid (tested) | Tasker (not tested) |
+|---|---|---|
+| Trigger | Screen Content with the window title: `Unknown app blocked` in English, `출처를 알 수 없는 앱 차단됨` in Korean | Event > Plugin > AutoInput > UI Update with the same title |
+| Skip its own editor | Turn on `Don't read when MacroDroid is open` | Add an App context with Tasker and turn on Invert |
+| Action | Send Intent: Target `Activity`, Action `com.gml.autoblocker.action.TURN_OFF`, Package `com.gml.autoblocker` | Send Intent: the same Action and Package, Class `com.gml.autoblocker.ActionActivity`, Target `Activity` |
+
+Screen Content reads the screen every 2 seconds in the free version. `TURN_ON` and the app shortcuts work the same way. Regular expressions for several languages and a trigger that does not read the screen: [Automation →](docs/guide.md#automation-macrodroid-tasker)
 
 ## docs
 
