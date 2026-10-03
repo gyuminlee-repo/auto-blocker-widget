@@ -54,6 +54,7 @@
     <string name="btn_play_protect">Open Play Protect settings</string>
     <!-- 3×1 위젯 오른쪽에 보이는 바로가기 버튼 라벨. 설명은 btn_play_protect 를 쓴다. -->
     <string name="widget_play_protect">Play Protect</string>
+    <string name="toast_play_protect_hint">Tap ⚙ at the top right, then Scan apps with Play Protect.</string>
     <string name="toast_play_protect_fail">Can\'t open Play Protect settings. Turn it on in Play Store > profile > Play Protect.</string>
     <string name="btn_enable_blocker">Turn on Auto Blocker</string>
     <string name="step5_enable_hint">Opens the Auto Blocker screen, turns the switch on, and returns to this screen.</string>

@@ -19,6 +19,8 @@ public class PlayProtectActivity extends Activity {
         try {
             ctx.startActivity(new Intent().setComponent(new ComponentName(PROTECT_PKG, PROTECT_CLS))
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            // 스위치 화면은 Play 스토어 내부 화면이라 외부에서 바로 열 수 없다(Play 스토어 53.3 분석). 다음 한 단계를 알려 준다.
+            Toast.makeText(ctx, R.string.toast_play_protect_hint, Toast.LENGTH_LONG).show();
             return;
         } catch (ActivityNotFoundException | SecurityException e) {
             // 아래 Play 스토어로 넘어간다.
