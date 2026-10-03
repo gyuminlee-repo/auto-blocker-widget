@@ -39,11 +39,6 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     static final int[] CUSTOM_STATES = { 1, 0, -1 };
     /** 이 폭(dp)보다 좁으면 아이콘만 보인다. 2칸 기본 minWidth 와 같다. */
     private static final float SMALL_MAX_DP = 110f;
-    /**
-     * 이 폭(dp) 이상이면 오른쪽에 Play 프로텍트 바로가기를 더한다. Android 위젯 크기 표의 세로 화면 n칸 폭 73n-16 에서 3칸 값이다
-     * (developer.android.com/develop/ui/views/appwidgets/layouts). 4열 홈 화면의 2칸이 넘지 않도록 옛 공식 70n-30(180)보다 높게 잡았다.
-     */
-    private static final float WIDE_MIN_DP = 203f;
     /** 위젯 토글(0), 빠른 설정 타일(1)과 겹치지 않는 PendingIntent 요청 코드. */
     private static final int REQ_PLAY_PROTECT = 2;
 
@@ -66,22 +61,44 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         else super.onReceive(ctx, intent);
     }
 
-    @Override
-    public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
-        render(ctx, mgr, ids);
+    /**
+     * 3×1 provider(AutoBlockerWideWidget)면 true. 넓은 레이아웃은 위젯 폭이 아니라 이것으로 고른다.
+     * 폭으로 고르면 칸이 넓은 화면(Galaxy Z Fold 펼친 화면 등)에서 2칸도 넓은 쪽으로 갈 수 있다.
+     */
+    boolean wide() {
+        return false;
     }
 
-    /** 위젯과 빠른 설정 타일을 함께 다시 그린다. 캐시나 언어가 바뀔 때 부른다. */
+    /** 위젯 id 가 3×1 provider 소속인지. provider 를 모르는 호출부(WidgetConfigActivity)용. */
+    static boolean isWide(ComponentName provider) {
+        return provider != null && AutoBlockerWideWidget.class.getName().equals(provider.getClassName());
+    }
+
+    @Override
+    public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
+        render(ctx, mgr, ids, wide());
+    }
+
+    /** 위젯과 빠른 설정 타일을 함께 다시 그린다. 캐시나 언어가 바뀔 때 부른다. 2×1 과 3×1 provider 를 모두 갱신한다. */
     static void refresh(Context ctx) {
         ShieldTile.requestUpdate(ctx);
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
         int[] ids = mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWidget.class));
-        if (ids.length > 0) render(ctx, mgr, ids);
+        if (ids.length > 0) render(ctx, mgr, ids, false);
+        int[] wideIds = mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWideWidget.class));
+        if (wideIds.length > 0) render(ctx, mgr, wideIds, true);
+    }
+
+    /** 두 provider 에 놓인 위젯 수의 합. 설정 안내의 「위젯 추가」 단계 판정용. */
+    static int widgetCount(Context ctx) {
+        AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
+        return mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWidget.class)).length
+                + mgr.getAppWidgetIds(new ComponentName(ctx, AutoBlockerWideWidget.class)).length;
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context ctx, AppWidgetManager mgr, int id, Bundle options) {
-        render(ctx, mgr, new int[] { id });
+        render(ctx, mgr, new int[] { id }, wide());
     }
 
     /** 위젯을 지우면 그 id 의 스타일 저장값도 지운다. */
@@ -135,24 +152,25 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         e.commit();
     }
 
-    static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
+    /**
+     * wide 는 ids 가 속한 provider 가 3×1 인지다. 3×1 은 크기와 API 수준에 상관없이 항상 widget_wide 를 쓴다.
+     * widget_info_wide.xml 의 minResizeWidth 가 3칸 아래로 줄이지 못하게 하므로 좁은 대체 레이아웃을 두지 않는다.
+     */
+    static void render(Context ctx, AppWidgetManager mgr, int[] ids, boolean wide) {
         for (int id : ids) {
-            // MIN_WIDTH 는 세로 화면 폭이라 칸 수를 따른다. 가로 화면의 2칸(142n-15 = 269dp)이 넓은 쪽으로 가지 않게 이것으로 고른다.
-            // 크기를 바꾸면 onAppWidgetOptionsChanged 가 다시 부른다.
-            int w = mgr.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-            boolean wide = w >= WIDE_MIN_DP;
-            RemoteViews full = build(ctx, R.layout.widget, id);
             RemoteViews rv;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (wide) {
+                rv = build(ctx, R.layout.widget_wide, id);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 // 런처가 위젯 크기에 맞는 쪽을 고른다(dp). 좁으면 아이콘만.
                 Map<SizeF, RemoteViews> m = new ArrayMap<>();
                 m.put(new SizeF(40f, 40f), build(ctx, R.layout.widget_small, id));
-                m.put(new SizeF(SMALL_MAX_DP, 40f), full);
-                if (wide) m.put(new SizeF(WIDE_MIN_DP, 40f), build(ctx, R.layout.widget_wide, id));
+                m.put(new SizeF(SMALL_MAX_DP, 40f), build(ctx, R.layout.widget, id));
                 rv = new RemoteViews(m);
             } else {
-                rv = (w > 0 && w < SMALL_MAX_DP) ? build(ctx, R.layout.widget_small, id)
-                        : wide ? build(ctx, R.layout.widget_wide, id) : full;
+                // 크기를 바꾸면 onAppWidgetOptionsChanged 가 다시 부른다.
+                int w = mgr.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+                rv = build(ctx, (w > 0 && w < SMALL_MAX_DP) ? R.layout.widget_small : R.layout.widget, id);
             }
             mgr.updateAppWidget(id, rv);
         }

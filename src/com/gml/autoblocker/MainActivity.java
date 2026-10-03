@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
                 // 일반 앱이 「제한된 설정 허용」 여부를 읽는 공개 API 는 없다고 가정하고 사용자 기록과 접근성 켜짐으로 판정한다.
                 service || prefs.getBoolean(RESTRICTED_DONE, false),
                 service,
-                mgr.getAppWidgetIds(widgetProvider()).length > 0,
+                AutoBlockerWidget.widgetCount(this) > 0,
                 state != -1,
                 prefs.getBoolean(FINISH_DONE, false)};
 
@@ -182,6 +182,7 @@ public class MainActivity extends Activity {
         });
     }
 
+    /** 위젯 추가 버튼이 고정 요청하는 provider. 처음 놓는 위젯은 2×1 이고 3×1 은 위젯 목록에서 고른다. */
     private ComponentName widgetProvider() {
         return new ComponentName(this, AutoBlockerWidget.class);
     }

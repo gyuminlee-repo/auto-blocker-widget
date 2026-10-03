@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 가로 3칸 이상일 때: widget.xml 내용 오른쪽에 Play 프로텍트 바로가기 버튼. id 는 widget.xml 과 같게 두고 버튼 id 만 더한다. -->
+<!-- 3×1 위젯(AutoBlockerWideWidget, widget_info_wide.xml) 전용: widget.xml 내용 오른쪽에 Play 프로텍트 바로가기 버튼. id 는 widget.xml 과 같게 두고 버튼 id 만 더한다. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -71,14 +71,16 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 구분선. 색은 AutoBlockerWidget.build() 가 글자 보조색으로 칠한다. -->
-        <View
+        <!-- 구분선. RemoteViews 는 일반 View 를 허용하지 않아(RemoteViews 클래스 설명의 허용 목록) ImageView 바탕색으로 그린다.
+             색은 AutoBlockerWidget.build() 가 setBackgroundColor(View 의 @RemotableViewMethod)로 글자 보조색을 칠한다. -->
+        <ImageView
             android:id="@+id/pp_divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:importantForAccessibility="no"
             android:background="#B3FFFFFF" />
 
         <!-- 이 영역 탭은 Auto Blocker 전환이 아니라 Play 프로텍트 설정 열기다(PlayProtectActivity). -->

@@ -38,6 +38,8 @@ public class WidgetConfigActivity extends Activity {
             finish();
             return;
         }
+        // 2×1 과 3×1 이 같은 화면과 per-id 저장값을 쓴다. 다시 그릴 때만 provider 에 맞는 레이아웃을 고른다.
+        final boolean wide = AutoBlockerWidget.isWide(info.provider);
         setContentView(R.layout.activity_widget_config);
         final RadioGroup group = (RadioGroup) findViewById(R.id.style_group);
         final View fields = findViewById(R.id.custom_fields);
@@ -103,7 +105,7 @@ public class WidgetConfigActivity extends Activity {
                 AutoBlockerWidget.saveCustom(this, id, colors);
             }
             AutoBlockerWidget.saveStyle(this, id, style);
-            AutoBlockerWidget.render(this, mgr, new int[] { id });
+            AutoBlockerWidget.render(this, mgr, new int[] { id }, wide);
             setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id));
             finish();
         });

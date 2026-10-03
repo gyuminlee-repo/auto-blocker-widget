@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3×1 위젯(AutoBlockerWideWidget). 항상 widget_wide.xml 을 쓴다. minWidth 180dp = 3칸 기본(70n-30, widget_info.xml 의 2칸 110dp 와 같은 식).
+     73n-16(203dp) 은 Pixel 4 기준 칸 크기라 칸이 좁은 격자(5열, 커버 화면)에서 4칸으로 올림될 수 있어 쓰지 않는다. API 31+ 는 targetCellWidth 를 먼저 본다.
+     minResizeWidth 를 minWidth 와 같게 두어 3칸 아래로 줄이지 못하게 한다. 줄여서 바로가기가 잘리는 대신 2×1 위젯을 고르면 된다.
+     configure, widgetFeatures 는 2×1 과 같다. previewImage 는 API 30 이하용으로 2×1 그림을 같이 쓴다. -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="40dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="40dp"
+    android:targetCellWidth="3"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/widget_wide"
+    android:previewLayout="@layout/widget_preview_wide"
+    android:previewImage="@drawable/widget_preview"
+    android:description="@string/widget_wide_desc"
+    android:resizeMode="horizontal|vertical"
+    android:configure="com.gml.autoblocker.WidgetConfigActivity"
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:widgetCategory="home_screen" />

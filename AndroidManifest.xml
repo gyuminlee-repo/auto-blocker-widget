@@ -101,7 +101,7 @@
             </intent-filter>
         </service>
 
-        <!-- 넓은 위젯의 Play 프로텍트 버튼이 여는 입구. 설정 화면만 열고 아무것도 바꾸지 않는다. 트램펄린과 같은 작업 설정. -->
+        <!-- 3×1 위젯의 Play 프로텍트 버튼이 여는 입구. 설정 화면만 열고 아무것도 바꾸지 않는다. 트램펄린과 같은 작업 설정. -->
         <activity
             android:name=".PlayProtectActivity"
             android:exported="false"
@@ -109,5 +109,19 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay" />
+
+        <!-- 위젯 목록의 3×1 항목(Play 프로텍트 바로가기 포함). 위 2×1 과 별도 provider 라 목록에 둘 다 보인다.
+             언어 변경은 2×1 receiver 의 refresh() 가 두 provider 를 함께 다시 그리므로 여기서는 받지 않는다. -->
+        <receiver
+            android:name=".AutoBlockerWideWidget"
+            android:exported="false"
+            android:label="@string/widget_wide_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_wide" />
+        </receiver>
     </application>
 </manifest>

@@ -63,6 +63,9 @@ else
   SIGN_ARGS=(--ks "$KS" --ks-pass pass:android --key-pass pass:android)
 fi
 
+# 위젯 레이아웃에 RemoteViews 가 못 푸는 뷰가 있으면 기기에서 「위젯을 추가할 수 없습니다」가 뜬다. 빌드 전에 막는다.
+python3 "$ROOT/tools/check_widget_layouts.py"
+
 "$BT/aapt2" compile --dir "$ROOT/res" -o "$B/compiled"
 "$BT/aapt2" link -I "$AJAR" --manifest "$ROOT/AndroidManifest.xml" \
   --min-sdk-version 26 --target-sdk-version 34 --version-code "$VERSION_CODE" --version-name "$VERSION_NAME" \
