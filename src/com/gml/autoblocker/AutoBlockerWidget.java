@@ -11,7 +11,9 @@ import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.LocaleList;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.SizeF;
@@ -112,6 +114,18 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context ctx, Intent intent) {
         if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) refresh(ctx);
+        else if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
+            // 덮어 설치 뒤 런처가 위젯을 initialLayout 으로 되돌린다. 즉시 한 번으로는 런처가 뒤이어 덮어써 4초 뒤 한 번 더 그린다
+            // (형제 앱 실측, Galaxy Z Fold8 One UI 9). goAsync 제한(약 10초) 안이다.
+            refresh(ctx);
+            final Context app = ctx.getApplicationContext();
+            final PendingResult pr = goAsync();
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override public void run() {
+                    try { refresh(app); } finally { pr.finish(); }
+                }
+            }, 4000);
+        }
         else super.onReceive(ctx, intent);
     }
 

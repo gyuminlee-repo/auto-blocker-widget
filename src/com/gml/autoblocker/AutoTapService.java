@@ -50,7 +50,11 @@ public class AutoTapService extends AccessibilityService {
     private boolean armed() {
         long at = getSharedPreferences(TrampolineActivity.PREFS, MODE_PRIVATE)
                 .getLong(TrampolineActivity.ARMED_AT, 0);
-        return at != 0 && SystemClock.elapsedRealtime() - at <= ARM_WINDOW_MS;
+        long now = SystemClock.elapsedRealtime();
+        // elapsedRealtime 은 재부팅 때 0 부터 다시 센다. now < at 이면 재부팅 전 기록이다.
+        if (at != 0 && now >= at && now - at <= ARM_WINDOW_MS) return true;
+        if (at != 0) disarm(this);
+        return false;
     }
 
     private void startArmTimeout() {
@@ -72,13 +76,16 @@ public class AutoTapService extends AccessibilityService {
     protected void onServiceConnected() {
         boolean wasRunning = isRunning();
         instance = this;
+        // 새로 붙을 때 남은 arm 은 이전 세션 것이다. TrampolineActivity 는 isRunning() 일 때만 arm 하므로 새 연결 전에 쓴 기록일 수 없다.
+        // 같은 인스턴스에 다시 불린 경우(wasRunning)는 지금 살아 있는 arm 일 수 있어 건드리지 않는다.
+        if (!wasRunning) disarm(this);
         // 같은 인스턴스에 두 번 불려도 observer 는 하나만 둔다.
         if (observer == null) startObserver(wasRunning);
         AutoBlockerWidget.refresh(this); // 「설정 필요」를 지우고 현재 캐시로 다시 그린다.
     }
 
     // 해제 때 위젯을 다시 그린다. 사용자가 설정에서 끄면 ENABLED_ACCESSIBILITY_SERVICES 가 먼저 바뀐 뒤 해제된다고 보고
-    // 「설정 필요」가 바로 보이길 기대한다(추정, 실기기 미확인). 콜백 없이 프로세스가 죽으면 다음 갱신 때 반영된다.
+    // 「설정 필요」가 바로 보인다(실기기 확인, Galaxy Z Fold8 One UI 9, 2026-10-04). 콜백 없이 프로세스가 죽으면 다음 갱신 때 반영된다.
     @Override
     public boolean onUnbind(android.content.Intent i) { stopObserver("unbind"); AutoBlockerWidget.refresh(this); return super.onUnbind(i); }
 
@@ -179,10 +186,12 @@ public class AutoTapService extends AccessibilityService {
     // 값은 읽지 않는다. 일반 앱이 이 키를 읽으면 SecurityException 이 난다(@hide, system apps only).
     // AOSP SettingsProvider 는 저장 기록이 실제로 바뀔 때만 notify 하므로(SettingsState.Setting.update 가
     // 같은 값이면 false, SettingsRegistry.insertSettingLocked 는 success 일 때만 notifyForSettingsChange)
-    // 알림 한 번을 토글 한 번으로 보고 캐시를 뒤집는다. One UI 의 SettingsProvider 가 같은지는 실기기 기록으로 확인한다.
+    // 알림 한 번을 토글 한 번으로 보고 캐시를 뒤집는다. One UI 9 실기기 기록에서도 토글마다 알림이 1회 왔다.
+    // One UI 「30분 뒤 자동으로 켜기」가 실행될 때도 이 키의 알림이 와서 화면 없이 꺼짐에서 켜짐으로 뒤집혔다(2026-10-04 15:37:25).
+    // 30분 정각에 알림이 없다가 설정 화면을 연 순간 온 기록도 있다. One UI 가 기한을 다음 계기에 처리하는 것으로 보고(추정) 키가 바뀐 순간을 따른다.
 
     static final String MAIN_SWITCH_KEY = "rampart_main_switch_enabled";
-    /** 한 토글에 알림이 여러 번 올 수 있다고 보고 이 안의 후속 알림은 기록만 한다(가정, 실기기 미확인). */
+    /** 한 토글에 알림이 여러 번 올 수 있다고 보고 이 안의 후속 알림은 기록만 한다(대비용, One UI 9 실기기에서는 1회). */
     static final long NOTIFY_DEDUP_MS = 1000;
     /** 화면에서 스위치를 읽은 지 이 안에 온 알림은 화면 값이 이미 반영한 변경으로 보고 뒤집지 않는다(가정). */
     static final long SCREEN_AUTHORITY_MS = 2000;
@@ -216,8 +225,8 @@ public class AutoTapService extends AccessibilityService {
         //
         // 예외: USB 디버깅(adb_enabled) 또는 무선 디버깅(adb_wifi_enabled)이 1 이면 꺼짐으로 확정한다.
         // Auto Blocker 가 켜져 있는 동안에는 USB·무선 디버깅이 차단된다. 실기기 기록(Galaxy Z Fold8 One UI 9, 2026-10-04
-        // 14:04~14:05 probe)에서 화면 꺼짐 3회는 모두 adbwifi=1, 켜짐 3회는 모두 adbwifi=0 이었다.
-        // adb_enabled 쪽은 관찰 전이며 같은 원리로 추정한다. 한 방향만 성립한다. 0 은 켜짐의 근거가 아니다(사용자가 끈 것일 수 있다).
+        // 14:04~14:05 probe)에서 화면 꺼짐 3회는 모두 adbwifi=1, 켜짐 3회는 모두 adbwifi=0 이었다. 재부팅 기록에서 무선(14:15:21)과
+        // USB 단독(14:17:59, adb=1 adbwifi=0) 모두 꺼짐 확정이 동작했다. 한 방향만 성립한다. 0 은 켜짐의 근거가 아니다(사용자가 끈 것일 수 있다).
         // 이 값은 화면 값처럼 덮일 수 있다(onAccessibilityEvent 의 mismatch_override). 알림 뒤집기도 그대로 적용된다.
         String adb = readGlobal(Settings.Global.ADB_ENABLED);
         String adbWifi = readGlobal(ADB_WIFI_KEY);
@@ -277,11 +286,10 @@ public class AutoTapService extends AccessibilityService {
     }
 
     // ---- 상관 관찰(시험 중, 판단에 쓰지 않음) ----
-    // rampart_suw_main_on 은 삼성 framework 의 Settings.System @Readable 키(SAMSUNG_PUBLIC_SETTINGS)라 일반 앱이 읽을 수 있다고 본다.
-    // Auto Blocker 토글마다 같이 바뀌는지는 미확인이다. adb_wifi_enabled 는 켜짐 때 0 으로 강제된다는 관측이 있으나 특이도가 낮다.
+    // adb_wifi_enabled 는 켜짐 때 0 으로 강제된다는 관측이 있으나 특이도가 낮다(0 은 켜짐의 근거가 아니다).
     // 공개 SDK 34 에 ADB_WIFI_ENABLED 상수가 없어 키 문자열을 쓴다. adb_enabled 는 공개 상수 Settings.Global.ADB_ENABLED 다.
-    // 읽기만 하고 쓰지 않는다. adbwifi 는 공백 처리(startObserver)에서 꺼짐 확정에 쓴다. suw 는 상태와 무관함이 확인됐으나 이번 베타까지 남긴다.
-    static final String SUW_KEY = "rampart_suw_main_on";
+    // 읽기만 하고 쓰지 않는다. adb·adbwifi 는 공백 처리(startObserver)에서 꺼짐 확정에도 쓴다.
+    // rampart_suw_main_on 은 실기기(One UI 9)에서 켜짐·꺼짐과 무관하게 늘 1 이어서 읽지 않는다.
     static final String ADB_WIFI_KEY = "adb_wifi_enabled";
     /** 화면 이벤트 뒤에 마지막으로 남긴 probe 본문. 같은 값이면 다시 남기지 않는다. */
     private String lastScreenProbe;
@@ -299,15 +307,7 @@ public class AutoTapService extends AccessibilityService {
     }
 
     private String probeBody(int screen) {
-        String suw;
-        try {
-            suw = String.valueOf(Settings.System.getInt(getContentResolver(), SUW_KEY, -1));
-        } catch (SecurityException e) {
-            suw = "denied";
-        } catch (RuntimeException e) {
-            suw = "error";
-        }
-        return "suw=" + suw + " adb=" + readGlobal(Settings.Global.ADB_ENABLED) + " adbwifi=" + readGlobal(ADB_WIFI_KEY)
+        return "adb=" + readGlobal(Settings.Global.ADB_ENABLED) + " adbwifi=" + readGlobal(ADB_WIFI_KEY)
                 + " screen=" + (screen < 0 ? "?" : String.valueOf(screen));
     }
 
