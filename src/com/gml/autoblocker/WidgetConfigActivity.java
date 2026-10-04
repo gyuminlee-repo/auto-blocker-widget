@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 /**
- * 위젯별 스타일(컬러, 모노톤, 사용자 지정 색, API 31 이상의 시스템 색) 설정. 런처가 위젯을 놓을 때나 길게 눌러 다시 설정할 때 연다.
+ * 위젯별 스타일(컬러, 모노톤, 사용자 지정 색, API 31 이상의 시스템 색)과 언어(앱 언어 따라감, 한국어, English) 설정. 런처가 위젯을 놓을 때나 길게 눌러 다시 설정할 때 연다.
  * 외부에서 열리므로 받은 id 가 이 앱 위젯일 때만 다룬다.
  */
 public class WidgetConfigActivity extends Activity {
@@ -83,6 +83,10 @@ public class WidgetConfigActivity extends Activity {
         group.check(saved == AutoBlockerWidget.STYLE_MONO ? R.id.style_mono
                 : saved == AutoBlockerWidget.STYLE_CUSTOM ? R.id.style_custom
                 : saved == AutoBlockerWidget.STYLE_SYSTEM && hasSystem ? R.id.style_system : R.id.style_color);
+        final RadioGroup langGroup = (RadioGroup) findViewById(R.id.widget_lang_group);
+        String savedLang = AutoBlockerWidget.lang(this, id);
+        langGroup.check("ko".equals(savedLang) ? R.id.widget_lang_ko
+                : "en".equals(savedLang) ? R.id.widget_lang_en : R.id.widget_lang_app);
         findViewById(R.id.btn_save).setOnClickListener(v -> {
             int checked = group.getCheckedRadioButtonId();
             int style = checked == R.id.style_mono ? AutoBlockerWidget.STYLE_MONO
@@ -105,6 +109,9 @@ public class WidgetConfigActivity extends Activity {
                 AutoBlockerWidget.saveCustom(this, id, colors);
             }
             AutoBlockerWidget.saveStyle(this, id, style);
+            int langChecked = langGroup.getCheckedRadioButtonId();
+            AutoBlockerWidget.saveLang(this, id, langChecked == R.id.widget_lang_ko ? "ko"
+                    : langChecked == R.id.widget_lang_en ? "en" : "");
             AutoBlockerWidget.render(this, mgr, new int[] { id }, wide);
             setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id));
             finish();

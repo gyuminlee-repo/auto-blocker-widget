@@ -74,7 +74,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 - **Watches one screen only.** The accessibility service receives events only from the Auto Blocker system app and taps only within 5 seconds after you tap the widget, the Quick Settings tile or the `Turn on Auto Blocker` button in setup, or after an automation app asks to turn it on or off. [How it works →](docs/guide.md#how-it-works)
 - **Keeps your own verification.** Turning Auto Blocker off still shows the fingerprint or PIN prompt, and you pass it yourself.
 - **Finds the switch by ID, not by position.** Screen size and resolution do not enter into it, because the switch is found by its internal ID. One device is verified so far. [Compatibility →](docs/guide.md#compatibility)
-- **Comes in English and Korean.** The choice at the bottom of the app is the same value as the per-app language on Android 13 and later.
+- **Comes in English and Korean.** The choice at the bottom of the app is the same value as the per-app language on Android 13 and later. Touch and hold a widget to give that widget its own language. By default it follows the app language.
 
 ---
 

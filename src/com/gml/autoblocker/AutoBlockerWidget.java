@@ -7,9 +7,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.util.ArrayMap;
 import android.util.SizeF;
 import android.view.View;
@@ -101,12 +103,13 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         render(ctx, mgr, new int[] { id }, wide());
     }
 
-    /** 위젯을 지우면 그 id 의 스타일 저장값도 지운다. */
+    /** 위젯을 지우면 그 id 의 스타일과 언어 저장값도 지운다. */
     @Override
     public void onDeleted(Context ctx, int[] ids) {
         SharedPreferences.Editor e = ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit();
         for (int id : ids) {
             e.remove(styleKey(id));
+            e.remove(langKey(id));
             for (int st : CUSTOM_STATES) e.remove(customKey(id, st));
         }
         e.commit();
@@ -123,6 +126,29 @@ public class AutoBlockerWidget extends AppWidgetProvider {
 
     static void saveStyle(Context ctx, int id, int style) {
         ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit().putInt(styleKey(id), style).commit();
+    }
+
+    static String langKey(int id) {
+        return "lang_" + id;
+    }
+
+    /** 위젯 언어. "" 은 앱 언어 따라감(저장값이 없을 때도), "en", "ko". */
+    static String lang(Context ctx, int id) {
+        return ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).getString(langKey(id), "");
+    }
+
+    static void saveLang(Context ctx, int id, String tag) {
+        ctx.getSharedPreferences(STYLE_PREFS, Context.MODE_PRIVATE).edit().putString(langKey(id), tag).commit();
+    }
+
+    /** 위젯 문구를 읽을 Context. 언어를 지정하지 않았으면 앱 언어(LocaleHelper.wrap) 그대로다. */
+    private static Context widgetLocale(Context ctx, int id) {
+        Context app = ctx.getApplicationContext();
+        String tag = lang(ctx, id);
+        if (tag.isEmpty()) return LocaleHelper.wrap(app);
+        Configuration c = new Configuration(app.getResources().getConfiguration());
+        c.setLocales(LocaleList.forLanguageTags(tag));
+        return app.createConfigurationContext(c);
     }
 
     static String customKey(int id, int state) {
@@ -177,8 +203,8 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     }
 
     private static RemoteViews build(Context ctx, int layout, int id) {
-        // 런처가 레이아웃 문자열을 시스템 로캘로 풀지 않도록 문구는 모두 앱 언어 Context 로 넣는다.
-        Context loc = LocaleHelper.wrap(ctx.getApplicationContext());
+        // 런처가 레이아웃 문자열을 시스템 로캘로 풀지 않도록 문구는 모두 이 위젯 언어(기본은 앱 언어) Context 로 넣는다.
+        Context loc = widgetLocale(ctx, id);
         int style = style(ctx, id);
         if (style == STYLE_SYSTEM && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) style = STYLE_COLOR;
         boolean system = style == STYLE_SYSTEM;

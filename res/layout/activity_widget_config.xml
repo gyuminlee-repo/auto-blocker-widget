@@ -166,6 +166,41 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- 위젯별 언어. 기본은 앱 언어 따라감(WidgetConfigActivity). -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/widget_lang_title"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+        <RadioGroup
+            android:id="@+id/widget_lang_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/widget_lang_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/widget_lang_app" />
+            <RadioButton
+                android:id="@+id/widget_lang_ko"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/lang_ko" />
+            <RadioButton
+                android:id="@+id/widget_lang_en"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/lang_en" />
+        </RadioGroup>
+
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
