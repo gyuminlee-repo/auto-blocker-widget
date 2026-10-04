@@ -101,14 +101,14 @@
             </intent-filter>
         </service>
 
-        <!-- 3×1 위젯의 Play 프로텍트 버튼이 여는 입구. 설정 화면만 열고 아무것도 바꾸지 않는다. 트램펄린과 같은 작업 설정. -->
+        <!-- 3×1 위젯의 Play 프로텍트 버튼이 여는 입구. 처음 한 번 안내 창을 띄우고 설정 화면만 연다. 아무것도 바꾸지 않는다. 트램펄린과 같은 작업 설정. -->
         <activity
             android:name=".PlayProtectActivity"
             android:exported="false"
             android:taskAffinity=""
             android:excludeFromRecents="true"
             android:noHistory="true"
-            android:theme="@android:style/Theme.NoDisplay" />
+            android:theme="@style/PlayProtectTheme" />
 
         <!-- 위젯 목록의 3×1 항목(Play 프로텍트 바로가기 포함). 위 2×1 과 별도 provider 라 목록에 둘 다 보인다.
              언어 변경은 2×1 receiver 의 refresh() 가 두 provider 를 함께 다시 그리므로 여기서는 받지 않는다. -->

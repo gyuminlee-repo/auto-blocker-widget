@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="MainTheme" parent="@android:style/Theme.DeviceDefault.Light" />
+    <!-- PlayProtectActivity: 창 없이 안내 대화상자만 보인다. MainTheme 를 이어 values-v29 에서 DayNight 를 따른다. -->
+    <style name="PlayProtectTheme" parent="MainTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
