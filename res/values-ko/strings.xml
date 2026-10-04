@@ -52,7 +52,7 @@
     <!-- 3×1 위젯 오른쪽에 보이는 바로가기 버튼 라벨. 설명은 btn_play_protect 를 쓴다. -->
     <string name="widget_play_protect">Play 프로텍트</string>
     <string name="play_protect_dialog_path">오른쪽 위 ⚙ → Play 프로텍트로 앱 검사</string>
-    <string name="play_protect_dialog_reason">다른 앱은 이 스위치 화면을 바로 열 수 없습니다. 이 안내는 한 번만 보입니다.</string>
+    <string name="play_protect_dialog_reason">ShieldTap 을 포함해 어떤 앱도 이 스위치 화면을 바로 열 수 없어서 Play 프로텍트 화면까지만 엽니다. 이 안내는 한 번만 보입니다.</string>
     <string name="btn_open_play_protect">Play 프로텍트 열기</string>
     <string name="toast_play_protect_fail">Play 프로텍트 설정을 열 수 없습니다. Play 스토어 > 프로필 > Play 프로텍트에서 켜 주세요.</string>
     <string name="btn_enable_blocker">보안 위험 자동 차단 켜기</string>
