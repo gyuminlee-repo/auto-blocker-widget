@@ -132,7 +132,7 @@ cd shieldtap
 ./build.sh
 ```
 
-결과물은 `build/shieldtap-v<버전>.apk` 입니다. 버전은 HEAD 커밋 제목 맨 앞의 `vA.BB.CC.DD` 라벨에서 정해집니다. `VERSION_NAME` 과 `VERSION_CODE` 를 함께 주면 그 값을 씁니다. 직접 빌드한 APK 는 릴리스 APK 와 서명이 다릅니다. 직접 빌드한 것을 설치하려면 릴리스 앱을 먼저 지우세요.
+결과물은 `build/shieldtap-v<버전>.apk` 입니다. 버전은 `src`, `res`, `AndroidManifest.xml` 을 마지막으로 바꾼 커밋 제목의 `vA.BB.CC.DD` 라벨에서 정해집니다. 문서만 고친 커밋은 앱 버전을 올리지 않습니다. `VERSION_NAME` 과 `VERSION_CODE` 를 함께 주면 그 값을 씁니다. 직접 빌드한 APK 는 릴리스 APK 와 서명이 다릅니다. 직접 빌드한 것을 설치하려면 릴리스 앱을 먼저 지우세요.
 
 ## 라이선스
 

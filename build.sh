@@ -19,13 +19,14 @@ for f in "$BT/aapt2" "$BT/d8" "$BT/zipalign" "$BT/apksigner" "$AJAR"; do
   [ -e "$f" ] || { echo "missing: $f" >&2; exit 1; }
 done
 
-# 버전: VERSION_NAME 과 VERSION_CODE 를 둘 다 주면 그 값, 아니면 HEAD 커밋 제목의 vA.BB.CC.DD 라벨
+# 버전: VERSION_NAME 과 VERSION_CODE 를 둘 다 주면 그 값, 아니면 APK 에 들어가는 파일을 마지막으로 바꾼 커밋 제목의 vA.BB.CC.DD 라벨.
+# 문서만 고친 커밋은 앱 버전을 올리지 않는다.
 if [ -n "${VERSION_NAME:-}" ] && [ -n "${VERSION_CODE:-}" ]; then
   :
 elif [ -n "${VERSION_NAME:-}" ] || [ -n "${VERSION_CODE:-}" ]; then
   echo "set both VERSION_NAME and VERSION_CODE, or neither" >&2; exit 1
 else
-  SUBJECT="$(git -C "$ROOT" log -1 --format=%s HEAD 2>/dev/null || true)"
+  SUBJECT="$(git -C "$ROOT" log -1 --format=%s HEAD -- src res AndroidManifest.xml 2>/dev/null || true)"
   LABEL_RE='^v([0-9]+)\.([0-9]{2})\.([0-9]{2})\.([0-9]{2})(:| |$)'
   if [[ "$SUBJECT" =~ $LABEL_RE ]]; then
     VERSION_NAME="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}.${BASH_REMATCH[4]}"

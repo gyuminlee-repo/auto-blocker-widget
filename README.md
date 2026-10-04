@@ -126,7 +126,7 @@ cd shieldtap
 ./build.sh
 ```
 
-The APK lands in `build/shieldtap-v<version>.apk`. The version comes from the `vA.BB.CC.DD` label at the start of the HEAD commit subject, or from `VERSION_NAME` and `VERSION_CODE` set together. A self-built APK has a different signature from the release APK, so uninstall the release app before installing your own build.
+The APK lands in `build/shieldtap-v<version>.apk`. The version comes from the `vA.BB.CC.DD` label of the last commit that changed `src`, `res` or `AndroidManifest.xml`, so commits that only touch docs keep the app version, or from `VERSION_NAME` and `VERSION_CODE` set together. A self-built APK has a different signature from the release APK, so uninstall the release app before installing your own build.
 
 ## license
 
