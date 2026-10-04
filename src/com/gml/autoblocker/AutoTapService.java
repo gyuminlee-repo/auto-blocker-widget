@@ -97,18 +97,19 @@ public class AutoTapService extends AccessibilityService {
         if (sw == null || sw.isEmpty()) return;
         int checked = sw.get(0).isChecked() ? 1 : 0;
         lastScreenReadAt = SystemClock.elapsedRealtime();
-        // 화면 스위치 값이 항상 이긴다. 알림으로 뒤집은 값과 다르면 덮고 기록한다.
+        // 화면 스위치 값이 항상 이긴다. 알림으로 뒤집은 값이나 디버깅 설정으로 확정한 값과 다르면 덮고 기록한다.
         int cached = AutoBlockerWidget.cached(this);
-        boolean fromFlip = AutoBlockerWidget.SRC_FLIP.equals(AutoBlockerWidget.source(this));
+        String src = AutoBlockerWidget.source(this);
+        boolean inferred = AutoBlockerWidget.SRC_FLIP.equals(src) || AutoBlockerWidget.SRC_DEBUG.equals(src);
         if (cached != checked) {
             Log.i(TAG, "state observed=" + checked);
-            StateLog.add(this, cached == -1 ? "screen_read" : fromFlip ? "mismatch_override" : "screen_change",
+            StateLog.add(this, cached == -1 ? "screen_read" : inferred ? "mismatch_override" : "screen_change",
                     cached + " -> " + checked);
             AutoBlockerWidget.saveState(this, checked == 1, AutoBlockerWidget.SRC_SCREEN);
             AutoBlockerWidget.refresh(this);
             probeOnScreen(checked);
-        } else if (fromFlip) {
-            StateLog.add(this, "screen_confirm", "flip value " + checked + " matches screen");
+        } else if (inferred) {
+            StateLog.add(this, "screen_confirm", src + " value " + checked + " matches screen");
             AutoBlockerWidget.saveState(this, checked == 1, AutoBlockerWidget.SRC_SCREEN);
             AutoBlockerWidget.refresh(this);
             probeOnScreen(checked);
@@ -212,10 +213,25 @@ public class AutoTapService extends AccessibilityService {
         // 연결 전에는 observer 가 없었으므로 그동안의 변화는 알 수 없다. 해제 기록(onUnbind, onDestroy)은
         // 프로세스가 죽으면 남지 않아 공백 길이를 믿을 수 없으므로 (재)연결마다 캐시를 미확인으로 돌린다.
         // 처음 설치 직후, 재부팅, 앱 업데이트 뒤에도 같다. 다음에 설정 화면을 보면 다시 채워진다. 위젯은 onServiceConnected 가 다시 그린다.
+        //
+        // 예외: USB 디버깅(adb_enabled) 또는 무선 디버깅(adb_wifi_enabled)이 1 이면 꺼짐으로 확정한다.
+        // Auto Blocker 가 켜져 있는 동안에는 USB·무선 디버깅이 차단된다. 실기기 기록(Galaxy Z Fold8 One UI 9, 2026-10-04
+        // 14:04~14:05 probe)에서 화면 꺼짐 3회는 모두 adbwifi=1, 켜짐 3회는 모두 adbwifi=0 이었다.
+        // adb_enabled 쪽은 관찰 전이며 같은 원리로 추정한다. 한 방향만 성립한다. 0 은 켜짐의 근거가 아니다(사용자가 끈 것일 수 있다).
+        // 이 값은 화면 값처럼 덮일 수 있다(onAccessibilityEvent 의 mismatch_override). 알림 뒤집기도 그대로 적용된다.
+        String adb = readGlobal(Settings.Global.ADB_ENABLED);
+        String adbWifi = readGlobal(ADB_WIFI_KEY);
+        String debug = "adb=" + adb + " adbwifi=" + adbWifi;
+        if ("1".equals(adb) || "1".equals(adbWifi)) {
+            AutoBlockerWidget.saveState(this, false, AutoBlockerWidget.SRC_DEBUG);
+            StateLog.add(this, "gap_debug_off", debug);
+            AutoBlockerWidget.refresh(this);
+            return;
+        }
         int cached = AutoBlockerWidget.cached(this);
         if (cached != -1) {
             AutoBlockerWidget.clearState(this);
-            StateLog.add(this, "gap_unknown", "cache " + cached + " -> unknown");
+            StateLog.add(this, "gap_unknown", "cache " + cached + " -> unknown " + debug);
         }
     }
 
@@ -263,7 +279,8 @@ public class AutoTapService extends AccessibilityService {
     // ---- 상관 관찰(시험 중, 판단에 쓰지 않음) ----
     // rampart_suw_main_on 은 삼성 framework 의 Settings.System @Readable 키(SAMSUNG_PUBLIC_SETTINGS)라 일반 앱이 읽을 수 있다고 본다.
     // Auto Blocker 토글마다 같이 바뀌는지는 미확인이다. adb_wifi_enabled 는 켜짐 때 0 으로 강제된다는 관측이 있으나 특이도가 낮다.
-    // 공개 SDK 34 에 ADB_WIFI_ENABLED 상수가 없어 키 문자열을 쓴다. 읽기만 하고 쓰지 않는다.
+    // 공개 SDK 34 에 ADB_WIFI_ENABLED 상수가 없어 키 문자열을 쓴다. adb_enabled 는 공개 상수 Settings.Global.ADB_ENABLED 다.
+    // 읽기만 하고 쓰지 않는다. adbwifi 는 공백 처리(startObserver)에서 꺼짐 확정에 쓴다. suw 는 상태와 무관함이 확인됐으나 이번 베타까지 남긴다.
     static final String SUW_KEY = "rampart_suw_main_on";
     static final String ADB_WIFI_KEY = "adb_wifi_enabled";
     /** 화면 이벤트 뒤에 마지막으로 남긴 probe 본문. 같은 값이면 다시 남기지 않는다. */
@@ -282,7 +299,7 @@ public class AutoTapService extends AccessibilityService {
     }
 
     private String probeBody(int screen) {
-        String suw, adb;
+        String suw;
         try {
             suw = String.valueOf(Settings.System.getInt(getContentResolver(), SUW_KEY, -1));
         } catch (SecurityException e) {
@@ -290,14 +307,19 @@ public class AutoTapService extends AccessibilityService {
         } catch (RuntimeException e) {
             suw = "error";
         }
+        return "suw=" + suw + " adb=" + readGlobal(Settings.Global.ADB_ENABLED) + " adbwifi=" + readGlobal(ADB_WIFI_KEY)
+                + " screen=" + (screen < 0 ? "?" : String.valueOf(screen));
+    }
+
+    /** Settings.Global 정수 값. 없으면 "-1", 읽기 거부는 "denied", 그 밖의 실패는 "error". */
+    private String readGlobal(String key) {
         try {
-            adb = String.valueOf(Settings.Global.getInt(getContentResolver(), ADB_WIFI_KEY, -1));
+            return String.valueOf(Settings.Global.getInt(getContentResolver(), key, -1));
         } catch (SecurityException e) {
-            adb = "denied";
+            return "denied";
         } catch (RuntimeException e) {
-            adb = "error";
+            return "error";
         }
-        return "suw=" + suw + " adbwifi=" + adb + " screen=" + (screen < 0 ? "?" : String.valueOf(screen));
     }
 
     private static String time(long at) {

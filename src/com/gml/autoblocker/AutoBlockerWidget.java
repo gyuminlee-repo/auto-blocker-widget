@@ -46,10 +46,14 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     /** 위젯 토글(0), 빠른 설정 타일(1)과 겹치지 않는 PendingIntent 요청 코드. */
     private static final int REQ_PLAY_PROTECT = 2;
 
-    /** 캐시 값의 출처. SRC_SCREEN 은 설정 화면 스위치, SRC_FLIP 은 설정 변경 알림으로 뒤집은 값. */
+    /**
+     * 캐시 값의 출처. SRC_SCREEN 은 설정 화면 스위치, SRC_FLIP 은 설정 변경 알림으로 뒤집은 값,
+     * SRC_DEBUG 는 서비스 (재)연결 때 USB 또는 무선 디버깅이 켜져 있어 꺼짐으로 확정한 값.
+     */
     static final String LAST_SRC = "lastKnownSource";
     static final String SRC_SCREEN = "screen";
     static final String SRC_FLIP = "flip";
+    static final String SRC_DEBUG = "debug";
     /** 한 번이라도 상태를 읽은 적 있는지. 캐시가 미확인으로 돌아가도 설정 안내 ④ 단계는 완료로 둔다. */
     static final String EVER_OBSERVED = "everObserved";
 
