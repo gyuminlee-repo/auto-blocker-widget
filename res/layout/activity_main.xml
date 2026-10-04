@@ -472,7 +472,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/btn_play_protect" />
 
-                <!-- 캐시가 꺼짐(0)일 때만 보인다 -->
+                <!-- 캐시가 켜짐(1)이 아닐 때(꺼짐 또는 미확인) 보인다 -->
                 <LinearLayout
                     android:id="@+id/step5_enable"
                     android:layout_width="match_parent"

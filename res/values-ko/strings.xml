@@ -94,4 +94,10 @@
     <string name="shortcut_on_long">보안 위험 자동 차단 켜기</string>
     <string name="shortcut_off_short">차단 끄기</string>
     <string name="shortcut_off_long">보안 위험 자동 차단 끄기</string>
+    <!-- 베타 시험용 상태 감지 기록. 버전 줄을 길게 누르면 열린다. -->
+    <string name="state_log_title">상태 감지 기록 (최근 %1$d건)</string>
+    <string name="state_log_empty">아직 기록이 없습니다.</string>
+    <string name="state_log_clear">기록 지우기</string>
+    <string name="state_log_close">닫기</string>
+    <string name="state_log_cleared">기록을 지웠습니다.</string>
 </resources>

@@ -100,4 +100,10 @@
     <string name="shortcut_on_long">Turn on Auto Blocker</string>
     <string name="shortcut_off_short">Blocker off</string>
     <string name="shortcut_off_long">Turn off Auto Blocker</string>
+    <!-- 베타 시험용 상태 감지 기록. 버전 줄을 길게 누르면 열린다. -->
+    <string name="state_log_title">Detection log (latest %1$d)</string>
+    <string name="state_log_empty">No entries yet.</string>
+    <string name="state_log_clear">Clear log</string>
+    <string name="state_log_close">Close</string>
+    <string name="state_log_cleared">Log cleared.</string>
 </resources>

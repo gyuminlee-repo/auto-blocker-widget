@@ -1,6 +1,7 @@
 package com.gml.autoblocker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /** 앱 서랍 진입점. 설정 단계를 체크리스트로 보여 주고 미완료 첫 단계만 펼친다. */
@@ -84,7 +86,10 @@ public class MainActivity extends Activity {
         findViewById(R.id.btn_update).setOnClickListener(v ->
                 open(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.releases_url)))));
         findViewById(R.id.btn_app_info).setOnClickListener(v -> openAppInfo());
-        ((TextView) findViewById(R.id.footer)).setText(getString(R.string.main_footer, versionName()));
+        TextView footer = (TextView) findViewById(R.id.footer);
+        footer.setText(getString(R.string.main_footer, versionName()));
+        // 베타 시험용. 버전 줄을 길게 누르면 상태 감지 기록을 연다.
+        footer.setOnLongClickListener(v -> { showStateLog(); return true; });
         bindLanguage();
     }
 
@@ -128,7 +133,8 @@ public class MainActivity extends Activity {
                 service || prefs.getBoolean(RESTRICTED_DONE, false),
                 service,
                 AutoBlockerWidget.widgetCount(this) > 0,
-                state != -1,
+                // 캐시는 접근성 재연결 때 미확인으로 돌아가므로 한 번이라도 읽었는지로 판정한다.
+                AutoBlockerWidget.everObserved(this),
                 prefs.getBoolean(FINISH_DONE, false)};
 
         int firstTodo = -1;
@@ -147,7 +153,8 @@ public class MainActivity extends Activity {
                     mgr.isRequestPinAppWidgetSupported() ? View.VISIBLE : View.GONE);
         }
         if (firstTodo == 4) {
-            findViewById(R.id.step5_enable).setVisibility(state == 0 ? View.VISIBLE : View.GONE);
+            // 미확인(-1)도 켜기 버튼을 보인다. 이미 켜져 있으면 서비스가 누르지 않는다(AutoTapService target 검사).
+            findViewById(R.id.step5_enable).setVisibility(state != 1 ? View.VISIBLE : View.GONE);
             findViewById(R.id.step5_blocker_on).setVisibility(state == 1 ? View.VISIBLE : View.GONE);
         }
 
@@ -155,7 +162,7 @@ public class MainActivity extends Activity {
         if (firstTodo < 0) {
             card.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.ready_state)).setText(getString(R.string.ready_state,
-                    getString(state == 1 ? R.string.state_on : R.string.state_off)));
+                    getString(state == 1 ? R.string.state_on : state == 0 ? R.string.state_off : R.string.state_unknown)));
             long at = getSharedPreferences(AutoBlockerWidget.STATE_PREFS, Context.MODE_PRIVATE)
                     .getLong(AutoBlockerWidget.LAST_AT, 0);
             TextView checked = (TextView) findViewById(R.id.ready_checked);
@@ -169,6 +176,29 @@ public class MainActivity extends Activity {
         } else {
             card.setVisibility(View.GONE);
         }
+    }
+
+    /** 상태 감지 기록(최신이 위). 외부로 보내지 않는다. */
+    private void showStateLog() {
+        List<String> lines = StateLog.lines(this);
+        TextView body = new TextView(this);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        body.setPadding(pad, pad, pad, pad);
+        body.setTextIsSelectable(true);
+        body.setTypeface(android.graphics.Typeface.MONOSPACE);
+        body.setTextSize(11);
+        body.setText(lines.isEmpty() ? getString(R.string.state_log_empty) : String.join("\n", lines));
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        scroll.addView(body);
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.state_log_title, StateLog.MAX))
+                .setView(scroll)
+                .setPositiveButton(R.string.state_log_close, null)
+                .setNeutralButton(R.string.state_log_clear, (d, w) -> {
+                    StateLog.clear(this);
+                    Toast.makeText(this, R.string.state_log_cleared, Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 
     /** 자세히 토글. 기본은 접힘(layout 에서 gone). */

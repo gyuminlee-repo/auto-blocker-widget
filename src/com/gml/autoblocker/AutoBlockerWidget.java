@@ -25,6 +25,7 @@ import java.util.Map;
 /**
  * 상태는 rampart 설정 화면에서 접근성 서비스가 마지막으로 본 값의 캐시다.
  * 일반 앱은 rampart_* 설정 키를 읽을 수 없으므로 Settings 를 읽지 않는다.
+ * 접근성 서비스가 켜져 있는 동안은 변경 알림으로 캐시를 뒤집는다(AutoTapService, 시험 중).
  */
 public class AutoBlockerWidget extends AppWidgetProvider {
     static final String TAG = "AutoBlocker";
@@ -44,10 +45,36 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     /** 위젯 토글(0), 빠른 설정 타일(1)과 겹치지 않는 PendingIntent 요청 코드. */
     private static final int REQ_PLAY_PROTECT = 2;
 
-    static void saveState(Context ctx, boolean on) {
+    /** 캐시 값의 출처. SRC_SCREEN 은 설정 화면 스위치, SRC_FLIP 은 설정 변경 알림으로 뒤집은 값. */
+    static final String LAST_SRC = "lastKnownSource";
+    static final String SRC_SCREEN = "screen";
+    static final String SRC_FLIP = "flip";
+    /** 한 번이라도 상태를 읽은 적 있는지. 캐시가 미확인으로 돌아가도 설정 안내 ④ 단계는 완료로 둔다. */
+    static final String EVER_OBSERVED = "everObserved";
+
+    static void saveState(Context ctx, boolean on, String src) {
         ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).edit()
                 .putInt(LAST_STATE, on ? 1 : 0)
+                .putString(LAST_SRC, src)
+                .putBoolean(EVER_OBSERVED, true)
                 .putLong(LAST_AT, System.currentTimeMillis()).commit();
+    }
+
+    /** 캐시를 미확인(-1)으로 되돌린다. 이전 버전에서 캐시만 있던 경우도 ④ 단계 완료가 유지되게 표식을 남긴다. */
+    static void clearState(Context ctx) {
+        SharedPreferences p = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor e = p.edit().remove(LAST_STATE).remove(LAST_AT).remove(LAST_SRC);
+        if (p.contains(LAST_STATE)) e.putBoolean(EVER_OBSERVED, true);
+        e.commit();
+    }
+
+    static String source(Context ctx) {
+        return ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE).getString(LAST_SRC, SRC_SCREEN);
+    }
+
+    static boolean everObserved(Context ctx) {
+        SharedPreferences p = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE);
+        return p.getBoolean(EVER_OBSERVED, false) || p.contains(LAST_STATE);
     }
 
     /** 1 켜짐, 0 꺼짐, -1 캐시 없음. */
