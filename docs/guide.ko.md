@@ -79,7 +79,7 @@ adb 로 바로 시험할 수 있습니다. `adb shell am start -a com.gml.autobl
 
 ### 설치와 설정
 
-3. [최신 릴리스](https://github.com/shieldtap/shieldtap/releases/latest)에서 `shieldtap-v<버전>.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
+3. [최신 릴리스](https://github.com/tapbros/shieldtap/releases/latest)에서 `shieldtap-v<버전>.apk` 를 받아 탭해 설치합니다. 릴리스 노트의 SHA-256 과 받은 파일이 같은지 확인하면 더 안전합니다.
 4. **설치가 끝나면 Play 프로텍트 앱 검사를 바로 다시 켭니다.** 2번과 같은 화면입니다.
 5. 앱 서랍의 **ShieldTap** 을 엽니다. 화면의 5단계를 순서대로 따릅니다. 끝난 단계는 ✓ 로 바뀌고 남은 단계만 펼쳐집니다. 단계마다 `자세히` 를 누르면 무엇을 누르고 왜 필요한지 나옵니다.
    - **① 권한 허용(제한된 설정):** `앱 정보 열기` > 오른쪽 위 ⋮ > **제한된 설정 허용** 을 누르고 인증한 뒤 `허용했어요` 를 누릅니다. Android 13 이상은 스토어 밖에서 설치한 앱이 접근성 권한을 쓰지 못하게 먼저 막아 둡니다([Google 안내](https://support.google.com/android/answer/12623953)). ⋮ 메뉴에 이 항목이 안 보이면 `허용했어요` 를 누르고 ②로 가서 한 번 켜 봅니다. 안드로이드 13 분석에 따르면 이 메뉴는 `제한된 설정` 안내 창을 한 번 본 뒤에 나타날 수 있습니다([Esper 분석](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). 접근성이 이미 켜져 있으면 이 단계는 자동으로 ✓ 입니다.
@@ -94,7 +94,7 @@ adb 로 바로 시험할 수 있습니다. `adb shell am start -a com.gml.autobl
 
 **업데이트.** 앱 서랍의 ShieldTap 에서 `업데이트 확인` 을 누르면 브라우저로 최신 릴리스 페이지가 열립니다. 화면 아래 버전보다 새 버전이면 `shieldtap-v<버전>.apk` 를 받아 덮어 설치합니다. 파일 이름의 버전과 앱 화면 아래 버전이 같은 형식이라 바로 비교할 수 있습니다. 설정과 위젯은 그대로 남습니다. 업데이트는 처음 설치와 달리 막히지 않고 `무시하고 설치` 가 있는 경고만 뜰 수 있습니다(검증 기기에서 확인). 그 선택지 없이 막히면 처음처럼 Play 프로텍트 앱 검사를 잠깐 끕니다. 앱이 직접 확인하지 않는 것은 인터넷 권한을 두지 않기 위해서입니다.
 
-새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/shieldtap/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
+새 버전 알림을 받고 싶으면 [Obtainium](https://github.com/ImranR98/Obtainium) 에 `https://github.com/tapbros/shieldtap` 을 추가하세요. GitHub 릴리스를 지켜보다가 새 버전이 나오면 알려 줍니다. Obtainium 으로 설치할 때도 Play 프로텍트에 막히는지는 확인하지 못했습니다.
 
 **삭제.** 앱 서랍의 ShieldTap 아이콘을 길게 눌러 `삭제` 를 누르거나 앱 화면의 `앱 정보 열기 (삭제)` 를 누릅니다.
 

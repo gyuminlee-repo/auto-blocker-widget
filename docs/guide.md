@@ -79,7 +79,7 @@ This procedure was verified on a Galaxy Z Fold8 running One UI 9.0, including th
 
 ### Install and set up
 
-3. Download `shieldtap-v<version>.apk` from the [latest release](https://github.com/shieldtap/shieldtap/releases/latest) and tap it to install. For extra safety, check that the file matches the SHA-256 in the release notes.
+3. Download `shieldtap-v<version>.apk` from the [latest release](https://github.com/tapbros/shieldtap/releases/latest) and tap it to install. For extra safety, check that the file matches the SHA-256 in the release notes.
 4. **Right after installing, turn Play Protect app scanning back on.** It is the same screen as step 2.
 5. Open **ShieldTap** from the app drawer and follow the 5 steps on screen in order. Finished steps change to ✓ and only the remaining steps stay expanded. Tap `Details` on any step to see what to tap and why.
    - **① Allow restricted settings:** tap `Open App info` > ⋮ at the top right > **Allow restricted settings**, verify, then tap `Done`. Android 13 and later block apps installed from outside an app store from using accessibility until you allow it ([Google help](https://support.google.com/android/answer/12623953)). If the ⋮ menu does not show this option, tap `Done`, go to ② and try turning it on once. According to an Android 13 analysis, the option can appear only after you have seen the "Restricted setting" dialog once ([Esper](https://www.esper.io/blog/android-13-sideloading-restriction-harder-malware-abuse-accessibility-apis)). If accessibility is already on, this step is marked ✓ automatically.
@@ -94,7 +94,7 @@ This procedure was verified on a Galaxy Z Fold8 running One UI 9.0, including th
 
 **Updating.** Open ShieldTap from the app drawer and tap `Check for updates` to open the latest release page in your browser. If it is newer than the version shown at the bottom of the app screen, download `shieldtap-v<version>.apk` and install it over the current app. The version in the file name uses the same format as the one in the app, so you can compare them directly. Your settings and widget stay as they are. An update may get a warning with `Install anyway` under More details instead of a hard block, as seen on the verified device. If the install is blocked with no such option, turn off Play Protect app scanning for a moment as with the first install. The app does not check for updates itself so it can stay free of the internet permission.
 
-For new-version notifications, add `https://github.com/shieldtap/shieldtap` to [Obtainium](https://github.com/ImranR98/Obtainium). It watches GitHub releases and tells you when a new version is out. Whether Play Protect also blocks installs made through Obtainium has not been verified.
+For new-version notifications, add `https://github.com/tapbros/shieldtap` to [Obtainium](https://github.com/ImranR98/Obtainium). It watches GitHub releases and tells you when a new version is out. Whether Play Protect also blocks installs made through Obtainium has not been verified.
 
 **Uninstalling.** Touch and hold the ShieldTap icon in the app drawer and tap `Uninstall`, or tap `Open App info (uninstall)` in the app.
 

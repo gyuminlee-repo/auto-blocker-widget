@@ -13,12 +13,12 @@
   <a href="docs/guide.md#how-it-works">how it works</a> ·
   <a href="docs/guide.md#security-notes">security</a> ·
   <a href="#docs">docs</a> ·
-  <a href="https://github.com/shieldtap/shieldtap/releases/latest">releases</a>
+  <a href="https://github.com/tapbros/shieldtap/releases/latest">releases</a>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2E7D32?labelColor=333333" alt="Apache-2.0 license"></a>
-  <a href="https://github.com/shieldtap/shieldtap/releases/latest"><img src="https://img.shields.io/github/v/release/shieldtap/shieldtap?label=release&amp;color=2E7D32&amp;labelColor=333333" alt="Latest release"></a>
+  <a href="https://github.com/tapbros/shieldtap/releases/latest"><img src="https://img.shields.io/github/v/release/tapbros/shieldtap?label=release&amp;color=2E7D32&amp;labelColor=333333" alt="Latest release"></a>
   <a href="docs/guide.md#compatibility"><img src="https://img.shields.io/badge/One%20UI-6%2B-2E7D32?labelColor=333333" alt="One UI 6 or later"></a>
   <a href="docs/guide.md#security-notes"><img src="https://img.shields.io/badge/permissions-0-2E7D32?labelColor=333333" alt="Zero requested permissions"></a>
 </p>
@@ -82,7 +82,7 @@ Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireles
 
 ## install
 
-**[Download the latest APK](https://github.com/shieldtap/shieldtap/releases/latest)** (`shieldtap-v<version>.apk`) and open it on the phone.
+**[Download the latest APK](https://github.com/tapbros/shieldtap/releases/latest)** (`shieldtap-v<version>.apk`) and open it on the phone.
 
 ShieldTap needs One UI 6 or later, where Auto Blocker exists. It installs on Android 8.0 (API 26) and later, but below One UI 6 there is nothing to toggle. It was verified on a One UI 9.0 device. [Compatibility →](docs/guide.md#compatibility)
 
@@ -98,7 +98,7 @@ ShieldTap needs One UI 6 or later, where Auto Blocker exists. It installs on And
 3. In step 5, turn Auto Blocker back on. On One UI 8.5 and later, `Turn on Auto Blocker automatically` turns it back on 30 minutes after you turn it off with the widget.
 4. When `All set` appears, each widget tap switches between On and Off. [Step by step →](docs/guide.md#install-step-by-step)
 
-**Update** with `Check for updates` in the app, which opens the latest release page; install the new APK over the current one and your settings and widget stay. If you use [Obtainium](https://github.com/ImranR98/Obtainium), add `https://github.com/shieldtap/shieldtap` and it tells you when a new version is out. **Uninstall** with `Open App info (uninstall)`. [Updating and uninstalling →](docs/guide.md#updating-and-uninstalling)
+**Update** with `Check for updates` in the app, which opens the latest release page; install the new APK over the current one and your settings and widget stay. When updating, Play Protect usually warns instead of blocking: tap More details, then Install anyway. If you use [Obtainium](https://github.com/ImranR98/Obtainium), add `https://github.com/tapbros/shieldtap` and it tells you when a new version is out. **Uninstall** with `Open App info (uninstall)`. [Updating and uninstalling →](docs/guide.md#updating-and-uninstalling)
 
 Developers can install with adb and turn on the service from a script. [Install with adb →](docs/guide.md#install-with-adb)
 
@@ -123,7 +123,7 @@ Start with the [user guide](docs/guide.md): [widget states](docs/guide.md#widget
 ShieldTap builds without Gradle. It needs Android build-tools (`aapt2`, `d8`, `zipalign`, `apksigner`), the `android-34` platform and JDK 17. Set `ANDROID_SDK_ROOT` if the SDK is not in the default path.
 
 ```bash
-git clone https://github.com/shieldtap/shieldtap.git
+git clone https://github.com/tapbros/shieldtap.git
 cd shieldtap
 ./build.sh
 ```
@@ -132,6 +132,6 @@ The APK lands in `build/shieldtap-v<version>.apk`. The version comes from the `v
 
 ## license
 
-[Apache-2.0](LICENSE). Copyright 2026 Gyu Min Lee. See [NOTICE](NOTICE) for the Material Icons attribution. When distributing, include `LICENSE` and `NOTICE`.
+[Apache-2.0](LICENSE). Copyright 2026 tapbros. See [NOTICE](NOTICE) for the Material Icons attribution. When distributing, include `LICENSE` and `NOTICE`.
 
 ShieldTap is an unofficial app made by an individual and is not affiliated with Samsung Electronics. Auto Blocker is the name of a Samsung feature.

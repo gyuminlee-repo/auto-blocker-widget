@@ -17,10 +17,10 @@
     <string name="btn_accessibility">Open Accessibility settings</string>
     <string name="btn_update">Check for updates</string>
     <string name="main_update_hint">ShieldTap has no internet permission, so it can\'t check for or download new versions by itself.</string>
-    <string name="releases_url" translatable="false">https://github.com/shieldtap/shieldtap/releases/latest</string>
+    <string name="releases_url" translatable="false">https://github.com/tapbros/shieldtap/releases/latest</string>
     <string name="toast_no_app">No app can open this screen.</string>
     <string name="btn_app_info">Open App info (uninstall)</string>
-    <string name="main_footer">Version %1$s\n© 2026 Gyu Min Lee · Apache-2.0\nIcons: Material Icons (Apache-2.0)</string>
+    <string name="main_footer">Version %1$s\n© 2026 tapbros · Apache-2.0\nIcons: Material Icons (Apache-2.0)</string>
     <string name="mark_done" translatable="false">✓</string>
     <string name="mark_todo" translatable="false">○</string>
     <string name="step1_title">1. Allow restricted settings</string>

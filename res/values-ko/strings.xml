@@ -19,7 +19,7 @@
     <string name="main_update_hint">ShieldTap 은 인터넷 권한이 없어서 새 버전을 직접 확인하거나 받지 않습니다.</string>
     <string name="toast_no_app">이 화면을 열 수 있는 앱이 없습니다.</string>
     <string name="btn_app_info">앱 정보 열기 (삭제)</string>
-    <string name="main_footer">버전 %1$s\n© 2026 Gyu Min Lee · Apache-2.0\n아이콘: Material Icons (Apache-2.0)</string>
+    <string name="main_footer">버전 %1$s\n© 2026 tapbros · Apache-2.0\n아이콘: Material Icons (Apache-2.0)</string>
     <string name="step1_title">1. 권한 허용(제한된 설정)</string>
     <string name="step1_body">앱 정보 > 오른쪽 위 ⋮ > 제한된 설정 허용을 누르고 인증하세요.</string>
     <string name="btn_restricted_done">허용했어요</string>

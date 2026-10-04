@@ -13,12 +13,12 @@
   <a href="docs/guide.ko.md#동작-원리">동작 원리</a> ·
   <a href="docs/guide.ko.md#보안-메모">보안</a> ·
   <a href="#docs">문서</a> ·
-  <a href="https://github.com/shieldtap/shieldtap/releases/latest">릴리스</a>
+  <a href="https://github.com/tapbros/shieldtap/releases/latest">릴리스</a>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2E7D32?labelColor=333333" alt="Apache-2.0 라이선스"></a>
-  <a href="https://github.com/shieldtap/shieldtap/releases/latest"><img src="https://img.shields.io/github/v/release/shieldtap/shieldtap?label=release&amp;color=2E7D32&amp;labelColor=333333" alt="최신 릴리스"></a>
+  <a href="https://github.com/tapbros/shieldtap/releases/latest"><img src="https://img.shields.io/github/v/release/tapbros/shieldtap?label=release&amp;color=2E7D32&amp;labelColor=333333" alt="최신 릴리스"></a>
   <a href="docs/guide.ko.md#호환성"><img src="https://img.shields.io/badge/One%20UI-6%2B-2E7D32?labelColor=333333" alt="One UI 6 이상"></a>
   <a href="docs/guide.ko.md#보안-메모"><img src="https://img.shields.io/badge/permissions-0-2E7D32?labelColor=333333" alt="요청 권한 0개"></a>
 </p>
@@ -84,7 +84,7 @@
 
 ## 설치
 
-**[최신 APK 받기](https://github.com/shieldtap/shieldtap/releases/latest)** (`shieldtap-v<버전>.apk`). 받은 파일을 폰에서 엽니다.
+**[최신 APK 받기](https://github.com/tapbros/shieldtap/releases/latest)** (`shieldtap-v<버전>.apk`). 받은 파일을 폰에서 엽니다.
 
 보안 위험 자동 차단이 있는 One UI 6 이상이 필요합니다. 설치는 Android 8.0(API 26) 이상이면 되지만 One UI 6 미만에는 켤 대상이 없습니다. One UI 9.0 기기에서 확인했습니다. [호환성 →](docs/guide.ko.md#호환성)
 
@@ -100,7 +100,7 @@
 3. 5단계에서 보안 위험 자동 차단을 다시 켭니다. One UI 8.5 이상이면 `자동으로 켜기` 를 켜 두세요. 위젯으로 끈 뒤 30분이 지나면 다시 켜집니다.
 4. `준비 완료` 가 뜨면 끝입니다. 그다음부터 위젯을 탭할 때마다 켜짐과 꺼짐이 바뀝니다. [단계별 설정 →](docs/guide.ko.md#단계별-설정)
 
-**업데이트**는 앱의 `업데이트 확인` 으로 합니다. 최신 릴리스 페이지가 열리면 새 APK 를 받아 덮어 설치합니다. 설정과 위젯은 그대로 남습니다. [Obtainium](https://github.com/ImranR98/Obtainium) 을 쓴다면 `https://github.com/shieldtap/shieldtap` 을 추가해 두세요. 새 버전이 나오면 알려 줍니다. **삭제**는 `앱 정보 열기 (삭제)` 로 합니다. [업데이트와 삭제 →](docs/guide.ko.md#업데이트와-삭제)
+**업데이트**는 앱의 `업데이트 확인` 으로 합니다. 최신 릴리스 페이지가 열리면 새 APK 를 받아 덮어 설치합니다. 설정과 위젯은 그대로 남습니다. 업데이트할 때는 Play 프로텍트가 막지 않고 경고만 띄우는 경우가 많습니다. 자세히를 누른 뒤 무시하고 설치를 누르면 됩니다. [Obtainium](https://github.com/ImranR98/Obtainium) 을 쓴다면 `https://github.com/tapbros/shieldtap` 을 추가해 두세요. 새 버전이 나오면 알려 줍니다. **삭제**는 `앱 정보 열기 (삭제)` 로 합니다. [업데이트와 삭제 →](docs/guide.ko.md#업데이트와-삭제)
 
 개발자는 adb 로 설치하고 스크립트로 접근성을 켤 수 있습니다. [개발자용 adb 설치 →](docs/guide.ko.md#개발자용-adb-설치)
 
@@ -129,7 +129,7 @@ MacroDroid 무료판은 화면 내용을 2초마다 읽습니다. `TURN_ON` 과 
 Gradle 없이 빌드합니다. Android build-tools(`aapt2`, `d8`, `zipalign`, `apksigner`), `android-34` 플랫폼, JDK 17 이 필요합니다. SDK 가 기본 경로에 없으면 `ANDROID_SDK_ROOT` 를 지정합니다.
 
 ```bash
-git clone https://github.com/shieldtap/shieldtap.git
+git clone https://github.com/tapbros/shieldtap.git
 cd shieldtap
 ./build.sh
 ```
@@ -138,6 +138,6 @@ cd shieldtap
 
 ## 라이선스
 
-[Apache-2.0](LICENSE). Copyright 2026 Gyu Min Lee. Material Icons 고지는 [NOTICE](NOTICE) 에 있습니다. 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣으세요.
+[Apache-2.0](LICENSE). Copyright 2026 tapbros. Material Icons 고지는 [NOTICE](NOTICE) 에 있습니다. 배포할 때는 `LICENSE` 와 `NOTICE` 를 함께 넣으세요.
 
 ShieldTap 은 개인이 만든 비공식 앱이며 삼성전자와 관계가 없습니다. Auto Blocker(보안 위험 자동 차단)는 삼성전자의 기능 이름입니다.
