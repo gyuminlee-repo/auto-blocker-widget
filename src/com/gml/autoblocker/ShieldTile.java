@@ -24,12 +24,16 @@ public class ShieldTile extends TileService {
         Tile tile = getQsTile();
         if (tile == null) return;
         Context loc = LocaleHelper.wrap(getApplicationContext());
-        int state = AutoBlockerWidget.cached(this);
-        int text = state == 1 ? R.string.state_on : state == 0 ? R.string.state_off : R.string.state_unknown;
+        // 위젯과 같은 판정. 서비스가 꺼져 있으면 부제를 「설정 필요」로 둔다. STATE_UNAVAILABLE 은 탭을 막으므로 INACTIVE 를 쓴다.
+        boolean setup = !AutoBlockerWidget.serviceEnabled(this);
+        int state = setup ? -1 : AutoBlockerWidget.cached(this);
+        int text = setup ? R.string.state_setup
+                : state == 1 ? R.string.state_on : state == 0 ? R.string.state_off : R.string.state_unknown;
         tile.setState(state == 1 ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         tile.setLabel(loc.getString(R.string.app_name));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) tile.setSubtitle(loc.getString(text));
-        tile.setContentDescription(loc.getString(R.string.desc_fmt, loc.getString(text)));
+        tile.setContentDescription(setup ? loc.getString(R.string.desc_setup)
+                : loc.getString(R.string.desc_fmt, loc.getString(text)));
         tile.updateTile();
     }
 

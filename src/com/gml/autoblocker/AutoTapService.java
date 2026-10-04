@@ -74,10 +74,13 @@ public class AutoTapService extends AccessibilityService {
         instance = this;
         // 같은 인스턴스에 두 번 불려도 observer 는 하나만 둔다.
         if (observer == null) startObserver(wasRunning);
+        AutoBlockerWidget.refresh(this); // 「설정 필요」를 지우고 현재 캐시로 다시 그린다.
     }
 
+    // 해제 때 위젯을 다시 그린다. 사용자가 설정에서 끄면 ENABLED_ACCESSIBILITY_SERVICES 가 먼저 바뀐 뒤 해제된다고 보고
+    // 「설정 필요」가 바로 보이길 기대한다(추정, 실기기 미확인). 콜백 없이 프로세스가 죽으면 다음 갱신 때 반영된다.
     @Override
-    public boolean onUnbind(android.content.Intent i) { stopObserver("unbind"); return super.onUnbind(i); }
+    public boolean onUnbind(android.content.Intent i) { stopObserver("unbind"); AutoBlockerWidget.refresh(this); return super.onUnbind(i); }
 
     /** 클릭 전 값. 클릭을 보냈고 값 변화를 기다리는 동안만 0 또는 1, 아니면 -1. */
     private int pendingBefore = -1;
@@ -167,7 +170,7 @@ public class AutoTapService extends AccessibilityService {
     public void onInterrupt() { stopWatch(); }
 
     @Override
-    public void onDestroy() { stopWatch(); stopObserver("destroy"); super.onDestroy(); }
+    public void onDestroy() { stopWatch(); stopObserver("destroy"); AutoBlockerWidget.refresh(this); super.onDestroy(); }
 
     // ---- 설정 변경 알림(시험 중) ----
     // 값은 읽지 않는다. 일반 앱이 이 키를 읽으면 SecurityException 이 난다(@hide, system apps only).
@@ -205,11 +208,10 @@ public class AutoTapService extends AccessibilityService {
         StateLog.add(this, "observer_ok", MAIN_SWITCH_KEY);
         // 연결 전에는 observer 가 없었으므로 그동안의 변화는 알 수 없다. 해제 기록(onUnbind, onDestroy)은
         // 프로세스가 죽으면 남지 않아 공백 길이를 믿을 수 없으므로 (재)연결마다 캐시를 미확인으로 돌린다.
-        // 처음 설치 직후, 재부팅, 앱 업데이트 뒤에도 같다. 다음에 설정 화면을 보면 다시 채워진다.
+        // 처음 설치 직후, 재부팅, 앱 업데이트 뒤에도 같다. 다음에 설정 화면을 보면 다시 채워진다. 위젯은 onServiceConnected 가 다시 그린다.
         int cached = AutoBlockerWidget.cached(this);
         if (cached != -1) {
             AutoBlockerWidget.clearState(this);
-            AutoBlockerWidget.refresh(this);
             StateLog.add(this, "gap_unknown", "cache " + cached + " -> unknown");
         }
     }

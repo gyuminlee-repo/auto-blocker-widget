@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.SizeF;
 import android.view.View;
@@ -75,6 +76,26 @@ public class AutoBlockerWidget extends AppWidgetProvider {
     static boolean everObserved(Context ctx) {
         SharedPreferences p = ctx.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE);
         return p.getBoolean(EVER_OBSERVED, false) || p.contains(LAST_STATE);
+    }
+
+    /**
+     * 접근성 서비스(AutoTapService)가 켜져 있는지. 공개 키 Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES 는
+     * 권한 없이 읽을 수 있고 켜진 서비스 컴포넌트를 ':' 로 이어 둔 목록이라 여기에 이 앱 서비스가 있는지로 판정한다.
+     * AutoTapService.isRunning() 은 그 프로세스의 정적 필드라 위젯이 그려지는 시점(프로세스 재시작 직후 등)에는 믿을 수 없어 쓰지 않는다.
+     * 시스템 설정에서 서비스를 끌 때 서비스 콜백(onUnbind, onDestroy) 없이 프로세스가 죽으면
+     * 위젯은 다음 갱신(앱 열기, 위젯 업데이트 주기, 언어 변경) 때 이 값을 다시 읽어 반영한다.
+     */
+    static boolean serviceEnabled(Context ctx) {
+        String list = Settings.Secure.getString(ctx.getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        if (list == null) return false;
+        ComponentName cn = new ComponentName(ctx, AutoTapService.class);
+        String full = cn.flattenToString();
+        String shrt = cn.flattenToShortString();
+        for (String s : list.split(":")) {
+            if (s.equalsIgnoreCase(full) || s.equalsIgnoreCase(shrt)) return true;
+        }
+        return false;
     }
 
     /** 1 켜짐, 0 꺼짐, -1 캐시 없음. */
@@ -237,14 +258,17 @@ public class AutoBlockerWidget extends AppWidgetProvider {
         boolean system = style == STYLE_SYSTEM;
         boolean mono = style == STYLE_MONO;
         boolean custom = style == STYLE_CUSTOM;
-        int state = cached(ctx);
+        // 서비스가 꺼져 있으면 캐시와 상관없이 미확인 모양(아이콘, 바탕, 색)에 「설정 필요」 글자를 쓴다. 탭은 그대로 TrampolineActivity 가 설정 안내로 보낸다.
+        boolean setup = !serviceEnabled(ctx);
+        int state = setup ? -1 : cached(ctx);
         int text, bg, icon;
         switch (state) {
             case 1: text = R.string.state_on; icon = R.drawable.ic_shield_on;
                 bg = mono ? R.drawable.bg_mono_on : R.drawable.bg_on; break;
             case 0: text = R.string.state_off; icon = R.drawable.ic_shield_off;
                 bg = mono ? R.drawable.bg_mono_off : R.drawable.bg_off; break;
-            default: text = R.string.state_unknown; icon = R.drawable.ic_shield_unknown;
+            default: text = setup ? R.string.state_setup : R.string.state_unknown;
+                icon = setup ? R.drawable.ic_shield_setup : R.drawable.ic_shield_unknown;
                 bg = mono ? R.drawable.bg_mono_unknown : R.drawable.bg_unknown; break;
         }
         // 사용자 지정은 바탕 대비가 높은 쪽, 모노톤은 밝은 켜짐만 진한 글자와 아이콘을 쓴다.
@@ -301,7 +325,8 @@ public class AutoBlockerWidget extends AppWidgetProvider {
                 rv.setViewVisibility(R.id.checked_at, View.GONE);
             }
         }
-        rv.setContentDescription(R.id.root, loc.getString(R.string.desc_fmt, stateText));
+        rv.setContentDescription(R.id.root, setup ? loc.getString(R.string.desc_setup)
+                : loc.getString(R.string.desc_fmt, stateText));
         rv.setOnClickPendingIntent(R.id.root, pi);
         if (layout == R.layout.widget_wide) {
             // 상태 색은 Auto Blocker 쪽만. 바로가기는 같은 글자색 한 가지로 칠한다.

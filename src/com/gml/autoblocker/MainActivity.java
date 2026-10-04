@@ -113,6 +113,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        // 접근성 서비스가 콜백 없이 꺼졌으면 위젯이 아직 이전 상태를 보이므로 앱을 열 때 다시 그린다(「설정 필요」 반영).
+        AutoBlockerWidget.refresh(this);
         render();
     }
 
@@ -252,16 +254,7 @@ public class MainActivity extends Activity {
     }
 
     private boolean isServiceEnabled() {
-        String list = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-        if (list == null) return false;
-        ComponentName cn = new ComponentName(this, AutoTapService.class);
-        String full = cn.flattenToString();
-        String shrt = cn.flattenToShortString();
-        for (String s : list.split(":")) {
-            if (s.equalsIgnoreCase(full) || s.equalsIgnoreCase(shrt)) return true;
-        }
-        return false;
+        return AutoBlockerWidget.serviceEnabled(this);
     }
 
     private String versionName() {

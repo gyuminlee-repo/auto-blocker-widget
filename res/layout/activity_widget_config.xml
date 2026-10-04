@@ -188,17 +188,17 @@
                 android:minHeight="48dp"
                 android:text="@string/widget_lang_app" />
             <RadioButton
-                android:id="@+id/widget_lang_ko"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/lang_ko" />
-            <RadioButton
                 android:id="@+id/widget_lang_en"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
                 android:text="@string/lang_en" />
+            <RadioButton
+                android:id="@+id/widget_lang_ko"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/lang_ko" />
         </RadioGroup>
 
         <Button
