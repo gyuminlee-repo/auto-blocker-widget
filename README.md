@@ -102,7 +102,7 @@ Developers can install with adb and turn on the service from a script. [Install 
 
 ## advanced: automation apps
 
-Most people install an APK only now and then. When the Auto Blocker window blocks an install, tap the widget or the Quick Settings tile. That needs no extra app and costs no battery. If you already use MacroDroid or Tasker, it can ask ShieldTap to turn Auto Blocker off when the window appears. Turning off still asks for your fingerprint or PIN, and you return to the install screen afterwards.
+Most people install an APK only now and then. When the Auto Blocker window blocks an install, tap the widget or the Quick Settings tile. That needs no extra app and costs no battery. An automation app has to keep reading the screen to catch the window, so it can use more battery. It is recommended only if you already use MacroDroid or Tasker. In that case it can ask ShieldTap to turn Auto Blocker off when the window appears. Turning off still asks for your fingerprint or PIN, and you return to the install screen afterwards.
 
 | | MacroDroid (tested) | Tasker (not tested) |
 |---|---|---|
