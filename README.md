@@ -96,7 +96,7 @@ ShieldTap needs One UI 6 or later, where Auto Blocker exists. It installs on And
 3. In step 5, turn Auto Blocker back on. On One UI 8.5 and later, `Turn on Auto Blocker automatically` turns it back on 30 minutes after you turn it off with the widget.
 4. When `All set` appears, each widget tap switches between On and Off. [Step by step →](docs/guide.md#install-step-by-step)
 
-**Update** with `Check for updates` in the app, which opens the latest release page; install the new APK over the current one and your settings and widget stay. **Uninstall** with `Open App info (uninstall)`. [Updating and uninstalling →](docs/guide.md#updating-and-uninstalling)
+**Update** with `Check for updates` in the app, which opens the latest release page; install the new APK over the current one and your settings and widget stay. If you use [Obtainium](https://github.com/ImranR98/Obtainium), add `https://github.com/shieldtap/shieldtap` and it tells you when a new version is out. **Uninstall** with `Open App info (uninstall)`. [Updating and uninstalling →](docs/guide.md#updating-and-uninstalling)
 
 Developers can install with adb and turn on the service from a script. [Install with adb →](docs/guide.md#install-with-adb)
 
