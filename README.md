@@ -33,6 +33,8 @@
 
 <p align="center"><sub>The widget in its three states: on, off and unknown · a preview drawn from the app layout and English strings, not a device screenshot</sub></p>
 
+**Unknown** is not an error. After a reboot or an app update, and whenever ShieldTap could not check, the widget shows Unknown instead of guessing. Opening the Auto Blocker screen in Settings once reads the real state without changing it. Tapping the widget switches it and updates the state at the same time. **Setup needed** means the ShieldTap accessibility service is off, and tapping opens the setup guide. [Widget states →](docs/guide.md#widget-states)
+
 **Turn Samsung Auto Blocker on or off from the home screen with one tap.**
 
 Auto Blocker keeps a Galaxy phone safer, but sideloading an APK or using wireless debugging means digging into Settings to turn it off. ShieldTap puts that switch in a resizable widget (2x1 by default) that shows the current state with color and text.
