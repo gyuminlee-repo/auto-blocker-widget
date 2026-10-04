@@ -8,6 +8,7 @@
 #
 # Assumptions (not taken from resources):
 #   - widget size 180x76 dp (a 2x1 cell; real size depends on the launcher grid)
+#   - 3x1 widget (widget_wide.png, res/layout/widget_wide.xml) is 270x76 dp, 1.5x the 2x1 width
 #   - 1 dp = 1 sp = 1 CSS px, rendered at device scale factor 3
 #   - example check time "14:32" for on/off (render() hides it for unknown)
 #   - system font stack instead of the device font (Roboto / Samsung One UI)
@@ -80,7 +81,20 @@ L = dict(
     l_w='700' if ids['label'].get(A + 'textStyle') == 'bold' else '400',
 )
 
+# 3x1 extras from res/layout/widget_wide.xml: divider + Play Protect shortcut
+wl = ET.parse(f'{root}/res/layout/widget_wide.xml').getroot()
+wids = {e.get(A + 'id').split('/')[-1]: e for e in wl.iter() if e.get(A + 'id')}
+P = dict(
+    d_w=dp(wids['pp_divider'].get(A + 'layout_width')), d_ms=dp(wids['pp_divider'].get(A + 'layout_marginStart')),
+    d_mt=dp(wids['pp_divider'].get(A + 'layout_marginTop')), d_mb=dp(wids['pp_divider'].get(A + 'layout_marginBottom')),
+    ps=dp(wids['play_protect'].get(A + 'paddingStart')), pe=dp(wids['play_protect'].get(A + 'paddingEnd')),
+    icon=dp(wids['pp_icon'].get(A + 'layout_width')),
+    l_sz=dp(wids['pp_label'].get(A + 'textSize')), l_mt=dp(wids['pp_label'].get(A + 'layout_marginTop')),
+)
+PP_LABEL = strings[wids['pp_label'].get(A + 'text').split('/')[-1]]
+
 W, H, GAP = 180, 76, 16
+WW = 270  # 3x1 width (assumption, see header)
 ROW_GAP = 12  # space between the Color row and the Monochrome row
 # Header row above the 3-up strip only: app icon (docs/media/icon.png, inlined) + app name
 HEAD, HEAD_MB = 24, 10
@@ -115,36 +129,49 @@ body{{font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;-webkit-font-s
 .strip+.strip{{margin-top:{ROW_GAP}px;}}
 .cell{{display:flex;flex-direction:column;align-items:center;}}
 .cap{{margin-top:6px;font-size:12px;line-height:16px;color:#6B7280;}}
+.dv{{flex:none;align-self:stretch;width:{P["d_w"]}px;margin:{P["d_mt"]}px 0 {P["d_mb"]}px {P["d_ms"]}px;}}
+.pp{{flex:none;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 {P["pe"]}px 0 {P["ps"]}px;}}
+.pp .pi{{width:{P["icon"]}px;height:{P["icon"]}px;}}
+.pp .pi svg{{display:block;}}
+.pp .pl{{margin-top:{P["l_mt"]}px;font-size:{P["l_sz"]}px;white-space:nowrap;}}
 '''
 
 # Text and icon colors, mirroring AutoBlockerWidget.build(): dark only for Monochrome On
 FG = {False: (color(colors['widget_fg_light']), color(colors['widget_fg_light_sub'])),
       True: (color(colors['widget_fg_dark']), color(colors['widget_fg_dark_sub']))}
 
-def widget(label, bgname, iconname, show_at, dark=False):
+def widget(label, bgname, iconname, show_at, dark=False, wide=False):
     c, r = bg(bgname)
     fg, sub = FG[dark]
     at = f'<div class="at" style="color:{sub}">{CHECK}</div>' if show_at else ''
-    return (f'<div class="w" style="background:{c};border-radius:{r}px">'
+    # 3x1: pp_icon and pp_label take fg, pp_divider takes fgSub (AutoBlockerWidget.build())
+    pp = (f'<div class="dv" style="background:{sub}"></div><div class="pp">'
+          f'<div class="pi">{icon("ic_play_protect", fg)}</div>'
+          f'<div class="pl" style="color:{fg}">{PP_LABEL}</div></div>') if wide else ''
+    size = f'width:{WW}px;' if wide else ''
+    return (f'<div class="w" style="{size}background:{c};border-radius:{r}px">'
             f'<div class="ic">{icon(iconname, fg)}</div>'
-            f'<div class="tx"><div class="row"><div class="label" style="color:{fg}">{label}</div>{at}</div></div></div>')
+            f'<div class="tx"><div class="row"><div class="label" style="color:{fg}">{label}</div>{at}</div></div>{pp}</div>')
 
 def page(body):
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}</body></html>'
 
 for key, cap, label, b, i, show in STATES:
     open(f'{out}/{key}.html', 'w').write(page(widget(label, b, i, show)))
-def strip(style, mono):
-    cells = ''.join(f'<div class="cell">{widget(l, f"bg_mono_{k}" if mono else b, i, s, mono and k == "on")}'
+def strip(style, mono, wide=False):
+    cells = ''.join(f'<div class="cell">{widget(l, f"bg_mono_{k}" if mono else b, i, s, mono and k == "on", wide)}'
                     f'<div class="cap">{style} \u00b7 {cap}</div></div>'
                     for k, cap, l, b, i, s in STATES)
     return f'<div class="strip">{cells}</div>'
 head = f'<div class="head"><img src="{ICON_URI}" alt=""><span>{APP}</span></div>'
 open(f'{out}/states.html', 'w').write(page(f'<div class="sheet">{head}{strip("Color", False)}{strip("Monochrome", True)}</div>'))
-open(f'{out}/sizes', 'w').write(f'{W},{H} {3 * W + 2 * GAP},{HEAD + HEAD_MB + 2 * (H + 6 + 16) + ROW_GAP}\n')
+open(f'{out}/wide.html', 'w').write(page(f'<div class="sheet">{strip("Color", False, True)}{strip("Monochrome", True, True)}</div>'))
+open(f'{out}/sizes', 'w').write(f'{W},{H} {3 * W + 2 * GAP},{HEAD + HEAD_MB + 2 * (H + 6 + 16) + ROW_GAP} '
+                                f'{3 * WW + 2 * GAP},{2 * (H + 6 + 16) + ROW_GAP}\n')
 PY
 
-read -r SINGLE STRIP < "$D/sizes"
+read -r SINGLE STRIP WIDE < "$D/sizes"
 
 shot() { # html png w,h  (perl alarm = 30 s hard timeout; headless Chrome can hang)
   rm -f "$2"
@@ -158,4 +185,5 @@ for s in on off unknown; do
   shot "$D/$s.html" "$OUT/widget_$s.png" "$SINGLE"
 done
 shot "$D/states.html" "$OUT/widget_states.png" "$STRIP"
-echo "wrote: widget_on.png widget_off.png widget_unknown.png widget_states.png in $OUT"
+shot "$D/wide.html" "$OUT/widget_wide.png" "$WIDE"
+echo "wrote: widget_on.png widget_off.png widget_unknown.png widget_states.png widget_wide.png in $OUT"

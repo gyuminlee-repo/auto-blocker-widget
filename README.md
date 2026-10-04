@@ -27,6 +27,8 @@
 
 <p align="center">
   <img src="docs/widget_states.png" width="600" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states in grays: light On with dark text, dark Off and mid-gray Unknown. Each widget has a shield icon.">
+  <br>
+  <img src="docs/widget_wide.png" width="720" alt="Rendered preview of the 3x1 widget (ShieldTap + Play Protect) in the same two rows of Color and Monochrome states. Each widget shows the shield state on the left and, past a thin divider, a Play Protect shortcut with its own shield icon on the right.">
 </p>
 
 <p align="center"><sub>The widget in its three states: on, off and unknown · a preview drawn from the app layout and English strings, not a device screenshot</sub></p>
