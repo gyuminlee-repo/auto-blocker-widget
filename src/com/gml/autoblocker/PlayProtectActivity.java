@@ -16,15 +16,15 @@ public class PlayProtectActivity extends Activity {
     private static final String STORE_PKG = "com.android.vending";
     private static final String HINT_PREFS = "play_protect_hint";
     private static final String HINT_SHOWN = "shown";
-    /** ⚙ 안내를 띄우는 횟수. 익숙해진 뒤에는 방해가 되므로 이만큼만 보인다. */
-    private static final int HINT_MAX = 3;
+    /** ⚙ 안내를 띄우는 횟수. 익숙해진 뒤에는 방해가 되므로 처음 한 번만 보인다(문구에도 그렇게 적는다). */
+    private static final int HINT_MAX = 1;
 
     /** Play 프로텍트 설정 화면을 직접 열고, 막히면 Play 스토어를 연다. 설정 안내(MainActivity)와 함께 쓴다. */
     static void open(Context ctx) {
         try {
             ctx.startActivity(new Intent().setComponent(new ComponentName(PROTECT_PKG, PROTECT_CLS))
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            // 스위치 화면은 Play 스토어 내부 화면이라 외부에서 바로 열 수 없다(Play 스토어 53.3 분석). 다음 한 단계를 처음 몇 번만 알려 준다.
+            // 스위치 화면은 Play 스토어 내부 화면이라 외부에서 바로 열 수 없다(Play 스토어 53.3 분석). 다음 한 단계를 처음 한 번만 알려 준다.
             SharedPreferences p = ctx.getSharedPreferences(HINT_PREFS, Context.MODE_PRIVATE);
             int shown = p.getInt(HINT_SHOWN, 0);
             if (shown < HINT_MAX) {
