@@ -6,8 +6,10 @@
     <string name="checked_at">%1$s 확인</string>
     <string name="desc_fmt">보안 위험 자동 차단 %1$s, 탭하여 전환</string>
     <string name="state_unknown">상태 미확인</string>
-    <!-- 접근성 서비스가 꺼져 있을 때 위젯과 타일에 보인다. -->
+    <!-- 접근성 서비스가 꺼져 있을 때 빠른 설정 타일에 보인다. -->
     <string name="state_setup">설정 필요</string>
+    <!-- 같은 상태의 위젯 라벨. 한국어는 2×1(180dp) 칸에 들어가 타일과 같은 문구를 쓴다. -->
+    <string name="widget_state_setup">설정 필요</string>
     <string name="desc_setup">보안 위험 자동 차단, 접근성 서비스 꺼짐, 탭하여 설정 안내 열기</string>
     <string name="service_desc">위젯이나 빠른 설정 타일을 탭했을 때와 자동화 앱이 켜기 또는 끄기를 요청했을 때만 보안 위험 자동 차단 설정 화면의 스위치를 한 번 누릅니다.</string>
     <string name="toast_service_off">접근성 서비스가 꺼져 있습니다. 설정 안내 화면을 엽니다.</string>

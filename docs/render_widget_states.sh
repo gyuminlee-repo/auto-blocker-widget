@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Renders README preview PNGs of the home screen widget in its three states
-# (on / off / unknown), in the Color style and the Monochrome style (bg_mono_<state>,
+# Renders README preview PNGs of the home screen widget in its four states
+# (on / off / unknown / setup needed), in the Color style and the Monochrome style (bg_mono_<state>,
 # with dark text and icon on the light On background, as in AutoBlockerWidget.build()),
 # by reproducing res/layout/widget.xml as HTML and taking
 # headless Chrome screenshots. Colors, radius, icon paths and strings are parsed
@@ -10,7 +10,7 @@
 #   - widget size 180x76 dp (a 2x1 cell; real size depends on the launcher grid)
 #   - 3x1 widget (widget_wide.png, res/layout/widget_wide.xml) is 270x76 dp, 1.5x the 2x1 width
 #   - 1 dp = 1 sp = 1 CSS px, rendered at device scale factor 3
-#   - example check time "14:32" for on/off (render() hides it for unknown)
+#   - example check time "14:32" for on/off (build() hides it for unknown and setup)
 #   - system font stack instead of the device font (Roboto / Samsung One UI)
 set -euo pipefail
 
@@ -96,17 +96,20 @@ PP_LABEL = strings[wids['pp_label'].get(A + 'text').split('/')[-1]]
 W, H, GAP = 180, 76, 16
 WW = 270  # 3x1 width (assumption, see header)
 ROW_GAP = 12  # space between the Color row and the Monochrome row
-# Header row above the 3-up strip only: app icon (docs/media/icon.png, inlined) + app name
+# Header row above the 2x1 strip only: app icon (docs/media/icon.png, inlined) + app name
 HEAD, HEAD_MB = 24, 10
 APP = strings['app_name']
 ICON_URI = 'data:image/png;base64,' + base64.b64encode(open(f'{root}/docs/media/icon.png', 'rb').read()).decode()
 CHECK = strings['checked_at'].replace('%1$s', '14:32')
-# State -> resources, mirroring AutoBlockerWidget.build(): on/off show checked_at, unknown hides it
+# State -> resources, mirroring AutoBlockerWidget.build(): on/off show checked_at, unknown and setup hide it.
+# Setup (accessibility service off) reuses the unknown backgrounds with its own icon and label.
 STATES = [
-    ('on', 'On', strings['state_on'], 'bg_on', 'ic_shield_on', True),
-    ('off', 'Off', strings['state_off'], 'bg_off', 'ic_shield_off', True),
-    ('unknown', 'Unknown', strings['state_unknown'], 'bg_unknown', 'ic_shield_unknown', False),
+    ('on', 'On', strings['state_on'], 'bg_on', 'bg_mono_on', 'ic_shield_on', True),
+    ('off', 'Off', strings['state_off'], 'bg_off', 'bg_mono_off', 'ic_shield_off', True),
+    ('unknown', 'Unknown', strings['state_unknown'], 'bg_unknown', 'bg_mono_unknown', 'ic_shield_unknown', False),
+    ('setup', 'Setup needed', strings['widget_state_setup'], 'bg_unknown', 'bg_mono_unknown', 'ic_shield_setup', False),
 ]
+N = len(STATES)
 
 CSS = f'''
 html,body{{margin:0;padding:0;background:transparent;}}
@@ -157,18 +160,18 @@ def widget(label, bgname, iconname, show_at, dark=False, wide=False):
 def page(body):
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}</body></html>'
 
-for key, cap, label, b, i, show in STATES:
+for key, cap, label, b, mb, i, show in STATES:
     open(f'{out}/{key}.html', 'w').write(page(widget(label, b, i, show)))
 def strip(style, mono, wide=False):
-    cells = ''.join(f'<div class="cell">{widget(l, f"bg_mono_{k}" if mono else b, i, s, mono and k == "on", wide)}'
+    cells = ''.join(f'<div class="cell">{widget(l, mb if mono else b, i, s, mono and k == "on", wide)}'
                     f'<div class="cap">{style} \u00b7 {cap}</div></div>'
-                    for k, cap, l, b, i, s in STATES)
+                    for k, cap, l, b, mb, i, s in STATES)
     return f'<div class="strip">{cells}</div>'
 head = f'<div class="head"><img src="{ICON_URI}" alt=""><span>{APP}</span></div>'
 open(f'{out}/states.html', 'w').write(page(f'<div class="sheet">{head}{strip("Color", False)}{strip("Monochrome", True)}</div>'))
 open(f'{out}/wide.html', 'w').write(page(f'<div class="sheet">{strip("Color", False, True)}{strip("Monochrome", True, True)}</div>'))
-open(f'{out}/sizes', 'w').write(f'{W},{H} {3 * W + 2 * GAP},{HEAD + HEAD_MB + 2 * (H + 6 + 16) + ROW_GAP} '
-                                f'{3 * WW + 2 * GAP},{2 * (H + 6 + 16) + ROW_GAP}\n')
+open(f'{out}/sizes', 'w').write(f'{W},{H} {N * W + (N - 1) * GAP},{HEAD + HEAD_MB + 2 * (H + 6 + 16) + ROW_GAP} '
+                                f'{N * WW + (N - 1) * GAP},{2 * (H + 6 + 16) + ROW_GAP}\n')
 PY
 
 read -r SINGLE STRIP WIDE < "$D/sizes"
@@ -181,9 +184,9 @@ shot() { # html png w,h  (perl alarm = 30 s hard timeout; headless Chrome can ha
     && [ -s "$2" ] || { echo "screenshot failed: $2" >&2; return 1; }
 }
 
-for s in on off unknown; do
+for s in on off unknown setup; do
   shot "$D/$s.html" "$OUT/widget_$s.png" "$SINGLE"
 done
 shot "$D/states.html" "$OUT/widget_states.png" "$STRIP"
 shot "$D/wide.html" "$OUT/widget_wide.png" "$WIDE"
-echo "wrote: widget_on.png widget_off.png widget_unknown.png widget_states.png widget_wide.png in $OUT"
+echo "wrote: widget_on.png widget_off.png widget_unknown.png widget_setup.png widget_states.png widget_wide.png in $OUT"

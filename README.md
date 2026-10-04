@@ -26,12 +26,12 @@
 ---
 
 <p align="center">
-  <img src="docs/widget_states.png" width="600" alt="The ShieldTap icon and name above two rows of three 2x1 widgets. The Color row shows green On, amber Off and slate Unknown. The Monochrome row shows the same three states in grays: light On with dark text, dark Off and mid-gray Unknown. Each widget has a shield icon.">
+  <img src="docs/widget_states.png" width="600" alt="The ShieldTap icon and name above two rows of four 2x1 widgets. The Color row shows green On, amber Off, slate Unknown and slate Setup needed. The Monochrome row shows the same four states in grays: light On with dark text, dark Off, mid-gray Unknown and mid-gray Setup needed. Each widget has a shield icon. Setup needed has an exclamation mark in the shield and the short label Setup.">
   <br>
-  <img src="docs/widget_wide.png" width="720" alt="Rendered preview of the 3x1 widget (ShieldTap + Play Protect) in the same two rows of Color and Monochrome states. Each widget shows the shield state on the left and, past a thin divider, a Play Protect shortcut with its own shield icon on the right.">
+  <img src="docs/widget_wide.png" width="720" alt="Rendered preview of the 3x1 widget (ShieldTap + Play Protect) in the same two rows of Color and Monochrome states, four widgets per row. Each widget shows the shield state on the left and, past a thin divider, a Play Protect shortcut with its own shield icon on the right.">
 </p>
 
-<p align="center"><sub>The widget in its three states: on, off and unknown · a preview drawn from the app layout and English strings, not a device screenshot</sub></p>
+<p align="center"><sub>The widget in its four states: on, off, unknown and setup needed · a preview drawn from the app layout and English strings, not a device screenshot</sub></p>
 
 **Unknown** is not an error. After a reboot or an app update, and whenever ShieldTap could not check, the widget shows Unknown instead of guessing. If wireless or USB debugging is on at that point, it shows Off instead. No public signal tells that Auto Blocker is on (Samsung blocks reading it). Opening the Auto Blocker screen in Settings once reads the real state without changing it. Tapping the widget switches it and updates the state at the same time. **Setup needed** means the ShieldTap accessibility service is off, and tapping opens the setup guide. [Widget states →](docs/guide.md#widget-states)
 

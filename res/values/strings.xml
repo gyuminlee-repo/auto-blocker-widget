@@ -6,8 +6,10 @@
     <string name="checked_at">Checked %1$s</string>
     <string name="desc_fmt">Auto Blocker %1$s. Tap to switch.</string>
     <string name="state_unknown">Unknown</string>
-    <!-- 접근성 서비스가 꺼져 있을 때 위젯과 타일에 보인다. -->
+    <!-- 접근성 서비스가 꺼져 있을 때 빠른 설정 타일에 보인다. -->
     <string name="state_setup">Setup needed</string>
+    <!-- 같은 상태의 위젯 라벨. 20sp 굵은 글자가 2×1(180dp) 칸에 들어가도록 짧게 둔다. 접근성 설명은 desc_setup 을 쓴다. -->
+    <string name="widget_state_setup">Setup</string>
     <string name="desc_setup">Auto Blocker. The accessibility service is off. Tap to open setup.</string>
     <string name="service_desc">Taps the switch on the Auto Blocker settings screen once, only when you tap the widget or the Quick Settings tile, or when an automation app asks to turn it on or off.</string>
     <string name="toast_service_off">The accessibility service is off. Opening the setup screen.</string>

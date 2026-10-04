@@ -285,7 +285,7 @@ public class AutoBlockerWidget extends AppWidgetProvider {
                 bg = mono ? R.drawable.bg_mono_on : R.drawable.bg_on; break;
             case 0: text = R.string.state_off; icon = R.drawable.ic_shield_off;
                 bg = mono ? R.drawable.bg_mono_off : R.drawable.bg_off; break;
-            default: text = setup ? R.string.state_setup : R.string.state_unknown;
+            default: text = setup ? R.string.widget_state_setup : R.string.state_unknown;
                 icon = setup ? R.drawable.ic_shield_setup : R.drawable.ic_shield_unknown;
                 bg = mono ? R.drawable.bg_mono_unknown : R.drawable.bg_unknown; break;
         }
