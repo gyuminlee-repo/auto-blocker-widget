@@ -106,10 +106,12 @@ public class AutoTapService extends AccessibilityService {
                     cached + " -> " + checked);
             AutoBlockerWidget.saveState(this, checked == 1, AutoBlockerWidget.SRC_SCREEN);
             AutoBlockerWidget.refresh(this);
+            probeOnScreen(checked);
         } else if (fromFlip) {
             StateLog.add(this, "screen_confirm", "flip value " + checked + " matches screen");
             AutoBlockerWidget.saveState(this, checked == 1, AutoBlockerWidget.SRC_SCREEN);
             AutoBlockerWidget.refresh(this);
+            probeOnScreen(checked);
         }
 
         if (pendingBefore >= 0) {
@@ -194,6 +196,7 @@ public class AutoTapService extends AccessibilityService {
         long offAt = getSharedPreferences(AutoBlockerWidget.STATE_PREFS, MODE_PRIVATE).getLong(SVC_OFF_AT, 0);
         StateLog.add(this, "service_connected", (wasRunning ? "instance was alive, " : "")
                 + (offAt == 0 ? "no disconnect record" : "last disconnect " + time(offAt)));
+        probe(-1);
         ContentObserver ob = new ContentObserver(handler) {
             @Override public void onChange(boolean selfChange) { onMainSwitchChanged(); }
         };
@@ -235,6 +238,7 @@ public class AutoTapService extends AccessibilityService {
 
     /** 메인 Looper 에서 불린다. 접근성 이벤트와 같은 스레드라 순서가 섞이지 않는다. */
     private void onMainSwitchChanged() {
+        probe(-1);
         long now = SystemClock.elapsedRealtime();
         if (lastNotifyAt != 0 && now - lastNotifyAt < NOTIFY_DEDUP_MS) {
             StateLog.add(this, "on_change_dup", (now - lastNotifyAt) + " ms after previous, ignored");
@@ -254,6 +258,46 @@ public class AutoTapService extends AccessibilityService {
         AutoBlockerWidget.saveState(this, flipped == 1, AutoBlockerWidget.SRC_FLIP);
         AutoBlockerWidget.refresh(this);
         StateLog.add(this, "flip", cached + " -> " + flipped);
+    }
+
+    // ---- 상관 관찰(시험 중, 판단에 쓰지 않음) ----
+    // rampart_suw_main_on 은 삼성 framework 의 Settings.System @Readable 키(SAMSUNG_PUBLIC_SETTINGS)라 일반 앱이 읽을 수 있다고 본다.
+    // Auto Blocker 토글마다 같이 바뀌는지는 미확인이다. adb_wifi_enabled 는 켜짐 때 0 으로 강제된다는 관측이 있으나 특이도가 낮다.
+    // 공개 SDK 34 에 ADB_WIFI_ENABLED 상수가 없어 키 문자열을 쓴다. 읽기만 하고 쓰지 않는다.
+    static final String SUW_KEY = "rampart_suw_main_on";
+    static final String ADB_WIFI_KEY = "adb_wifi_enabled";
+    /** 화면 이벤트 뒤에 마지막으로 남긴 probe 본문. 같은 값이면 다시 남기지 않는다. */
+    private String lastScreenProbe;
+
+    private void probeOnScreen(int screen) {
+        String body = probeBody(screen);
+        if (body.equals(lastScreenProbe)) return;
+        lastScreenProbe = body;
+        StateLog.add(this, "probe", body);
+    }
+
+    /** screen 이 -1 이면 그 시점 화면 값이 없다는 뜻이다. */
+    private void probe(int screen) {
+        StateLog.add(this, "probe", probeBody(screen));
+    }
+
+    private String probeBody(int screen) {
+        String suw, adb;
+        try {
+            suw = String.valueOf(Settings.System.getInt(getContentResolver(), SUW_KEY, -1));
+        } catch (SecurityException e) {
+            suw = "denied";
+        } catch (RuntimeException e) {
+            suw = "error";
+        }
+        try {
+            adb = String.valueOf(Settings.Global.getInt(getContentResolver(), ADB_WIFI_KEY, -1));
+        } catch (SecurityException e) {
+            adb = "denied";
+        } catch (RuntimeException e) {
+            adb = "error";
+        }
+        return "suw=" + suw + " adbwifi=" + adb + " screen=" + (screen < 0 ? "?" : String.valueOf(screen));
     }
 
     private static String time(long at) {

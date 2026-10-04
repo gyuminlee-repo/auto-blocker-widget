@@ -109,5 +109,4 @@
     <string name="state_log_clear">Clear log</string>
     <string name="state_log_close">Close</string>
     <string name="state_log_cleared">Log cleared.</string>
-    <string name="state_log_test_on">Test: turn on without screen</string>
 </resources>

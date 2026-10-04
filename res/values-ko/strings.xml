@@ -103,5 +103,4 @@
     <string name="state_log_clear">기록 지우기</string>
     <string name="state_log_close">닫기</string>
     <string name="state_log_cleared">기록을 지웠습니다.</string>
-    <string name="state_log_test_on">시험: 화면 없이 켜기</string>
 </resources>
