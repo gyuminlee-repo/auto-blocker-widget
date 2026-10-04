@@ -76,9 +76,9 @@ public class AutoTapService extends AccessibilityService {
     protected void onServiceConnected() {
         boolean wasRunning = isRunning();
         instance = this;
-        // 새로 붙을 때 남은 arm 은 이전 세션 것이다. TrampolineActivity 는 isRunning() 일 때만 arm 하므로 새 연결 전에 쓴 기록일 수 없다.
-        // 같은 인스턴스에 다시 불린 경우(wasRunning)는 지금 살아 있는 arm 일 수 있어 건드리지 않는다.
-        if (!wasRunning) disarm(this);
+        // 남은 arm 은 여기서 지우지 않는다. 프로세스가 산 채로 서비스만 1~2초 만에 다시 붙는 일이 있어
+        // (실기기 로그 2026-10-04) 여기서 지우면 방금 탭한 arm 을 잃는다.
+        // 재부팅 전 기록과 오래된 기록은 armed() 의 시각 검사가 거른다.
         // 같은 인스턴스에 두 번 불려도 observer 는 하나만 둔다.
         if (observer == null) startObserver(wasRunning);
         AutoBlockerWidget.refresh(this); // 「설정 필요」를 지우고 현재 캐시로 다시 그린다.
