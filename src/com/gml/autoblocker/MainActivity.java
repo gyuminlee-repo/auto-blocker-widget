@@ -196,11 +196,35 @@ public class MainActivity extends Activity {
                 .setTitle(getString(R.string.state_log_title, StateLog.MAX))
                 .setView(scroll)
                 .setPositiveButton(R.string.state_log_close, null)
+                .setNegativeButton(R.string.state_log_test_on, (d, w) -> testTurnOnWithoutScreen())
                 .setNeutralButton(R.string.state_log_clear, (d, w) -> {
                     StateLog.clear(this);
                     Toast.makeText(this, R.string.state_log_cleared, Toast.LENGTH_SHORT).show();
                 })
                 .show();
+    }
+
+    /**
+     * 베타 시험용. 2차 덤프에 나온 rampart 액션으로 화면 없이 Auto Blocker 를 켜 본다.
+     * arm 하지 않으므로 접근성 서비스가 스위치를 누르지 않는다. 결과는 기록으로만 남는다.
+     */
+    private void testTurnOnWithoutScreen() {
+        // 위젯 탭이 남긴 arm 표식이 있으면 화면이 뜰 때 스위치가 눌리므로 먼저 지운다.
+        AutoTapService.disarm(this);
+        StateLog.add(this, "test_turn_on_start", "");
+        Intent i = new Intent("com.samsung.android.rampart.action.ACTION_AUTOBLOCKER_TURN_ON_MAIN_SWITCH")
+                .setPackage("com.samsung.android.rampart")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            startActivity(i);
+            StateLog.add(this, "test_turn_on_sent", "");
+        } catch (ActivityNotFoundException e) {
+            StateLog.add(this, "test_turn_on_not_found", "");
+        } catch (SecurityException e) {
+            StateLog.add(this, "test_turn_on_denied", String.valueOf(e.getMessage()));
+        } catch (Exception e) {
+            StateLog.add(this, "test_turn_on_error", String.valueOf(e.getMessage()));
+        }
     }
 
     /** 자세히 토글. 기본은 접힘(layout 에서 gone). */
